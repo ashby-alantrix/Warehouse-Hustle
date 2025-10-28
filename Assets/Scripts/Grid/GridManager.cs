@@ -28,13 +28,13 @@ public class GridManager : MonoBehaviour
         gridData.nodeInfos[1] = new NodeInfo
         {
             row = 2,
-            col = 5,
+            col = 7,
             placeNode = true
         };
         gridData.nodeInfos[2] = new NodeInfo
         {
             row = 3,
-            col = 6,
+            col = 8,
             placeNode = true
         };
         gridData.nodeInfos[3] = new NodeInfo
@@ -69,45 +69,52 @@ public class GridManager : MonoBehaviour
 
             m_RowPosition += nodeOffset;
         }
-
-        // foreach (var data in m_GridData.nodeInfos)
-        // {
-        //     if (!data.placeNode) continue;
-
-        //     Instantiate(hexNode, new Vector3(data.col, 0, data.row), Quaternion.identity);
-        // }
     }
     
     void GenerateGrid()
     {
         float startPointVal = 0;
         float extraNodeCount = 0;
+        float diff = 0;
+        float times = 0;
 
         if (m_PreCols != 0)
         {
-            if (m_PreCols > m_Cols) // row1: 4 elements, row2: 3 elements
-            {
-                startPointVal = 0.5f;
-            }
-            else if (m_PreCols < m_Cols) // row1: 4 elements, row2: 5 elements
+            if (m_Cols > m_PreCols || m_Cols > m_BaseColCount) // row1: 4 elements, row2: 5 elements
             {
                 startPointVal = -0.5f;
             }
+            else if (m_PreCols > m_Cols && m_Cols <= m_BaseColCount) // row1: 4 elements, row2: 3 elements
+            {
+                startPointVal = 0.5f;
+            }
+            
 
             if (m_Rows % 2 == 0) // even row
             {
                 extraNodeCount = Mathf.Abs(m_Cols - m_BaseColCount) - 1; // odd cols, making it even
+
+                diff = extraNodeCount / 2; // 0 // 1 // 3
+
+                times = Mathf.Sign(startPointVal) * diff; // 0 // -1
             }
             else // odd row
             {
                 extraNodeCount = Mathf.Abs(m_Cols - m_BaseColCount); // even cols
+
+                diff = extraNodeCount / 2; // 0 // 1 // 3
+
+                times = Mathf.Sign(startPointVal) * diff; // 0 // -1
+
+                startPointVal = 0;
             }
 
             // float absVal = Mathf.Abs(m_PreCols - m_Cols); // 1 // 3 // 5
             // float diff = absVal > 1 ? (extraNodeCount/2) : absVal - 1; // 0 // 1 // 3
-            float diff = extraNodeCount / 2; // 0 // 1 // 3
+            //diff = extraNodeCount / 2; // 0 // 1 // 3
 
-            float times = Mathf.Sign(startPointVal) * diff; // 0 // -1
+            //times = Mathf.Sign(startPointVal) * diff; // 0 // -1
+
             startPointVal = startPointVal + times; // -0.5 // -1.5 // -3.5
         }
         else

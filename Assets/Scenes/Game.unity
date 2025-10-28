@@ -2309,5 +2309,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hex (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 9206597145249496062, guid: 60479e4eda010482488707fbf11c123b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60479e4eda010482488707fbf11c123b, type: 3}
