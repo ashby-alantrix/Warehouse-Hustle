@@ -28,7 +28,7 @@ public class GridManager : MonoBehaviour
         gridData.nodeInfos[1] = new NodeInfo
         {
             row = 2,
-            col = 7,
+            col = 3,
             placeNode = true
         };
         gridData.nodeInfos[2] = new NodeInfo
@@ -40,13 +40,13 @@ public class GridManager : MonoBehaviour
         gridData.nodeInfos[3] = new NodeInfo
         {
             row = 4,
-            col = 5,
+            col = 1,
             placeNode = true
         };
         gridData.nodeInfos[4] = new NodeInfo
         {
             row = 5,
-            col = 4,
+            col = 2,
             placeNode = true
         };
 
@@ -80,15 +80,14 @@ public class GridManager : MonoBehaviour
 
         if (m_PreCols != 0)
         {
-            if (m_Cols > m_PreCols || m_Cols > m_BaseColCount) // row1: 4 elements, row2: 5 elements
-            {
-                startPointVal = -0.5f;
-            }
-            else if (m_PreCols > m_Cols && m_Cols <= m_BaseColCount) // row1: 4 elements, row2: 3 elements
+            if (/*m_PreCols > m_Cols && */ m_Cols <= m_BaseColCount) // row1: 4 elements, row2: 3 elements
             {
                 startPointVal = 0.5f;
             }
-            
+            else if (m_Cols > m_PreCols || m_Cols > m_BaseColCount) // row1: 4 elements, row2: 5 elements
+            {
+                startPointVal = -0.5f;
+            }
 
             if (m_Rows % 2 == 0) // even row
             {
@@ -101,7 +100,6 @@ public class GridManager : MonoBehaviour
             else // odd row
             {
                 extraNodeCount = Mathf.Abs(m_Cols - m_BaseColCount); // even cols
-
                 diff = extraNodeCount / 2; // 0 // 1 // 3
 
                 times = Mathf.Sign(startPointVal) * diff; // 0 // -1
