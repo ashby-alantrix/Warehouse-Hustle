@@ -1,11 +1,21 @@
 
 using System;
 
-public class NodeInfo
+public class GridValues
 {
     public float row;
     public float col;
-    public bool placeNode;
+}
+
+public class NodeInfo
+{
+    public GridValues gridValues; 
+
+    public GridValues[] blockedGridValues =
+    {
+        new GridValues { row = 1, col = 2,},
+        new GridValues { row = 1, col = 3,}
+    };
 }
 
 public class GridData

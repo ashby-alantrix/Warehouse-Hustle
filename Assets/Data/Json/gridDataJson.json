@@ -1,0 +1,75 @@
+{
+  "nodeInfos": [
+    {
+      "gridValues": {
+        "row": 1,
+        "col": 4
+      },
+      "blockedGridValues": [
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 3
+        }
+      ]
+    },
+    {
+      "gridValues": {
+        "row": 2,
+        "col": 5
+      },
+      "blockedGridValues": [
+        {
+          "row": 2,
+          "col": 2
+        },
+        {
+          "row": 2,
+          "col": 4
+        }
+      ]
+    },
+    {
+      "gridValues": {
+        "row": 3,
+        "col": 6
+      },
+      "blockedGridValues": [
+        {
+          "row": 3,
+          "col": 2
+        },
+        {
+          "row": 3,
+          "col": 4
+        }
+      ]
+    },
+    {
+      "gridValues": {
+        "row": 4,
+        "col": 5
+      },
+      "blockedGridValues": [
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 5
+        }
+      ]
+    },
+    {
+      "gridValues": {
+        "row": 5,
+        "col": 4
+      },
+      "blockedGridValues": []
+    }
+  ]
+}
