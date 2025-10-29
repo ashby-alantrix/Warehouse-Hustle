@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System;
-using System.Data.Common;
-using Unity.VisualScripting;
+using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
@@ -21,22 +18,22 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
-        GridData gridData = JsonUtility.FromJson<GridData>(gridJson.text);
-        // GridData gridData = JsonUtility.FromJson<GridData>(gridJson.text);
+        Debug.Log("data:" + gridJson.text);
 
-        Debug.Log("GridData json: " + gridData);
-        Debug.Log("GridData json: " + JsonUtility.ToJson(gridData));
+        var obj = new { Name = "Ashby", Age = 25 };
+        string json = JsonConvert.SerializeObject(obj);
+        Debug.Log(json);
 
-        InitGridData(gridData);
+        m_GridData = JsonConvert.DeserializeObject<GridData>(gridJson.text);
+
+        InitGridData();
     }
 
-    void InitGridData(GridData gridData)
+    void InitGridData()
     {
-        m_GridData = gridData;
-
         var nodeOffset = (hexNode.transform.localScale.z / 2) + (hexNode.transform.localScale.z / 4); // 0.75
 
-        foreach (var nodeInfo in gridData.nodeInfos)
+        foreach (var nodeInfo in m_GridData.nodeInfos)
         {
             m_PreCols = m_Cols;
 
@@ -107,8 +104,8 @@ public class GridManager : MonoBehaviour
 
         for (float j = 0; j < m_Cols; j++)
         {
-            // if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
-            //     continue;
+            if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
+                continue;
 
             Instantiate(hexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
         }
