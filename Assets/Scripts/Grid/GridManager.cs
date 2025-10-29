@@ -1,9 +1,36 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
+public enum HEX_SIDE
+{
+    Top_Right = 0,
+    Middle_Right = 1,
+    Bottom_Right = 2,
+    Bottom_Left = 3,
+    Middle_Left = 4,
+    Top_Left = 5
+}
+
+[Serializable]
+public class OffsetData
+{
+    public float x;
+    public float z;
+}
+
+[Serializable]
+public class HexData
+{
+    public HEX_SIDE hexSide;
+    public OffsetData offset;
+}
+
 public class GridManager : MonoBehaviour
 {
+    [SerializeField] private HexData[] hexDatas;
+
     [SerializeField] private GameObject hexNode;
     [SerializeField] private TextAsset gridJson;
 
@@ -15,6 +42,7 @@ public class GridManager : MonoBehaviour
 
     private GridData m_GridData;
     private Dictionary<float, List<float>> blockedGridValDict = new Dictionary<float, List<float>>();
+    // private Dictionary
 
     void Start()
     {
@@ -52,7 +80,7 @@ public class GridManager : MonoBehaviour
             m_RowPosition += nodeOffset;
         }
     }
-    
+
     void GenerateGrid()
     {
         float startPointVal = 0;
@@ -106,6 +134,7 @@ public class GridManager : MonoBehaviour
         {
             if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
                 continue;
+
 
             Instantiate(hexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
         }
