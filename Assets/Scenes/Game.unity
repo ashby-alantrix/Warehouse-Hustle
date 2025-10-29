@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexNode: {fileID: 9206597145249496062, guid: 60479e4eda010482488707fbf11c123b, type: 3}
+  gridJson: {fileID: 4900000, guid: 93b2547994276417790ea9a221c3e2fe, type: 3}
 --- !u!1 &44969325
 GameObject:
   m_ObjectHideFlags: 0

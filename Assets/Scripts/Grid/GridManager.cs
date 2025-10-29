@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System;
 using System.Data.Common;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private GameObject hexNode;
+    [SerializeField] private TextAsset gridJson;
 
     private float m_Rows; // z
     private float m_RowPosition; // z
@@ -14,41 +17,15 @@ public class GridManager : MonoBehaviour
     private float m_BaseColCount;
 
     private GridData m_GridData;
+    private Dictionary<float, List<float>> blockedGridValDict = new Dictionary<float, List<float>>();
 
     void Start()
     {
-        GridData gridData = new GridData();
-        gridData.nodeInfos = new NodeInfo[5];
-        gridData.nodeInfos[0] = new NodeInfo
-        {
-            row = 1,
-            col = 4,
-            placeNode = true
-        };
-        gridData.nodeInfos[1] = new NodeInfo
-        {
-            row = 2,
-            col = 3,
-            placeNode = true
-        };
-        gridData.nodeInfos[2] = new NodeInfo
-        {
-            row = 3,
-            col = 8,
-            placeNode = true
-        };
-        gridData.nodeInfos[3] = new NodeInfo
-        {
-            row = 4,
-            col = 1,
-            placeNode = true
-        };
-        gridData.nodeInfos[4] = new NodeInfo
-        {
-            row = 5,
-            col = 2,
-            placeNode = true
-        };
+        GridData gridData = JsonUtility.FromJson<GridData>(gridJson.text);
+        // GridData gridData = JsonUtility.FromJson<GridData>(gridJson.text);
+
+        Debug.Log("GridData json: " + gridData);
+        Debug.Log("GridData json: " + JsonUtility.ToJson(gridData));
 
         InitGridData(gridData);
     }
@@ -56,14 +33,22 @@ public class GridManager : MonoBehaviour
     void InitGridData(GridData gridData)
     {
         m_GridData = gridData;
+
         var nodeOffset = (hexNode.transform.localScale.z / 2) + (hexNode.transform.localScale.z / 4); // 0.75
 
         foreach (var nodeInfo in gridData.nodeInfos)
         {
             m_PreCols = m_Cols;
 
-            m_Rows = nodeInfo.row;
-            m_Cols = nodeInfo.col;
+            m_Rows = nodeInfo.gridValues.row;
+            m_Cols = nodeInfo.gridValues.col;
+
+            var blockedGridValLength = nodeInfo.blockedGridValues.Length;
+            blockedGridValDict.Add(m_Rows, new List<float>(blockedGridValLength));
+            for (int i = 0; i < blockedGridValLength; i++)
+            {
+                blockedGridValDict[m_Rows].Add(nodeInfo.blockedGridValues[i].col);
+            }
 
             GenerateGrid();
 
@@ -120,8 +105,11 @@ public class GridManager : MonoBehaviour
             m_BaseColCount = m_Cols;
         }
 
-        for (int j = 0; j < m_Cols; j++)
+        for (float j = 0; j < m_Cols; j++)
         {
+            // if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
+            //     continue;
+
             Instantiate(hexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
         }
     }

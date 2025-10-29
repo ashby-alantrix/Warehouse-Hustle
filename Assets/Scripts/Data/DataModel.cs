@@ -9,13 +9,9 @@ public class GridValues
 
 public class NodeInfo
 {
-    public GridValues gridValues; 
+    public GridValues gridValues;
 
-    public GridValues[] blockedGridValues =
-    {
-        new GridValues { row = 1, col = 2,},
-        new GridValues { row = 1, col = 3,}
-    };
+    public GridValues[] blockedGridValues;
 }
 
 public class GridData
