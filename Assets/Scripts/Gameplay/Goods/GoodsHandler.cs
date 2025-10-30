@@ -1,6 +1,12 @@
 using System;
 using UnityEngine;
 
+public class GoodsSet
+{
+    public byte setCount;
+    public GoodsType type;
+}
+
 public class GoodsHandler : MonoBehaviour
 {
     // collection of goods
@@ -8,26 +14,35 @@ public class GoodsHandler : MonoBehaviour
     [SerializeField] private GoodsPlacement currentGoodsPlacer;
     [SerializeField] private GoodsPlacement nextGoodsPlacer;
 
-    [SerializeField] private GoodsSO goodsSO;
+    //[SerializeField] private GoodsSO goodsSO;
 
-    [SerializeField] private int minGoods;
-    [SerializeField] private int maxGoods;
+    [SerializeField] private GoodsType[] goodsType;
+
+    [SerializeField] private byte minGoods = 1;
+    [SerializeField] private byte maxGoods = 12;
 
     public void InitCurrentAndNextGoods(int splitGoodsCount)
     {
-        var totalGoodsToGive = UnityEngine.Random.Range(minGoods, maxGoods);
-        int firstSetCount = 0, secondSetCount = 0;
+        byte totalGoodsToGive = (byte)UnityEngine.Random.Range(minGoods, maxGoods); // 1 && 12 => 7
+        GoodsSet[] goodsSet = new GoodsSet[splitGoodsCount];
 
-        if (splitGoodsCount == 1)
+        for (int i = 0; i < splitGoodsCount; i++)
         {
-            firstSetCount = UnityEngine.Random.Range(minGoods, totalGoodsToGive);
-        }
-        else if (splitGoodsCount == 2)
-        {
-            firstSetCount = UnityEngine.Random.Range(minGoods, totalGoodsToGive);
-            secondSetCount = UnityEngine.Random.Range(firstSetCount + 1, maxGoods);
+            goodsSet[i] = new GoodsSet();
+            goodsSet[i].type = GenerateRandomGoodsType();
+            goodsSet[i].setCount = GenerateRandomSetCount(totalGoodsToGive);
         }
 
-        
+        currentGoodsPlacer.InitGoodsView(goodsSet);
+    }
+
+    private GoodsType GenerateRandomGoodsType()
+    {
+        return goodsType[UnityEngine.Random.Range(minGoods - 1, maxGoods)];
+    }
+
+    private byte GenerateRandomSetCount(int totalGoodsToGive)
+    {
+        return (byte)UnityEngine.Random.Range(minGoods, totalGoodsToGive);
     }
 }
