@@ -3,36 +3,12 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public enum HEX_SIDE
-{
-    Top_Right = 0,
-    Middle_Right = 1,
-    Bottom_Right = 2,
-    Bottom_Left = 3,
-    Middle_Left = 4,
-    Top_Left = 5
-}
-
-[Serializable]
-public class OffsetData
-{
-    public float x;
-    public float z;
-}
-
-[Serializable]
-public class HexData
-{
-    public HEX_SIDE hexSide;
-    public OffsetData offset;
-}
-
 public class GridManager : MonoBehaviour
 {
-    [SerializeField] private HexData[] hexDatas;
+    [SerializeField] private NodeManager m_NodeManager;
 
-    [SerializeField] private GameObject hexNode;
-    [SerializeField] private TextAsset gridJson;
+    [SerializeField] private GameObject m_HexNode;
+    [SerializeField] private TextAsset m_GridJson;
 
     private float m_Rows; // z
     private float m_RowPosition; // z
@@ -46,20 +22,20 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("data:" + gridJson.text);
+        Debug.Log("data:" + m_GridJson.text);
 
         var obj = new { Name = "Ashby", Age = 25 };
         string json = JsonConvert.SerializeObject(obj);
         Debug.Log(json);
 
-        m_GridData = JsonConvert.DeserializeObject<GridData>(gridJson.text);
+        m_GridData = JsonConvert.DeserializeObject<GridData>(m_GridJson.text);
 
         InitGridData();
     }
 
     void InitGridData()
     {
-        var nodeOffset = (hexNode.transform.localScale.z / 2) + (hexNode.transform.localScale.z / 4); // 0.75
+        var nodeOffset = (m_HexNode.transform.localScale.z / 2) + (m_HexNode.transform.localScale.z / 4); // 0.75
 
         foreach (var nodeInfo in m_GridData.nodeInfos)
         {
@@ -79,6 +55,8 @@ public class GridManager : MonoBehaviour
 
             m_RowPosition += nodeOffset;
         }
+
+        m_NodeManager.InitNeighboursToNodes();
     }
 
     void GenerateGrid()
@@ -135,8 +113,8 @@ public class GridManager : MonoBehaviour
             if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
                 continue;
 
-
-            Instantiate(hexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            var instance =  Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            m_NodeManager.AddNodeInstance(instance);
         }
     }
 }
