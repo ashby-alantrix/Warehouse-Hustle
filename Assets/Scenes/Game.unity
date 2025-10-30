@@ -1338,6 +1338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1158569003}
+  - component: {fileID: 1158569004}
   m_Layer: 0
   m_Name: BootLoader
   m_TagString: Untagged
@@ -1360,6 +1361,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1158569004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158569002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea08392cc8bf5554cbc14e888e26ec76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1200432044
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,7 +1795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentGoodsPlacer: {fileID: 0}
   nextGoodsPlacer: {fileID: 0}
-  goodsSO: {fileID: 11400000, guid: a27f93cf62c4b4f7386390e77cb38009, type: 2}
+  goodsType: 
   minGoods: 0
   maxGoods: 0
 --- !u!1001 &1963127170
