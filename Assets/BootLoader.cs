@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface IBootLoader
@@ -9,10 +7,11 @@ public interface IBootLoader
 
 public class BootLoader : MonoBehaviour
 {
-    
+    [SerializeField] private GoodsManager goodsManager;
 
     private void Start()
     {
-        InterfaceManager interfaceManager = new InterfaceManager();
+        InterfaceManager.InitInstance();
+        goodsManager.Initialize();
     }
 }
