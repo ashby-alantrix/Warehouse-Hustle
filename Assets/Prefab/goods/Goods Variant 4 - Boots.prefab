@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3244685501852833957, guid: b1cdd7b144d524409bccbf9d8b0ee7db, type: 3}
+      propertyPath: goodsType
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6024768882612940032, guid: b1cdd7b144d524409bccbf9d8b0ee7db, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -53,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6024768882612940033, guid: b1cdd7b144d524409bccbf9d8b0ee7db, type: 3}
       propertyPath: m_Name
-      value: Goods Variant 4
+      value: Goods Variant 4 - Boots
       objectReference: {fileID: 0}
     - target: {fileID: 6024768882612940034, guid: b1cdd7b144d524409bccbf9d8b0ee7db, type: 3}
       propertyPath: m_Materials.Array.data[0]

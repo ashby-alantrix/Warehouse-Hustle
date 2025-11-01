@@ -9,14 +9,15 @@ public class InterfaceManager
     #region Singleton
     public static InterfaceManager Instance { get; private set; }
 
+    public static void InitInstance()
+    {
+        if (Instance == null)
+            Instance = new InterfaceManager();
+    }
+
     public InterfaceManager()
     {
         interfacesDict = new Dictionary<string, IBase>();
-        if (Instance == null)
-        {
-            Instance = new InterfaceManager();
-            return;
-        }
     }
     #endregion
 
@@ -28,13 +29,13 @@ public class InterfaceManager
             interfacesDict.Add(interfaceType, interfaceInst);
     }
 
-    public IBase GetInterfaceInstance<T>() where T : IBase
+    public T GetInterfaceInstance<T>() where T : IBase
     {
         string interfaceType = typeof(T).ToString();
 
         if (interfacesDict.ContainsKey(interfaceType))
-            return interfacesDict[interfaceType];
+            return (T)interfacesDict[interfaceType];
 
-        return null;
+        return default;
     }
 }

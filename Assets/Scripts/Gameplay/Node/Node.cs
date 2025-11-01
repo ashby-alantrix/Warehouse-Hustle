@@ -19,9 +19,18 @@ public class Node : MonoBehaviour
         m_NodeManager = nodeManager;
     }
 
-    public void AddNeighboursData(Vector3 hexOffset)
+    public void AddNeighborsData()
     {
+        Vector3 hexOffset = Vector3.zero;
         m_NeighboursHexOffsets.Add(hexOffset);
+    }
+
+    public void Add()
+    {
+        Debug.Log("adding");
+        Vector3 hexOffset = Vector3.zero;
+        m_NeighboursHexOffsets.Add(hexOffset);
+
     }
 
     private void Awake()
