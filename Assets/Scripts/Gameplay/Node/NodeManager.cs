@@ -24,12 +24,6 @@ public class NodeManager : MonoBehaviour
 
         foreach (var nodeData in nodesData)
         {
-            Debug.Log("NodeData.Key: " + nodeData.Key);
-            Debug.Log("NodeData.Value: " + nodeData.Value);
-        }
-
-        foreach (var nodeData in nodesData)
-        {
             node = nodeData.Value;
 
             foreach (var hexData in m_HexDatas)
@@ -41,9 +35,7 @@ public class NodeManager : MonoBehaviour
                 // check if node is available at the addedHexOffset position
                 if (nodesData.ContainsKey(addedHexOffset.ToString()))
                 {
-                    node.Add();
-                    // node.AddNeighborsData(addedHexOffset);
-                    node.AddNeighborsData();
+                    node.AddNeighborsData(addedHexOffset);
                 }
             }
         }

@@ -33,6 +33,10 @@ public class GoodsPlacement : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            Debug.Log("Object pool manager is null");
+        }
     }
 
     public void InitGoodsView(GoodsSet[] goodsSet)

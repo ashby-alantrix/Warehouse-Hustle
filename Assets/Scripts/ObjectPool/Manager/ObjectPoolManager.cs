@@ -11,10 +11,12 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
 
     public void Initialize()
     {
+
+        InterfaceManager.Instance?.RegisterInterface<ObjectPoolManager>(this);
         foreach (var pool in objectPoolBases)
         {
             objectPoolBasesDict.Add(pool.GetPoolType(), pool);
-            // pool.InitPoolFirstTime();
+            pool.InitPoolFirstTime();
         }
     }
 
@@ -28,7 +30,7 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
             if (poolToUse.IsEmpty())
             {
                 // enqueue new objects
-                objectBase = poolToUse.EnqueueNewInst();
+                objectBase = poolToUse.EnqueueAndReturnItem();
             }
             else
             {

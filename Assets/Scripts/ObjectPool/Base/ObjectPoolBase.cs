@@ -9,9 +9,10 @@ public abstract class ObjectPoolBase<T> : MonoBehaviour where T : ItemBase
     protected Queue<T> queue = new Queue<T>();
 
     public abstract ItemType GetPoolType();
+
     public abstract void InitPoolFirstTime();
 
-    public T EnqueueNewInst()
+    public ItemBase EnqueueAndReturnItem()
     {
         T inst = Instantiate(prefabInst);
         inst.gameObject.SetActive(false);

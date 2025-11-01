@@ -8,7 +8,7 @@ public class Node : MonoBehaviour
     [SerializeField] private Transform[] m_NodePlacements;
 
     private NodePlacementData[] m_NodePlacementDatas;
-    private List<Vector3> m_NeighboursHexOffsets;
+    private List<Vector3> m_NeighboursHexOffsets = new List<Vector3>();
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
@@ -19,18 +19,9 @@ public class Node : MonoBehaviour
         m_NodeManager = nodeManager;
     }
 
-    public void AddNeighborsData()
+    public void AddNeighborsData(Vector3 hexOffset)
     {
-        Vector3 hexOffset = Vector3.zero;
         m_NeighboursHexOffsets.Add(hexOffset);
-    }
-
-    public void Add()
-    {
-        Debug.Log("adding");
-        Vector3 hexOffset = Vector3.zero;
-        m_NeighboursHexOffsets.Add(hexOffset);
-
     }
 
     private void Awake()
