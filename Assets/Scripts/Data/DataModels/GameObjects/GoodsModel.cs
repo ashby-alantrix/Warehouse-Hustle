@@ -1,23 +1,17 @@
 
-using UnityEngine;
 
 [System.Serializable]
-public enum GoodsType
+public enum ItemType
 {
-    None,
-    Box1,
-    Box2,
-    Box3,
-    Box4,
-    Box5,
-    Box6,
-    Box7,
-    Box8,
-    Box9,
-    Box10
+    Bullet = 0,
+    Armour = 1,
+    Weapon = 2,
+    Boots = 3,
+
+    MAX = 4
 }
 
 public class GoodsModel
 {
-    
+
 }

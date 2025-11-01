@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class GoodsView
 {
-    public GoodsType goodsType;
+    public ItemType goodsType;
     public GameObject gameObj;
 }
 

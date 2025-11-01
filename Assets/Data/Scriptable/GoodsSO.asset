@@ -13,23 +13,11 @@ MonoBehaviour:
   m_Name: GoodsSO
   m_EditorClassIdentifier: 
   goodsModel:
-  - goodsType: 1
+  - goodsType: 0
     gameObj: {fileID: 4522601726871492308, guid: c90959de262a04d3c99731b051a99ac4, type: 3}
-  - goodsType: 2
+  - goodsType: 1
     gameObj: {fileID: 4522601726871492308, guid: 8adce3db7d40c46808a62b8418422218, type: 3}
-  - goodsType: 3
+  - goodsType: 2
     gameObj: {fileID: 4522601726871492308, guid: b0fceca7bc8d347dc8c1e2bd04fec38c, type: 3}
-  - goodsType: 4
+  - goodsType: 3
     gameObj: {fileID: 4522601726871492308, guid: 3a6c32111857b4a5a962b6ef4deee4fc, type: 3}
-  - goodsType: 5
-    gameObj: {fileID: 4522601726871492308, guid: 25ca83e73a6c8432c9d60e01aea4d49d, type: 3}
-  - goodsType: 6
-    gameObj: {fileID: 4522601726871492308, guid: cd31a94bec50b4592b4a9091384c140e, type: 3}
-  - goodsType: 7
-    gameObj: {fileID: 4522601726871492308, guid: b3425965570114d2aa016a543e5727c4, type: 3}
-  - goodsType: 8
-    gameObj: {fileID: 4522601726871492308, guid: 9c3985cdc5bf64157bb8e03ccd3a634b, type: 3}
-  - goodsType: 9
-    gameObj: {fileID: 4522601726871492308, guid: 51a2b8087611a4ff795c112e0859a586, type: 3}
-  - goodsType: 10
-    gameObj: {fileID: 4522601726871492308, guid: 8d8bb32906589435e9d36bbd994dd20e, type: 3}

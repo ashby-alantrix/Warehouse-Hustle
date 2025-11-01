@@ -22,12 +22,6 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("data:" + m_GridJson.text);
-
-        var obj = new { Name = "Ashby", Age = 25 };
-        string json = JsonConvert.SerializeObject(obj);
-        Debug.Log(json);
-
         m_GridData = JsonConvert.DeserializeObject<GridData>(m_GridJson.text);
 
         InitGridData();
