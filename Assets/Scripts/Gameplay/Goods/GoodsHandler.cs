@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ public class GoodsHandler : MonoBehaviour
     private GoodsSet[] goodsSet;
     private ItemType[] goodsType;
 
-    private void Awake()
+    public void InitGoodsInfo()
     {
         InitGoodsTypes();
         InitCurrentAndNextGoods(2);
@@ -32,13 +33,17 @@ public class GoodsHandler : MonoBehaviour
         {
             goodsType[index] = (ItemType)index;
         }
+
+        Debug.Log("Goods type length: " + goodsType.Length);
     }
 
     public void InitCurrentAndNextGoods(int splitGoodsCount)
     {
+        Debug.Log("Current Goods Placer");
         InitGoods(splitGoodsCount);
         currentGoodsPlacer.InitGoodsView(goodsSet);
 
+        Debug.Log("Next Goods Placer");
         InitGoods(splitGoodsCount);
         nextGoodsPlacer.InitGoodsView(goodsSet);
     }
@@ -54,6 +59,8 @@ public class GoodsHandler : MonoBehaviour
             goodsSet[i].type = GenerateRandomGoodsType();
             goodsSet[i].setCount = GenerateRandomSetCount(totalGoodsToGive);
         }
+
+        Debug.Log("GoodsSet: " + JsonConvert.SerializeObject(goodsSet));
     }
 
     private ItemType GenerateRandomGoodsType()

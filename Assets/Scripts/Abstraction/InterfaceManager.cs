@@ -26,7 +26,10 @@ public class InterfaceManager
         string interfaceType = typeof(T).ToString();
 
         if (!interfacesDict.ContainsKey(interfaceType))
+        {
+            Debug.Log("adding to interface dict: " + interfaceType);
             interfacesDict.Add(interfaceType, interfaceInst);
+        }
     }
 
     public T GetInterfaceInstance<T>() where T : IBase
