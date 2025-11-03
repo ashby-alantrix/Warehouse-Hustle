@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IBootLoader
@@ -7,14 +8,13 @@ public interface IBootLoader
 
 public class BootLoader : MonoBehaviour
 {
-    [SerializeField] private GoodsManager goodsManager;
-    [SerializeField] private ObjectPoolManager objectPoolManager;
+    [SerializeField] private GameObject[] baseObjects;
 
     private void Start()
     {
         InterfaceManager.InitInstance();
-        objectPoolManager.Initialize();
-        goodsManager.Initialize();
 
+        foreach (GameObject bootloader in baseObjects)
+            bootloader.GetComponent<IBootLoader>().Initialize();
     }
 }

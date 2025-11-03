@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class ObjectPoolBase<T> : MonoBehaviour where T : ItemBase
 {
     [SerializeField] protected T prefabInst;
+    [SerializeField] protected Transform prefabsParent;
     [SerializeField] protected int initialPoolCount;
 
     protected Queue<T> queue = new Queue<T>();
@@ -16,6 +17,8 @@ public abstract class ObjectPoolBase<T> : MonoBehaviour where T : ItemBase
     {
         T inst = Instantiate(prefabInst);
         inst.gameObject.SetActive(false); // enqueue these objects later
+        inst.transform.parent = prefabsParent;
+        
         // Enqueue(inst);
 
         return inst;

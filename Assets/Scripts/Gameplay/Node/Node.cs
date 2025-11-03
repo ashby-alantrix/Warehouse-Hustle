@@ -8,7 +8,7 @@ public class Node : MonoBehaviour
     [SerializeField] private Transform[] m_NodePlacements;
 
     private NodePlacementData[] m_NodePlacementDatas;
-    private List<Vector3> m_NeighboursHexOffsets = new List<Vector3>();
+    private List<Vector3> m_NeighborsHexOffsets = new List<Vector3>();
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
@@ -21,7 +21,7 @@ public class Node : MonoBehaviour
 
     public void AddNeighborsData(Vector3 hexOffset)
     {
-        m_NeighboursHexOffsets.Add(hexOffset);
+        m_NeighborsHexOffsets.Add(hexOffset);
     }
 
     private void Awake()
@@ -37,13 +37,18 @@ public class Node : MonoBehaviour
         }
     }
 
+    public NodePlacementData RetrieveNodePlacementData(int index)
+    {
+        return m_NodePlacementDatas[index];
+    }
+
     public void OnMouseDown()
     {
         Debug.Log("OnMouseDown");
         if (!isNodeOccupied) // game's not over
         {
             isNodeOccupied = true;
-            m_NodeManager.OnNodeClicked();
+            m_NodeManager.OnNodeClicked(this);
         }
     }
 }

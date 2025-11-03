@@ -4,6 +4,7 @@ using UnityEngine;
 public class NodeManager : MonoBehaviour
 {
     private GoodsManager m_GoodsManager;
+    private GoodsPlacementManager m_GoodsPlacementManager;
     
     [SerializeField] private HexData[] m_HexDatas;
 
@@ -41,8 +42,12 @@ public class NodeManager : MonoBehaviour
         }
     }
 
-    public void OnNodeClicked()
+    public void OnNodeClicked(Node selectedNode)
     {
-        
+        m_GoodsPlacementManager = m_GoodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : m_GoodsPlacementManager;
+        m_GoodsPlacementManager.PlaceGoodsOnNode(selectedNode);
+
+        m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
+        m_GoodsManager.GoodsHandler.UpdateGoodsInput();
     }
 }

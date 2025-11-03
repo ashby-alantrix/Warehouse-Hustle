@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,21 @@ public class GoodsSet
 
 public class GoodsHandler : MonoBehaviour
 {
-    [SerializeField] private GoodsPlacement currentGoodsPlacer;
-    [SerializeField] private GoodsPlacement nextGoodsPlacer;
+    [SerializeField] private GoodsInputPlatform currentGoodsPlacer;
+    [SerializeField] private GoodsInputPlatform nextGoodsPlacer;
     [SerializeField] private byte minGoods = 2;
     [SerializeField] private byte maxGoods = 12;
 
-    private List<GoodsSet> goodsSet;
+    private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
     private ItemType[] goodsType;
+
+    public GoodsInputPlatform CurrentGoodsPlacer => currentGoodsPlacer;
+    public GoodsInputPlatform NextGoodsPlacer => nextGoodsPlacer;
 
     public void InitGoodsInfo()
     {
         InitGoodsTypes();
-        InitCurrentAndNextGoods(2);
+        InitCurrentAndNextGoods();
     }
 
     private void InitGoodsTypes()
@@ -32,45 +36,80 @@ public class GoodsHandler : MonoBehaviour
 
         for (int index = 0; index < maxElements; index++)
             goodsType[index] = (ItemType)index;
-
-        Debug.Log("Goods type length: " + goodsType.Length);
     }
 
-    public void InitCurrentAndNextGoods(int splitGoodsCount)
+    public void InitCurrentAndNextGoods()
     {
-        Debug.Log("Current Goods Placer");
-        InitGoods(splitGoodsCount);
-        currentGoodsPlacer.InitGoodsView(goodsSet);
+        InitGoods();
+        currentGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        currentGoodsPlacer.PlaceGoods();
 
-        Debug.Log("Next Goods Placer");
-        InitGoods(splitGoodsCount);
-        nextGoodsPlacer.InitGoodsView(goodsSet);
+        InitGoods();
+        nextGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        nextGoodsPlacer.PlaceGoods();
     }
 
-    private void InitGoods(int splitGoodsCount)
+    private void InitGoods()
     {
-        goodsSet = new List<GoodsSet>();
+        lastUpdatedGoodsSet.Clear();
+        CreateGoodsSet();
+    }
 
+    private void CreateGoodsSet()
+    {
         int remCountInSet = (byte)UnityEngine.Random.Range(minGoods, maxGoods);
-        Debug.Log("Serialized GoodsSet remCountInSet: " + remCountInSet);
         while (remCountInSet >= minGoods)
         {
             var goodsSetObj = new GoodsSet();
             goodsSetObj.type = GenerateRandomGoodsType();
-            Debug.Log("Serialized GoodsSet remCountInSet in iteration: " + remCountInSet);
             goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
-            Debug.Log("Serialized GoodsSet goodsSetObj.setCount: " + goodsSetObj.setCount);
 
-            goodsSet.Add(goodsSetObj);
+            lastUpdatedGoodsSet.Add(goodsSetObj);
             remCountInSet -= goodsSetObj.setCount;
         }
+    }
 
-        Debug.Log("Serialized GoodsSet: " + JsonConvert.SerializeObject(goodsSet));
+    public void UpdateGoodsInput()
+    {
+        Debug.Log("### lastUpdatedGoodsSet: " + JsonConvert.SerializeObject(lastUpdatedGoodsSet));
+        currentGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+
+        Debug.Log("### nextGoodsPlacer.GetBaseObjects(): " + nextGoodsPlacer.GetBaseObjects().Count);
+
+        currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()));
+
+        Debug.Log("### currentGoodsPlacer.GetBaseObjects(): " + currentGoodsPlacer.GetBaseObjects().Count);
+
+        TweenNextObjectsToCurrentInputPlatform();
+    }
+
+    private void UpdateNextInputGoods()
+    {
+        Debug.Log($"{name}.UpdateNextInputGoods :: ");
+        InitGoods();
+        nextGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        nextGoodsPlacer.PlaceGoods();
+    }
+
+    public void TweenNextObjectsToCurrentInputPlatform()
+    {
+        int count = currentGoodsPlacer.GetBaseObjectsCount();
+        Tween tween = null;
+
+        for (int index = 0; index < count; index++)
+        {
+            tween = currentGoodsPlacer.GetItemBasedOnIndex(index).transform.DOMove(
+                currentGoodsPlacer.GetSpawnPointTransform(index).position,
+                1f
+            );
+        }
+
+        tween?.OnComplete(() => UpdateNextInputGoods());
     }
 
     private ItemType GenerateRandomGoodsType()
     {
-        return goodsType[UnityEngine.Random.Range(minGoods - 1, goodsType.Length)];
+        return goodsType[UnityEngine.Random.Range(0, goodsType.Length)];
     }
 
     private byte GenerateRandomSetCount(int availCountInSet)

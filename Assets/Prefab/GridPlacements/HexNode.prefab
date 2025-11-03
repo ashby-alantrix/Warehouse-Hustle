@@ -136,6 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8399134138766516548}
   - component: {fileID: 6656865474669023240}
+  - component: {fileID: 4013863411575025640}
   m_Layer: 0
   m_Name: HexNode
   m_TagString: Untagged
@@ -172,8 +173,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4a660fc70ea4f4d98eecd7fdb9bd5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NodePlacements: []
+  m_NodePlacements:
+  - {fileID: 2913386627691581660}
+  - {fileID: 4665207354474382797}
+  - {fileID: 5171573507635841145}
+  - {fileID: 5974232745554254444}
+  - {fileID: 8925785847064873297}
+  - {fileID: 7292748770175614329}
+  - {fileID: 5411567002063822747}
+  - {fileID: 1962694357840791895}
+  - {fileID: 1972662756509963896}
+  - {fileID: 4637642330135438846}
+  - {fileID: 5837527033955694810}
+  - {fileID: 1730023020447340711}
   isNodeOccupied: 0
+--- !u!135 &4013863411575025640
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9206597145249496062}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.45
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1337986957840565127
 PrefabInstance:
   m_ObjectHideFlags: 0

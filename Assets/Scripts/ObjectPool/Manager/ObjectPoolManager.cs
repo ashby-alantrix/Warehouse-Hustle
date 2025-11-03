@@ -29,13 +29,10 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
         {
             if (poolToUse.IsEmpty())
             {
-                // enqueue new objects
-                Debug.Log("Pool to use is empty");
                 objectBase = poolToUse.CreateNewPoolItem();
             }
             else
             {
-                Debug.Log("Dequeuing from Pool to use");
                 objectBase = poolToUse.Dequeue();
             }
         }
