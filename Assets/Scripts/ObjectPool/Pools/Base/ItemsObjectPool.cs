@@ -8,9 +8,11 @@ public class ItemsObjectPool<T> : ObjectPoolBase<T> where T : ItemBase
 
     public override void InitPoolFirstTime()
     {
+        T itemInst = null;
         for (int i = 0; i < initialPoolCount; i++)
         {
-            EnqueueAndReturnItem();
+            itemInst = CreateNewPoolItem();
+            Enqueue(itemInst);
         }
     }
 

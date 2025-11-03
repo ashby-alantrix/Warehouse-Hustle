@@ -12,11 +12,11 @@ public abstract class ObjectPoolBase<T> : MonoBehaviour where T : ItemBase
 
     public abstract void InitPoolFirstTime();
 
-    public ItemBase EnqueueAndReturnItem()
+    public T CreateNewPoolItem()
     {
         T inst = Instantiate(prefabInst);
-        inst.gameObject.SetActive(false);
-        Enqueue(inst);
+        inst.gameObject.SetActive(false); // enqueue these objects later
+        // Enqueue(inst);
 
         return inst;
     }

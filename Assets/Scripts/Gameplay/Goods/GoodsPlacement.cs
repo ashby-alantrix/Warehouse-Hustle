@@ -1,10 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GoodsPlacement : MonoBehaviour
 {
+    [SerializeField] private Transform goodsParent;
     [SerializeField] private Transform[] spawnPoints;
 
-    private GoodsSet[] m_GoodsSet = null;
+    private List<GoodsSet> m_GoodsSet = null;
 
     private ObjectPoolManager objectPoolManager = null;
 
@@ -16,15 +18,19 @@ public class GoodsPlacement : MonoBehaviour
 
         if (objectPoolManager != null)
         {
-            for (int i = 0; i < m_GoodsSet.Length; i++)
+            for (int i = 0; i < m_GoodsSet.Count; i++)
             {
                 for (int j = 0; j < m_GoodsSet[i].setCount; j++)
                 {
                     ItemBase baseObj = objectPoolManager.GetObjectFromPool(m_GoodsSet[i].type);
                     if (spawnPointIndex < spawnPoints.Length)
                     {
-                        baseObj.transform.position = spawnPoints[spawnPointIndex++].position;
+                        baseObj.name = baseObj.name + " " + spawnPointIndex;
+                        baseObj.transform.position = spawnPoints[spawnPointIndex].position;
+                        Debug.Log("### spawnPointIndex: " + spawnPointIndex + ", pos: " + baseObj.transform.position + " objName: " + baseObj.transform.name);
                         baseObj.transform.gameObject.SetActive(true);
+                        baseObj.transform.parent = goodsParent;
+                        spawnPointIndex++;
                     }
                     else
                     {
@@ -39,7 +45,7 @@ public class GoodsPlacement : MonoBehaviour
         }
     }
 
-    public void InitGoodsView(GoodsSet[] goodsSet)
+    public void InitGoodsView(List<GoodsSet> goodsSet)
     {
         this.m_GoodsSet = goodsSet;
 
