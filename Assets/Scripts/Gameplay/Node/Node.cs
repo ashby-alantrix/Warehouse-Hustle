@@ -9,32 +9,32 @@ public class Node : MonoBehaviour
 
     private NodePlacementData[] m_NodePlacementDatas;
     private List<Vector3> m_NeighborsHexOffsets = new List<Vector3>();
+    private List<ItemBase> itemBases = new List<ItemBase>();
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
+
     private NodeManager m_NodeManager;
+    private GoodsManager m_GoodsManager;
 
     public void InitNodeManager(NodeManager nodeManager)
     {
         m_NodeManager = nodeManager;
     }
 
+    public void InitItemBases()
+    {
+        m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
+        itemBases = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
+    }
+
+    public int GetItemBaseCount() => itemBases.Count;
+
+    public ItemBase GetItemBase(int index) => itemBases[index];
+
     public void AddNeighborsData(Vector3 hexOffset)
     {
         m_NeighborsHexOffsets.Add(hexOffset);
-    }
-
-    private void Awake()
-    {
-        m_NodePlacementLength = m_NodePlacements.Length;
-        m_NodePlacementDatas = new NodePlacementData[m_NodePlacementLength];
-
-        for (int i = 0; i < m_NodePlacementLength; i++)
-        {
-            m_NodePlacementDatas[i] = new NodePlacementData();
-            m_NodePlacementDatas[i].isOccupied = false;
-            m_NodePlacementDatas[i].transform = m_NodePlacements[i];
-        }
     }
 
     public NodePlacementData RetrieveNodePlacementData(int index)
@@ -49,6 +49,19 @@ public class Node : MonoBehaviour
         {
             isNodeOccupied = true;
             m_NodeManager.OnNodeClicked(this);
+        }
+    }
+
+    private void Awake()
+    {
+        m_NodePlacementLength = m_NodePlacements.Length;
+        m_NodePlacementDatas = new NodePlacementData[m_NodePlacementLength];
+
+        for (int i = 0; i < m_NodePlacementLength; i++)
+        {
+            m_NodePlacementDatas[i] = new NodePlacementData();
+            m_NodePlacementDatas[i].isOccupied = false;
+            m_NodePlacementDatas[i].transform = m_NodePlacements[i];
         }
     }
 }

@@ -75,11 +75,9 @@ public class GoodsHandler : MonoBehaviour
         currentGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
 
         Debug.Log("### nextGoodsPlacer.GetBaseObjects(): " + nextGoodsPlacer.GetBaseObjects().Count);
-
         currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()));
 
         Debug.Log("### currentGoodsPlacer.GetBaseObjects(): " + currentGoodsPlacer.GetBaseObjects().Count);
-
         TweenNextObjectsToCurrentInputPlatform();
     }
 
@@ -94,17 +92,17 @@ public class GoodsHandler : MonoBehaviour
     public void TweenNextObjectsToCurrentInputPlatform()
     {
         int count = currentGoodsPlacer.GetBaseObjectsCount();
-        Tween tween = null;
+        Tween inputPlatformTween = null;
 
         for (int index = 0; index < count; index++)
         {
-            tween = currentGoodsPlacer.GetItemBasedOnIndex(index).transform.DOMove(
+            inputPlatformTween = currentGoodsPlacer.GetItemBasedOnIndex(index).transform.DOMove(
                 currentGoodsPlacer.GetSpawnPointTransform(index).position,
                 1f
             );
         }
 
-        tween?.OnComplete(() => UpdateNextInputGoods());
+        inputPlatformTween?.OnComplete(() => UpdateNextInputGoods());
     }
 
     private ItemType GenerateRandomGoodsType()

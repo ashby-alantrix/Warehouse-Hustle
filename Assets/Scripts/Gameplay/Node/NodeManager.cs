@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class NodeManager : MonoBehaviour
 {
-    private GoodsManager m_GoodsManager;
-    private GoodsPlacementManager m_GoodsPlacementManager;
-    
     [SerializeField] private HexData[] m_HexDatas;
 
+    private GoodsManager m_GoodsManager;
+    private GoodsPlacementManager m_GoodsPlacementManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
     public void AddNodeInstance(GameObject instance)
@@ -17,7 +16,7 @@ public class NodeManager : MonoBehaviour
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
     }
 
-    public void InitNeighboursToNodes()
+    public void InitNeighborsToNodes()
     {
         Vector3 tempHexOffset = Vector3.zero;
         Vector3 addedHexOffset = Vector3.zero;
@@ -44,10 +43,20 @@ public class NodeManager : MonoBehaviour
 
     public void OnNodeClicked(Node selectedNode)
     {
-        m_GoodsPlacementManager = m_GoodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : m_GoodsPlacementManager;
+        SetGoodsPlacementManager();
         m_GoodsPlacementManager.PlaceGoodsOnNode(selectedNode);
 
-        m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
+        SetGoodsManager();
         m_GoodsManager.GoodsHandler.UpdateGoodsInput();
+    }
+
+    private void SetGoodsPlacementManager()
+    {
+        m_GoodsPlacementManager = m_GoodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : m_GoodsPlacementManager;
+    }
+
+    private void SetGoodsManager()
+    {
+        m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
     }
 }

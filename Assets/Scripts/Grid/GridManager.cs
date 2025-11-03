@@ -50,7 +50,7 @@ public class GridManager : MonoBehaviour
             m_RowPosition += nodeOffset;
         }
 
-        m_NodeManager.InitNeighboursToNodes();
+        m_NodeManager.InitNeighborsToNodes();
     }
 
     void GenerateGrid()
