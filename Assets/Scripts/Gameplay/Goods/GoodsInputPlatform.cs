@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
 public class GoodsInputPlatform : MonoBehaviour
@@ -15,6 +14,11 @@ public class GoodsInputPlatform : MonoBehaviour
     public int GetBaseObjectsCount()
     {
         return baseObjects.Count;
+    }
+
+    public List<GoodsSet> GetGoodsDataSet()
+    {
+        return m_GoodsDataSet;
     }
 
     public List<ItemBase> GetBaseObjects()

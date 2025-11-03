@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -14,7 +12,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
     public void PlaceGoodsOnNode(Node selectedNode)
     {
-        selectedNode.InitItemBases();
+        selectedNode.InitItemsData();
         NodePlacementData nodePlacementData = null;
 
         for (int index = 0; index < selectedNode.GetItemBaseCount(); index++)

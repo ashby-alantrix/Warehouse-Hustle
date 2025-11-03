@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,12 +5,14 @@ public class Node : MonoBehaviour
 {
     [SerializeField] private Transform[] m_NodePlacements;
 
-    private NodePlacementData[] m_NodePlacementDatas;
-    private List<Vector3> m_NeighborsHexOffsets = new List<Vector3>();
-    private List<ItemBase> itemBases = new List<ItemBase>();
-
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
+
+    private NodePlacementData[] m_NodePlacementDatas;
+    private List<ItemBase> itemBases = new List<ItemBase>();
+    private List<Vector3> m_NeighborsHexOffsets = new List<Vector3>();
+
+    private Dictionary<ItemType, int> setsDict = new Dictionary<ItemType, int>();
 
     private NodeManager m_NodeManager;
     private GoodsManager m_GoodsManager;
@@ -22,10 +22,29 @@ public class Node : MonoBehaviour
         m_NodeManager = nodeManager;
     }
 
-    public void InitItemBases()
+    public void InitItemsData()
     {
         m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
         itemBases = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
+
+        var goodsDataSet = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
+        foreach (var data in goodsDataSet)
+        {
+            if (!setsDict.ContainsKey(data.type))
+                setsDict.Add(data.type, data.setCount);
+            else 
+                setsDict[data.type] = data.setCount;
+        }
+    }
+
+    public void AddItemBases()
+    {
+
+    }
+    
+    public void RemoveItemBases()
+    {
+        
     }
 
     public int GetItemBaseCount() => itemBases.Count;
