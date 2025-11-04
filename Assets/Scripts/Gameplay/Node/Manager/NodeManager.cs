@@ -55,6 +55,10 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void OnNodeClicked(Node selectedNode)
     {
         SetGoodsPlacementManager();
+        if (!goodsPlacementManager.CanPlaceGoods) return;
+
+        selectedNode.SetNodeOccupiedState(true);
+        
         goodsPlacementManager.PlaceGoodsInsideNode(selectedNode);
 
         SetGoodsManager();

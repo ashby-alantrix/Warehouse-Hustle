@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class Node : MonoBehaviour
 {
@@ -56,6 +57,9 @@ public class Node : MonoBehaviour
         goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;
 
         var itemBaseObjects = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
+
+        Debug.Log($"### Test1: {itemBaseObjects.Count}");
+
         foreach (var baseObj in itemBaseObjects)
         {
             if (!itemBasesCollection.ContainsKey(baseObj.ItemType))
@@ -63,6 +67,11 @@ public class Node : MonoBehaviour
             else
                 itemBasesCollection[baseObj.ItemType].Add(baseObj);
         } 
+
+        foreach (var itemBase in itemBasesCollection)
+        {
+            Debug.Log($"### Test2: {itemBase.Key}, {itemBase.Value.Count}");
+        }
 
         var goodsDataSet = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
         foreach (var data in goodsDataSet)
@@ -103,7 +112,10 @@ public class Node : MonoBehaviour
     {
         int itemBaseCount = 0;
         foreach (var data in itemBasesCollection)
+        {
+            Debug.Log($"data.Key: {data.Key}, data.Value.Count: {data.Value.Count}");
             itemBaseCount += data.Value.Count;
+        }
 
         return itemBaseCount;
     }
@@ -148,14 +160,18 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Debug.Log("OnMouseDown");
+        Debug.Log($"Test3: {transform.position} :: isNodeOccupied: {isNodeOccupied}");
         if (!isNodeOccupied) // game's not over
         {
-            isNodeOccupied = true;
             nodeManager.OnNodeClicked(this);
         }
     }
 
+    public void SetNodeOccupiedState(bool state)
+    {
+        isNodeOccupied = state;
+    }
+    
     private void Awake()
     {
         m_NodePlacementLength = m_NodePlacements.Length;
