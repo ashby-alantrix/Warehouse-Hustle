@@ -6,7 +6,7 @@ public class GoodsInputPlatform : MonoBehaviour
     [SerializeField] private Transform goodsParent;
     [SerializeField] private Transform[] spawnPoints;
 
-    private List<GoodsSet> m_GoodsDataSet = null;
+    private List<GoodsSet> goodsDataSet = null;
     private List<ItemBase> baseObjects = new List<ItemBase>();
 
     private ObjectPoolManager objectPoolManager = null;
@@ -18,7 +18,7 @@ public class GoodsInputPlatform : MonoBehaviour
 
     public List<GoodsSet> GetGoodsDataSet()
     {
-        return m_GoodsDataSet;
+        return goodsDataSet;
     }
 
     public List<ItemBase> GetBaseObjects()
@@ -43,11 +43,11 @@ public class GoodsInputPlatform : MonoBehaviour
 
         if (objectPoolManager != null)
         {
-            for (int i = 0; i < m_GoodsDataSet.Count; i++)
+            for (int i = 0; i < goodsDataSet.Count; i++)
             {
-                for (int j = 0; j < m_GoodsDataSet[i].setCount; j++)
+                for (int j = 0; j < goodsDataSet[i].setCount; j++)
                 {
-                    baseObj = objectPoolManager.GetObjectFromPool(m_GoodsDataSet[i].type);
+                    baseObj = objectPoolManager.GetObjectFromPool(goodsDataSet[i].type);
                     if (spawnPointIndex < spawnPoints.Length)
                     {
                         SetBaseObjectProps();
@@ -87,6 +87,8 @@ public class GoodsInputPlatform : MonoBehaviour
     
     public void InitGoodsView(List<GoodsSet> goodsSet)
     {
-        this.m_GoodsDataSet = goodsSet;
+        Debug.Log($"### InitGoodsView: {goodsSet.Count}");
+        // this.goodsDataSet.Clear();
+        this.goodsDataSet = goodsSet;
     }
 }

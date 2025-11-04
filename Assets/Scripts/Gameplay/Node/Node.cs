@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 
 public class Node : MonoBehaviour
@@ -10,7 +11,7 @@ public class Node : MonoBehaviour
 
     private NodePlacementData[] m_NodePlacementDatas;
     private List<ItemBase> itemBases = new List<ItemBase>();
-    private List<Vector3> m_NeighborsHexOffsets = new List<Vector3>();
+    private List<Vector3> neighborsHexOffsets = new List<Vector3>();
 
     private Dictionary<ItemType, int> setsDict = new Dictionary<ItemType, int>();
 
@@ -26,26 +27,47 @@ public class Node : MonoBehaviour
     {
         m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
         itemBases = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
+        Debug.Log($"### CurrentGoodsPlacer.GetBaseObjects().Count: {itemBases.Count}");
 
         var goodsDataSet = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
         foreach (var data in goodsDataSet)
         {
-            if (!setsDict.ContainsKey(data.type))
-                setsDict.Add(data.type, data.setCount);
-            else 
-                setsDict[data.type] = data.setCount;
+            AddItemsDataToNode(data.type, data.setCount);
+            Debug.Log($"### data.type: {data.type}, data.setCount: {data.setCount}");
+        }
+
+        // Debug.Log($"### NodePos: {this.transform.position}");
+    }
+
+    #region NODE_DATA_UPDATION
+    public void AddItemsDataToNode(ItemType itemType, int itemsToAddCount)
+    {
+        if (!setsDict.ContainsKey(itemType))
+            setsDict.Add(itemType, itemsToAddCount);
+        else
+            setsDict[itemType] += itemsToAddCount;
+    }
+
+    // Remove the respective 
+    public void RemoveItemsDataFromNode(ItemType itemType, int itemsToRemoveCount)
+    {
+        if (setsDict.ContainsKey(itemType))
+        {
+            int availCount = setsDict[itemType];
+            if (availCount > itemsToRemoveCount)
+            {
+                availCount -= itemsToRemoveCount;
+                setsDict[itemType] = availCount;
+            }
+            else //if (availCount == itemsToRemoveCount)
+            {
+                // TODO :: double check condition
+                Debug.Log($"### Removing item type :: availCount: {availCount}, itemsToRemoveCount: {itemsToRemoveCount}");
+                setsDict.Remove(itemType);
+            }
         }
     }
-
-    public void AddItemBases()
-    {
-
-    }
-    
-    public void RemoveItemBases()
-    {
-        
-    }
+    #endregion
 
     public int GetItemBaseCount() => itemBases.Count;
 
@@ -53,7 +75,7 @@ public class Node : MonoBehaviour
 
     public void AddNeighborsData(Vector3 hexOffset)
     {
-        m_NeighborsHexOffsets.Add(hexOffset);
+        neighborsHexOffsets.Add(hexOffset);
     }
 
     public NodePlacementData RetrieveNodePlacementData(int index)

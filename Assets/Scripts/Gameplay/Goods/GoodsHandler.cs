@@ -40,11 +40,11 @@ public class GoodsHandler : MonoBehaviour
     public void InitCurrentAndNextGoods()
     {
         InitGoods();
-        currentGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
         currentGoodsPlacer.PlaceGoods();
 
         InitGoods();
-        nextGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        nextGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
         nextGoodsPlacer.PlaceGoods();
     }
 
@@ -71,7 +71,7 @@ public class GoodsHandler : MonoBehaviour
     public void UpdateGoodsInput()
     {
         Debug.Log("### lastUpdatedGoodsSet: " + JsonConvert.SerializeObject(lastUpdatedGoodsSet));
-        currentGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
 
         Debug.Log("### nextGoodsPlacer.GetBaseObjects(): " + nextGoodsPlacer.GetBaseObjects().Count);
         currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()));
@@ -84,7 +84,7 @@ public class GoodsHandler : MonoBehaviour
     {
         Debug.Log($"{name}.UpdateNextInputGoods :: ");
         InitGoods();
-        nextGoodsPlacer.InitGoodsView(lastUpdatedGoodsSet);
+        nextGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
         nextGoodsPlacer.PlaceGoods();
     }
 
