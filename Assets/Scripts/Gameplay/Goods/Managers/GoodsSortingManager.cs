@@ -11,8 +11,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         InterfaceManager.Instance?.RegisterInterface<GoodsSortingManager>(this);
     }
 
-    public void CheckNeibhours(Node selectedNode)
+    public void CheckNeighbors(Node selectedNode)
     {
+        Debug.Log($"### Test4 CheckNeighbors");
         SetGoodsPlacementManager();
         var goodsSetDict = selectedNode.GetSetDict();
 
@@ -24,31 +25,34 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private void ExploreNeighbors(Node selectedNode, ItemType itemType)
     {
+        Debug.Log($"### Test4 ExploreNeighbors");
+
         int neighborsCount = selectedNode.GetNeighborsCount();
         int availSlots = 0;
         for (int index = 0; index < neighborsCount; index++)
         {
-            if (nodeManager.IsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode))
+            if (nodeManager.IsNeighborsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode))
             {
-                if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsInNeighbor))
+                Debug.Log($"### Test4 IsNeighborNodeAvailable: {neighborNode}");
+                if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsCountInNeighbor))
                 {
+                    Debug.Log($"### Test4 DoesNeighborHaveSimilarItem: {itemType}");
                     // move the nodes to the neighbor: (use a recursion based approach)
                     //  -> case 1: if there are slots already available in the current node then take 
                     //             the matching nodes and move them to current node followed by 
                     //             sorting/refreshing the neighboring node and the current node
                     //  -> case 2: if there are no slots available, check the neighbor's neighbors to see if there are matching items (using recursion)
 
-                    if (selectedNode.HasEmptySlots(out availSlots) && itemsInNeighbor <= availSlots)
+                    if (selectedNode.HasEmptySlots(out availSlots) && itemsCountInNeighbor <= availSlots)
                     {
+                        Debug.Log("### Test4 HasEmptySlots");
                         // update datas:
                         //  -> update the goods data set in both nodes ||
                         //  -> update the goods items collection in both nodes 
                         // change the occupied props
 
-                        neighborNode.RemoveItemsDataFromNode(itemType, itemsInNeighbor);
-                        selectedNode.AddItemsDataToNode(itemType, itemsInNeighbor);
-
-                        
+                        neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
+                        selectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
 
                         goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, selectedNode, neighborNode);
                     }

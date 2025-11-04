@@ -14,7 +14,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
     }
 
-    public bool IsNodeAvailable(string pos, out Node node)
+    public bool IsNeighborsNodeAvailable(string pos, out Node node)
     {
         node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
         return nodesData.ContainsKey(pos);
