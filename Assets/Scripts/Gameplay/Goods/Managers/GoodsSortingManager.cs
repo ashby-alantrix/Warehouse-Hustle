@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
@@ -25,13 +26,14 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private void ExploreNeighbors(Node selectedNode, ItemType itemType)
     {
-        Debug.Log($"### Test4 ExploreNeighbors");
-
         int neighborsCount = selectedNode.GetNeighborsCount();
+        Debug.Log($"### Test4 ExploreNeighbors: " + neighborsCount);
+
         int availSlots = 0;
         for (int index = 0; index < neighborsCount; index++)
         {
-            if (nodeManager.IsNeighborsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode))
+            var isNeighborsNodeAvailable = nodeManager.IsNeighborsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
+            if (isNeighborsNodeAvailable)
             {
                 Debug.Log($"### Test4 IsNeighborNodeAvailable: {neighborNode}");
                 if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsCountInNeighbor))
