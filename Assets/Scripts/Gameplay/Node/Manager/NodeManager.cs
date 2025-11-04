@@ -44,10 +44,10 @@ public class NodeManager : MonoBehaviour
     public void OnNodeClicked(Node selectedNode)
     {
         SetGoodsPlacementManager();
-        m_GoodsPlacementManager.PlaceGoodsOnNode(selectedNode);
+        m_GoodsPlacementManager.PlaceGoodsInsideNode(selectedNode);
 
         SetGoodsManager();
-        m_GoodsManager.GoodsHandler.UpdateGoodsInput();
+        m_GoodsManager.GoodsHandler.UpdateGoodsInputPlatform();
     }
 
     private void SetGoodsPlacementManager()

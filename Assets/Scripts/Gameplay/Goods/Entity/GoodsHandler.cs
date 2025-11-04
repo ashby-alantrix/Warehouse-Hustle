@@ -16,8 +16,8 @@ public class GoodsHandler : MonoBehaviour
     [SerializeField] private byte minGoods = 2;
     [SerializeField] private byte maxGoods = 12;
 
-    private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
     private ItemType[] goodsType;
+    private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
 
     public GoodsInputPlatform CurrentGoodsPlacer => currentGoodsPlacer;
     public GoodsInputPlatform NextGoodsPlacer => nextGoodsPlacer;
@@ -68,7 +68,7 @@ public class GoodsHandler : MonoBehaviour
         }
     }
 
-    public void UpdateGoodsInput()
+    public void UpdateGoodsInputPlatform()
     {
         Debug.Log("### lastUpdatedGoodsSet: " + JsonConvert.SerializeObject(lastUpdatedGoodsSet));
         currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
