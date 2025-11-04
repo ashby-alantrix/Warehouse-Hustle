@@ -137,6 +137,11 @@ public class Node : MonoBehaviour
 
     public List<ItemBase> GetSpecificItems(ItemType itemType)
     {
+        Debug.Log($"Test5: GetSpecificItems :: {itemType}");
+
+        foreach (var data in itemBasesCollection)
+            Debug.Log($"data: {data.Key}, data.Value: {data.Value.Count}");
+
         return itemBasesCollection[itemType];
         // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
     }

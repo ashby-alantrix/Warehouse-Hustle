@@ -60,12 +60,23 @@ public class GoodsHandler : MonoBehaviour
         while (remCountInSet >= minGoods)
         {
             var goodsSetObj = new GoodsSet();
-            goodsSetObj.type = GenerateRandomGoodsType();
-            goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
+            UseTestData(ref goodsSetObj);
+            //goodsSetObj.type = GenerateRandomGoodsType();
+            //goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
 
             lastUpdatedGoodsSet.Add(goodsSetObj);
             remCountInSet -= goodsSetObj.setCount;
         }
+    }
+
+    private int testGoodTypeIndex = 0;
+
+    public void UseTestData(ref GoodsSet goodsSetObj)
+    {
+        goodsSetObj.type = goodsType[testGoodTypeIndex];
+        goodsSetObj.setCount = 4;
+
+        testGoodTypeIndex = testGoodTypeIndex == 0 ? 1 : 0;
     }
 
     public void UpdateGoodsInputPlatform()

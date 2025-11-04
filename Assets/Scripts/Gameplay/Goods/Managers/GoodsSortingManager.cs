@@ -15,9 +15,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     public void CheckNeighbors(Node selectedNode)
     {
         Debug.Log($"### Test4 CheckNeighbors");
+        SetNodeManager();
         SetGoodsPlacementManager();
         var goodsSetDict = selectedNode.GetSetDict();
 
+        Debug.Log($"goodsSetDict : {goodsSetDict.Count}");
         foreach (var set in goodsSetDict) // 3 goods
         {
             ExploreNeighbors(selectedNode, set.Key);
@@ -32,13 +34,14 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         int availSlots = 0;
         for (int index = 0; index < neighborsCount; index++)
         {
+            SetNodeManager();
             var isNeighborsNodeAvailable = nodeManager.IsNeighborsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
             if (isNeighborsNodeAvailable)
             {
                 Debug.Log($"### Test4 IsNeighborNodeAvailable: {neighborNode}");
                 if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsCountInNeighbor))
                 {
-                    Debug.Log($"### Test4 DoesNeighborHaveSimilarItem: {itemType}");
+                    Debug.Log($"### Test4 DoesNeighborHaveSimilarItem: {itemType}, itemsCountInNeighbor: {itemsCountInNeighbor}");
                     // move the nodes to the neighbor: (use a recursion based approach)
                     //  -> case 1: if there are slots already available in the current node then take 
                     //             the matching nodes and move them to current node followed by 
@@ -47,7 +50,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
                     if (selectedNode.HasEmptySlots(out availSlots) && itemsCountInNeighbor <= availSlots)
                     {
-                        Debug.Log("### Test4 HasEmptySlots");
+                        Debug.Log($"### Test4 HasEmptySlots: availSlots: {availSlots}");
                         // update datas:
                         //  -> update the goods data set in both nodes ||
                         //  -> update the goods items collection in both nodes 
