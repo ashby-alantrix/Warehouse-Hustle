@@ -1,13 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeManager : MonoBehaviour
+public class NodeManager : MonoBehaviour, IBase, IBootLoader
 {
     [SerializeField] private HexData[] m_HexDatas;
+    [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 
     private GoodsManager m_GoodsManager;
-    private GoodsPlacementManager m_GoodsPlacementManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
+
+    public void Initialize()
+    {
+        InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
+    }
+
+    public bool IsNodeAvailable(string pos, out Node node)
+    {
+        node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
+        return nodesData.ContainsKey(pos);
+    }
 
     public void AddNodeInstance(GameObject instance)
     {
@@ -44,7 +55,7 @@ public class NodeManager : MonoBehaviour
     public void OnNodeClicked(Node selectedNode)
     {
         SetGoodsPlacementManager();
-        m_GoodsPlacementManager.PlaceGoodsInsideNode(selectedNode);
+        goodsPlacementManager.PlaceGoodsInsideNode(selectedNode);
 
         SetGoodsManager();
         m_GoodsManager.GoodsHandler.UpdateGoodsInputPlatform();
@@ -52,7 +63,7 @@ public class NodeManager : MonoBehaviour
 
     private void SetGoodsPlacementManager()
     {
-        m_GoodsPlacementManager = m_GoodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : m_GoodsPlacementManager;
+        goodsPlacementManager = goodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : goodsPlacementManager;
     }
 
     private void SetGoodsManager()

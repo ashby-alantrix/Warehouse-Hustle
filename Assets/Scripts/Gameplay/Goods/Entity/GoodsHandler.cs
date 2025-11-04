@@ -70,13 +70,10 @@ public class GoodsHandler : MonoBehaviour
 
     public void UpdateGoodsInputPlatform()
     {
-        Debug.Log("### lastUpdatedGoodsSet: " + JsonConvert.SerializeObject(lastUpdatedGoodsSet));
         currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
 
-        Debug.Log("### nextGoodsPlacer.GetBaseObjects(): " + nextGoodsPlacer.GetBaseObjects().Count);
         currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()));
 
-        Debug.Log("### currentGoodsPlacer.GetBaseObjects(): " + currentGoodsPlacer.GetBaseObjects().Count);
         TweenNextObjectsToCurrentInputPlatform();
     }
 
