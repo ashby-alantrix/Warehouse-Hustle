@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public interface IBootLoader
@@ -12,6 +13,9 @@ public class BootLoader : MonoBehaviour
 
     private void Start()
     {
+        DG.Tweening.DOTween.useSafeMode = false;
+        DG.Tweening.DOTween.logBehaviour = LogBehaviour.ErrorsOnly;
+        
         InterfaceManager.InitInstance();
 
         foreach (GameObject bootloader in baseObjects)
