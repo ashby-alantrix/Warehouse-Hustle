@@ -126,11 +126,6 @@ public class Node : MonoBehaviour
 
     public ItemBase RemoveFromItemBasesCollection(ItemType itemType)
     {
-        foreach (var itemBase in itemBasesCollection)
-        {
-            Debug.Log($"Test7: {itemBase.Key}, count: {itemBase.Value.Count}");
-        }
-
         ItemBase itemToRemove = itemBasesCollection[itemType][0];
         itemBasesCollection[itemType].RemoveAt(0);
 

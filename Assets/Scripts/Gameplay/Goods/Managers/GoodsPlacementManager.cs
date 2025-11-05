@@ -59,8 +59,9 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         var totalSlots = selectedNode.GetTotalSlotsInNode();
 
         Debug.Log($"Test 11: itemBases: {itemBases.Count}");
+        Debug.Log($"Test 11: itemType: {itemType}");
 
-        for (int indexJ = itemBaseCount; indexJ < totalSlots; indexJ++)
+        for (int indexJ = itemBaseCount; indexJ < itemBaseCount + itemBases.Count; indexJ++)
         {
             NodePlacementData nodePlacementData = selectedNode.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied)
