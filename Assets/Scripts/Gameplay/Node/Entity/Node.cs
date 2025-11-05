@@ -18,14 +18,16 @@ public class Node : MonoBehaviour
     private List<Vector3> neighborsHexOffsets = new List<Vector3>();
 
     private Dictionary<ItemType, int> goodsSetDict = new Dictionary<ItemType, int>();
-    private Dictionary<ItemType, List<ItemBase>>  itemBasesCollection = new Dictionary<ItemType, List<ItemBase>>();
+    private Dictionary<ItemType, List<ItemBase>> itemBasesCollection = new Dictionary<ItemType, List<ItemBase>>();
+
+    public Dictionary<ItemType, List<ItemBase>> ItemBasesCollection => itemBasesCollection;
 
     private NodeManager nodeManager;
     private GoodsManager goodsManager;
 
     public int GetItemTypeCount() => goodsSetDict.Count;
 
-    public int GetTotalSlotsInNode => totalSlotsInNode;
+    public int GetTotalSlotsInNode() => totalSlotsInNode;
 
     public bool HasEmptySlots(out int availSlots)
     {
@@ -41,6 +43,11 @@ public class Node : MonoBehaviour
 
     public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;
 
+    public List<ItemType> GetSetKeys()
+    {
+        return goodsSetDict.Keys.ToList();
+    }
+    
     public void InitNodeManager(NodeManager nodeManager)
     {
         this.nodeManager = nodeManager;
@@ -49,6 +56,8 @@ public class Node : MonoBehaviour
     public bool DoesNeighborHaveSimilarItem(ItemType itemType, out int goodsCount)
     {
         goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+        Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
+
         return goodsSetDict.ContainsKey(itemType);
     }
 
@@ -57,21 +66,18 @@ public class Node : MonoBehaviour
         goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;
 
         var itemBaseObjects = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
-
-        Debug.Log($"### Test1: {itemBaseObjects.Count}");
-
         foreach (var baseObj in itemBaseObjects)
-        {
-            if (!itemBasesCollection.ContainsKey(baseObj.ItemType))
-                itemBasesCollection.Add(baseObj.ItemType, new List<ItemBase>() { baseObj });
-            else
-                itemBasesCollection[baseObj.ItemType].Add(baseObj);
-        } 
+            AddToItemBasesCollection(baseObj);
 
-        foreach (var itemBase in itemBasesCollection)
-        {
-            Debug.Log($"### Test2: {itemBase.Key}, {itemBase.Value.Count}");
-        }
+        // foreach (var item in itemBaseObjects)
+        // {
+        //     Debug.Log($"### Test 9: item.Type: {item.ItemType}, item.Value: {item}");
+        // }
+
+        // foreach (var item in itemBasesCollection)
+        // {
+        //     Debug.Log($"### Test 10: item.Type: {item.Key}, item.Value: {item.Value.Count}");
+        // }
 
         var goodsDataSet = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
         foreach (var data in goodsDataSet)
@@ -108,14 +114,36 @@ public class Node : MonoBehaviour
     }
     #endregion
 
+    #region ITEMS_BASE_UPDATION
+
+    public void AddToItemBasesCollection(ItemBase baseObj)
+    {
+        if (!itemBasesCollection.ContainsKey(baseObj.ItemType))
+            itemBasesCollection.Add(baseObj.ItemType, new List<ItemBase>() { baseObj });
+        else
+            itemBasesCollection[baseObj.ItemType].Add(baseObj);
+    }
+
+    public ItemBase RemoveFromItemBasesCollection(ItemType itemType)
+    {
+        foreach (var itemBase in itemBasesCollection)
+        {
+            Debug.Log($"Test7: {itemBase.Key}, count: {itemBase.Value.Count}");
+        }
+
+        ItemBase itemToRemove = itemBasesCollection[itemType][0];
+        itemBasesCollection[itemType].RemoveAt(0);
+
+        return itemToRemove;
+    }
+
+    #endregion
+
     public int GetItemBaseCount()
     {
         int itemBaseCount = 0;
         foreach (var data in itemBasesCollection)
-        {
-            Debug.Log($"data.Key: {data.Key}, data.Value.Count: {data.Value.Count}");
             itemBaseCount += data.Value.Count;
-        }
 
         return itemBaseCount;
     }
@@ -137,16 +165,30 @@ public class Node : MonoBehaviour
 
     public List<ItemBase> GetSpecificItems(ItemType itemType)
     {
-        Debug.Log($"Test5: GetSpecificItems :: {itemType}");
+        try
+        {
+            Debug.Log($"Test5: GetSpecificItems :: {itemType}");
+            Debug.Log($"Test5: GetItemBaseCount :: {GetItemBaseCount()}");
 
-        foreach (var data in itemBasesCollection)
-            Debug.Log($"data: {data.Key}, data.Value: {data.Value.Count}");
+            foreach (var data in itemBasesCollection)
+                Debug.Log($"data: {data.Key}, data.Value: {data.Value.Count}");
 
-        return itemBasesCollection[itemType];
-        // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
+            Debug.Log($"itemBasesCollection[itemType]: {itemBasesCollection.ContainsKey(itemType)}, itemType: {itemType}");
+            return itemBasesCollection[itemType];
+            // return itemBasesCollection.ContainsKey(itemType) ? itemBasesCollection[itemType] : new List<ItemBase>();
+            // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Caught exception: " + ex.Message);
+        }
+
+        return new List<ItemBase>();
     }
 
     public int GetNeighborsCount() => neighborsHexOffsets.Count;
+
+    public int GetNeighborHexOffsetLength() => neighborsHexOffsets.Count;
 
     public Vector3 GetNeighborHexOffset(int index)
     {
@@ -165,7 +207,6 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Debug.Log($"Test3: {transform.position} :: isNodeOccupied: {isNodeOccupied}");
         if (!isNodeOccupied) // game's not over
         {
             nodeManager.OnNodeClicked(this);

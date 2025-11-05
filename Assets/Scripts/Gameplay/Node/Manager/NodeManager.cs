@@ -14,7 +14,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
     }
 
-    public bool IsNeighborsNodeAvailable(string pos, out Node node)
+    public bool IsNeighborNodeAvailableInGrid(string pos, out Node node)
     {
         Debug.Log($"### test4 node: IsNeighborsNodeAvailable");
         node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
@@ -47,7 +47,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
                 addedHexOffset = node.transform.position + tempHexOffset;
 
                 // check if node is available at the addedHexOffset position
-                if (nodesData.ContainsKey(addedHexOffset.ToString()))
+                if (nodesData.ContainsKey(addedHexOffset.ToString())) // to only the add the nodes that are present in the grid, blocked ones aren't added
                 {
                     node.AddNeighborsData(addedHexOffset);
                 }

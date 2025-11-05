@@ -1,5 +1,6 @@
-using DG.Tweening;
-using Unity.VisualScripting;
+using System;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
@@ -17,13 +18,21 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         Debug.Log($"### Test4 CheckNeighbors");
         SetNodeManager();
         SetGoodsPlacementManager();
-        var goodsSetDict = selectedNode.GetSetDict();
+        var setKeys = selectedNode.GetSetKeys();
 
-        Debug.Log($"goodsSetDict : {goodsSetDict.Count}");
-        foreach (var set in goodsSetDict) // 3 goods
-        {
-            ExploreNeighbors(selectedNode, set.Key);
-        }
+        // try
+        // {
+            Debug.Log($"### Test6 :: SetKeys Count: {setKeys}");
+            foreach (var key in setKeys)
+            {
+                Debug.Log($"### Test6 :: (ItemType)key: {(ItemType)key}");
+                ExploreNeighbors(selectedNode, (ItemType)key);
+            }
+        // }
+        // catch (Exception ex)
+        // {
+        //     Debug.LogError($"Caught exception: {ex.Message}");
+        // }
     }
 
     private void ExploreNeighbors(Node selectedNode, ItemType itemType)
@@ -34,11 +43,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         int availSlots = 0;
         for (int index = 0; index < neighborsCount; index++)
         {
+            // Debug.Log($"### Test4: Neighbor index: " + index);
             SetNodeManager();
-            var isNeighborsNodeAvailable = nodeManager.IsNeighborsNodeAvailable(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
+
+            // Debug.Log($"### Test4 GetNeighborHexOffsetLength: {selectedNode.GetNeighborHexOffsetLength()}");
+
+            var isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
+            Debug.Log($"### Test4: isNeighborsNodeAvailable: {isNeighborsNodeAvailable}");
             if (isNeighborsNodeAvailable)
             {
-                Debug.Log($"### Test4 IsNeighborNodeAvailable: {neighborNode}");
+                Debug.Log($"### Test4 IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}");
                 if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsCountInNeighbor))
                 {
                     Debug.Log($"### Test4 DoesNeighborHaveSimilarItem: {itemType}, itemsCountInNeighbor: {itemsCountInNeighbor}");
@@ -53,11 +67,22 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                         Debug.Log($"### Test4 HasEmptySlots: availSlots: {availSlots}");
                         // update datas:
                         //  -> update the goods data set in both nodes ||
-                        //  -> update the goods items collection in both nodes 
+                        //  -> update the goods items collection (item bases) in both nodes 
                         // change the occupied props
+
+                        foreach (var itemBase in neighborNode.ItemBasesCollection)
+                        {
+                            Debug.Log($"### test 8 itemBase.Key: {itemBase.Key}, itemBase.Value: {itemBase.Value}");
+                        }
 
                         neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
                         selectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
+
+                        for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
+                        {
+                            ItemBase removedItem = neighborNode.RemoveFromItemBasesCollection(itemType);
+                            selectedNode.AddToItemBasesCollection(removedItem);
+                        }
 
                         goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, selectedNode, neighborNode);
                     }

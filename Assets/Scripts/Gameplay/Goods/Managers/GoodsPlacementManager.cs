@@ -21,16 +21,14 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         selectedNode.InitItemsData();
         NodePlacementData nodePlacementData = null;
         Tween nodesMoverTween = null;
-        var itemBaseCount = selectedNode.GetItemBaseCount();
+        var totalItems = selectedNode.GetItemBaseCount();
         int counter = 0, customIndexer = -1;
 
-        var keys = selectedNode.GetKeysForItems(); // Weapon, Armour, Boots
-        Debug.Log($"Keys count: " + keys.Count);
-        Debug.Log($"itemBaseCount: " + itemBaseCount);
+        var keys = selectedNode.GetKeysForItems(); // 0 1 2
 
         canPlaceGoods = false;
 
-        for (int indexI = 0; indexI < itemBaseCount; indexI++) // 0 1 2 3 (4) // 4 5 6 // 7 8 9 //
+        for (int indexI = 0; indexI < totalItems; indexI++) // 0 1 2 3 // 4 5 6 7 // 8 9 10 11 //
         {
             customIndexer++;
             nodePlacementData = selectedNode.RetrieveNodePlacementData(indexI);
@@ -40,14 +38,13 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
             if (customIndexer == selectedNode.GetSetsCountForItemType(keys[counter]) - 1) // 3 == 4 - 1
             {
-                customIndexer = 0;
+                customIndexer = -1;
                 counter++;
             }
         }
 
         nodesMoverTween.OnComplete(() =>
         {
-            Debug.Log($"### Test4 nodesMoverTween.OnComplete");
             canPlaceGoods = true;
             goodsSortingManager.CheckNeighbors(selectedNode);
         });
@@ -55,9 +52,11 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
     public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node selectedNode, Node neighborNode)
     {
+        // Debug.Log($"Test5: Neighbors position: {neighborNode.transform.position}");
         var itemBases = neighborNode.GetSpecificItems(itemType);
+
         var itemBaseCount = selectedNode.GetItemBaseCount();
-        var totalSlots = selectedNode.GetTotalSlotsInNode;
+        var totalSlots = selectedNode.GetTotalSlotsInNode();
 
         for (int indexJ = itemBaseCount; indexJ < totalSlots; indexJ++)
         {
