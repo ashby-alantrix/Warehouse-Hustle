@@ -38,6 +38,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         var keys = selectedNode.GetKeysForItems();
         NodePlacementData nodePlacementData = null;
         int counter = 0, customIndexer = -1;
+        ItemBase itemBase = null;
 
         for (int indexI = 0; indexI < totalItems; indexI++) // 0 1 2 3 // 4 5 6 7 // 8 9 10 11 //
         {
@@ -45,7 +46,9 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
             nodePlacementData = selectedNode.RetrieveNodePlacementData(indexI);
             nodePlacementData.isOccupied = true;
 
-            nodesMoverTween = selectedNode.GetItemBase(customIndexer, keys[counter]).transform.DOMove(nodePlacementData.transform.position, 1f);
+            itemBase = selectedNode.GetItemBase(customIndexer, keys[counter]);
+            itemBase.nodePlacementIndex = indexI;
+            nodesMoverTween = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
 
             if (customIndexer == selectedNode.GetSetsCountForItemType(keys[counter]) - 1) // 3 == 4 - 1
             {
@@ -66,14 +69,14 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         Debug.Log($"Test 11: itemBases: {itemBases.Count}");
         Debug.Log($"Test 11: itemType: {itemType}");
 
-        for (int indexJ = itemBaseCount; indexJ < itemBaseCount + itemBases.Count; indexJ++)
+        for (int indexJ = itemBaseCount; indexJ < itemBaseCount + itemBases.Count; indexJ++) // TODO :: logic needs to be updated
         {
             NodePlacementData nodePlacementData = selectedNode.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied) // change the state periodically
             {
                 var itemBase = itemBases[indexJ - itemBaseCount];
+                itemBase.nodePlacementIndex = indexJ;
                 tweener = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
-                //itemBase.nodePlacementIndex = indexJ;
             }
         }
     }

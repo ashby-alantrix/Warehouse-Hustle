@@ -311,4 +311,12 @@ public class Node : MonoBehaviour
     {
         objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
     }
+
+    public void UpdateOccupiedSlotsState()
+    {
+        var itemsCount = GetItemBaseCount();
+
+        for (int index = 0; index < totalSlotsInNode; index++)
+            m_NodePlacementDatas[index].isOccupied = index < itemsCount;
+    }
 }

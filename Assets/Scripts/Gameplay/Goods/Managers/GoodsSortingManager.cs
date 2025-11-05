@@ -18,7 +18,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         InterfaceManager.Instance?.RegisterInterface<GoodsSortingManager>(this);
     }
 
-    public void CheckNeighbors(Node selectedNode)
+    public void CheckNeighbors(Node selectedNode, bool useDebug = false)
     {
         Debug.Log($"Test4 --------------------------------------");
         Debug.Log($"Test4 CheckNeighbors");
@@ -27,6 +27,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         SetGoodsPlacementManager();
         var setKeys = selectedNode.GetSetKeys();
 
+        if (useDebug)
+            Debug.Log($"setKeysCount: {setKeys.Count}");
         foreach (var key in setKeys)
         {
             ExploreNeighbors(key);
@@ -34,6 +36,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     }
 
     private bool isLastKey = false;
+    private int counter = 0;
 
     private void ExploreNeighbors(ItemType itemType)
     {
@@ -51,41 +54,52 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 Debug.Log($"Test4 IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}");
                 if (neighborNode.CheckIfSetItemsMatchesWithNeighbor(itemType, out int itemsCountInNeighbor))
                 {
+                    Debug.Log($"Test4 CheckIfSetItemsMatchesWithNeighbor :: itemType: {itemType}, itemsCountInNeighbor: {itemsCountInNeighbor}");
                     isLastKey = neighborNode.IsLastKey(itemType);
-                    MoveMatchedSetToCurrentNode(itemType, neighborNode, itemsCountInNeighbor);
-                    currentSelectedNode.SortItemBases(); // need to rearrange
-                    goodsPlacementManager.RearrangeBasedOnSorting(currentSelectedNode);
                     
+                    MoveMatchedSetToNeighbor(itemType, neighborNode, itemsCountInNeighbor);
+
+                    currentSelectedNode.SortItemBases(); // need to rearrange
+
+                    goodsPlacementManager.RearrangeBasedOnSorting(currentSelectedNode); // do on tween completion if needed
+                    //goodsPlacementManager.RearrangeBasedOnSorting(neighborNode); // do on tween completion
+
                     Debug.Log($"Test4IsLastKey: {isLastKey}");
                     if (!isLastKey)
                     {
-                        CheckNeighbors(neighborNode);
+                        CheckNeighbors(neighborNode, true); // 1st call left here 
+                        counter++;
                     }
+
+                    Debug.Log($"Debug counter: " + counter);
 
                     Debug.Log($"Test4: selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
                     Debug.Log($"Test4: neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
+
+                    currentSelectedNode.UpdateOccupiedSlotsState();
+                    neighborNode.UpdateOccupiedSlotsState();
                 }
             }
         }
     }
 
-    private void MoveMatchedSetToCurrentNode(ItemType itemType, Node neighborNode, int itemsCountInNeighbor)
+    private void MoveMatchedSetToNeighbor(ItemType itemType, Node neighborNode, int itemsCountInNeighbor)
     {
-        neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
-        currentSelectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
+        currentSelectedNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
+        neighborNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
 
-        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, currentSelectedNode, neighborNode, out currentTweener);
+        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, neighborNode, currentSelectedNode, out currentTweener);
 
         for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
         {
-            ItemBase removedItem = neighborNode.RemoveFromItemBasesCollection(itemType);
-            currentSelectedNode.AddToItemBasesCollection(removedItem);
+            ItemBase removedItem = currentSelectedNode.RemoveFromItemBasesCollection(itemType);
+            neighborNode.AddToItemBasesCollection(removedItem);
         }
 
         currentTweener?.OnComplete(() =>
         {
-            currentSelectedNode.CheckIfNodeIsFullOrCleared();
             neighborNode.CheckIfNodeIsFullOrCleared();
+            currentSelectedNode.CheckIfNodeIsFullOrCleared();
         });
     }
 

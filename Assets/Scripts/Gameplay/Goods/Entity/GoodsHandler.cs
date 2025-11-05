@@ -116,10 +116,12 @@ public class GoodsHandler : MonoBehaviour
     {
         int count = currentGoodsPlacer.GetBaseObjectsCount();
         Tween inputPlatformTween = null;
+        ItemBase itemBase = null;
 
         for (int index = 0; index < count; index++)
         {
-            inputPlatformTween = currentGoodsPlacer.GetItemBasedOnIndex(index).transform.DOMove(
+            itemBase = currentGoodsPlacer.GetItemBasedOnIndex(index);
+            inputPlatformTween = itemBase.transform.DOMove(
                 currentGoodsPlacer.GetSpawnPointTransform(index).position,
                 1f
             );
