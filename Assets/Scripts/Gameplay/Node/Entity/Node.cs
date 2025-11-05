@@ -172,6 +172,10 @@ public class Node : MonoBehaviour
 
     public ItemBase RemoveFromItemBasesCollection(ItemType itemType)
     {
+        //if (!itemBasesCollection.ContainsKey(itemType) || itemBasesCollection[itemType].Count < 1) return null;
+
+        Debug.Log($"#### itemBasesCollection: {itemBasesCollection != null}");
+        Debug.Log($"ItemToRemove: {itemBasesCollection.Count}");
         ItemBase itemToRemove = itemBasesCollection[itemType][0];
         itemBasesCollection[itemType].RemoveAt(0);
 
@@ -272,7 +276,6 @@ public class Node : MonoBehaviour
     {
         var itemBaseCount = GetItemBaseCount();
 
-        Debug.Log($"Test13 ItemBaseCount: {itemBaseCount}");
         Debug.Log($"Test13 itemBasesCollection.Count: {itemBasesCollection.Count}");
 
         if (totalSlotsInNode == itemBaseCount && itemBasesCollection.Count == 1)

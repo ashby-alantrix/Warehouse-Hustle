@@ -13,6 +13,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private Tween currentTweener = null;
     private Node currentSelectedNode = null;
 
+    private bool isLastKey = false;
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<GoodsSortingManager>(this);
@@ -27,16 +29,17 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         SetGoodsPlacementManager();
         var setKeys = selectedNode.GetSetKeys();
 
-        if (useDebug)
-            Debug.Log($"setKeysCount: {setKeys.Count}");
+        Debug.Log($"Recursion :: setKeysCount: {setKeys.Count}");
+        foreach (var key in setKeys)
+            Debug.Log($"Recursion :: key: {key}");
+
         foreach (var key in setKeys)
         {
             ExploreNeighbors(key);
+
+            Debug.Log($"Recursion :: {key}");
         }
     }
-
-    private bool isLastKey = false;
-    private int counter = 0;
 
     private void ExploreNeighbors(ItemType itemType)
     {
@@ -67,11 +70,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     Debug.Log($"Test4IsLastKey: {isLastKey}");
                     if (!isLastKey)
                     {
+                        Debug.Log("Recursion: calling recursive function");
                         CheckNeighbors(neighborNode, true); // 1st call left here 
-                        counter++;
                     }
-
-                    Debug.Log($"Debug counter: " + counter);
 
                     Debug.Log($"Test4: selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
                     Debug.Log($"Test4: neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
@@ -93,7 +94,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
         {
             ItemBase removedItem = currentSelectedNode.RemoveFromItemBasesCollection(itemType);
-            neighborNode.AddToItemBasesCollection(removedItem);
+            if (removedItem)
+                neighborNode.AddToItemBasesCollection(removedItem);
         }
 
         currentTweener?.OnComplete(() =>
