@@ -22,10 +22,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         // try
         // {
-            Debug.Log($"### Test6 :: SetKeys Count: {setKeys}");
             foreach (var key in setKeys)
             {
-                Debug.Log($"### Test6 :: (ItemType)key: {(ItemType)key}");
                 ExploreNeighbors(selectedNode, (ItemType)key);
             }
         // }
@@ -70,21 +68,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                         //  -> update the goods items collection (item bases) in both nodes 
                         // change the occupied props
 
-                        foreach (var itemBase in neighborNode.ItemBasesCollection)
-                        {
-                            Debug.Log($"### test 8 itemBase.Key: {itemBase.Key}, itemBase.Value: {itemBase.Value}");
-                        }
-
                         neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
                         selectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
 
+                        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, selectedNode, neighborNode);
+                        
                         for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
                         {
                             ItemBase removedItem = neighborNode.RemoveFromItemBasesCollection(itemType);
                             selectedNode.AddToItemBasesCollection(removedItem);
                         }
-
-                        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, selectedNode, neighborNode);
                     }
                 }
             }

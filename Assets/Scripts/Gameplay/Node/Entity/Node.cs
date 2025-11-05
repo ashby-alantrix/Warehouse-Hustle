@@ -167,13 +167,6 @@ public class Node : MonoBehaviour
     {
         try
         {
-            Debug.Log($"Test5: GetSpecificItems :: {itemType}");
-            Debug.Log($"Test5: GetItemBaseCount :: {GetItemBaseCount()}");
-
-            foreach (var data in itemBasesCollection)
-                Debug.Log($"data: {data.Key}, data.Value: {data.Value.Count}");
-
-            Debug.Log($"itemBasesCollection[itemType]: {itemBasesCollection.ContainsKey(itemType)}, itemType: {itemType}");
             return itemBasesCollection[itemType];
             // return itemBasesCollection.ContainsKey(itemType) ? itemBasesCollection[itemType] : new List<ItemBase>();
             // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
