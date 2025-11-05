@@ -11,7 +11,6 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
 
     public void Initialize()
     {
-
         InterfaceManager.Instance?.RegisterInterface<ObjectPoolManager>(this);
         foreach (var pool in objectPoolBases)
         {

@@ -1,77 +1,240 @@
+using System.Diagnostics.SymbolStore;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class Node : MonoBehaviour
 {
+    [SerializeField] private int totalSlotsInNode = 12;
     [SerializeField] private Transform[] m_NodePlacements;
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
 
     private NodePlacementData[] m_NodePlacementDatas;
-    private List<ItemBase> itemBases = new List<ItemBase>();
     private List<Vector3> neighborsHexOffsets = new List<Vector3>();
 
-    private Dictionary<ItemType, int> setsDict = new Dictionary<ItemType, int>();
+    private Dictionary<ItemType, int> goodsSetDict = new Dictionary<ItemType, int>();
+    private Dictionary<ItemType, List<ItemBase>> itemBasesCollection = new Dictionary<ItemType, List<ItemBase>>();
 
-    private NodeManager m_NodeManager;
-    private GoodsManager m_GoodsManager;
+    public Dictionary<ItemType, List<ItemBase>> ItemBasesCollection => itemBasesCollection;
 
+    private NodeManager nodeManager;
+    private GoodsManager goodsManager;
+    private ObjectPoolManager objectPoolManager;
+
+    public int GetItemTypeCount() => goodsSetDict.Count;
+
+    public int GetTotalSlotsInNode() => totalSlotsInNode;
+
+    public bool HasEmptySlots(out int availSlots)
+    {
+        int totalSlotsOccupied = 0;
+        foreach (var set in goodsSetDict)
+        {
+            totalSlotsOccupied += set.Value;
+        }
+
+        availSlots = totalSlotsInNode - totalSlotsOccupied;
+        return availSlots != 0;
+    }
+
+    public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;
+
+    public List<ItemType> GetSetKeys()
+    {
+        return goodsSetDict.Keys.ToList();
+    }
+    
     public void InitNodeManager(NodeManager nodeManager)
     {
-        m_NodeManager = nodeManager;
+        this.nodeManager = nodeManager;
+    }
+
+    public bool CheckIfSetItemsMatchesWithNeighbor(ItemType itemType, out int goodsCount)
+    {
+        goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+        Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
+
+        return goodsSetDict.ContainsKey(itemType);
+    }
+
+    public bool IsLastKey(ItemType itemType)
+    {
+        Debug.Log($"IsLastKey:: {itemType}");
+        if (goodsSetDict.Count > 0)
+        {
+            Debug.Log($"IsLastKey:: goodsSetDict.Keys: " + goodsSetDict.Keys.Count);
+            Debug.Log($"IsLastKey:: {itemType} == {goodsSetDict.Keys.Last()}");
+            return itemType == goodsSetDict.Keys.Last();
+        }
+        else
+        {
+            // Debug.Log($"IsLastKey:: not last key");
+            return false;
+        }
+
+        return goodsSetDict.Count > 0 ? itemType == goodsSetDict.Keys.Last() : false;
     }
 
     public void InitItemsData()
     {
-        m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
-        itemBases = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
-        Debug.Log($"### CurrentGoodsPlacer.GetBaseObjects().Count: {itemBases.Count}");
+        goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;
 
-        var goodsDataSet = m_GoodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
+        var itemBaseObjects = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetBaseObjects();
+        foreach (var baseObj in itemBaseObjects)
+            AddToItemBasesCollection(baseObj);
+
+        // foreach (var item in itemBaseObjects)
+        // {
+        //     Debug.Log($"### Test 9: item.Type: {item.ItemType}, item.Value: {item}");
+        // }
+
+        // foreach (var item in itemBasesCollection)
+        // {
+        //     Debug.Log($"### Test 10: item.Type: {item.Key}, item.Value: {item.Value.Count}");
+        // }
+
+        var goodsDataSet = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
         foreach (var data in goodsDataSet)
-        {
             AddItemsDataToNode(data.type, data.setCount);
-            Debug.Log($"### data.type: {data.type}, data.setCount: {data.setCount}");
-        }
-
-        // Debug.Log($"### NodePos: {this.transform.position}");
     }
 
     #region NODE_DATA_UPDATION
     public void AddItemsDataToNode(ItemType itemType, int itemsToAddCount)
     {
-        if (!setsDict.ContainsKey(itemType))
-            setsDict.Add(itemType, itemsToAddCount);
+        if (!goodsSetDict.ContainsKey(itemType))
+            goodsSetDict.Add(itemType, itemsToAddCount);
         else
-            setsDict[itemType] += itemsToAddCount;
+            goodsSetDict[itemType] += itemsToAddCount;
+    }
+
+    public void SortItemBases()
+    {
+        var sortedDict = itemBasesCollection.OrderByDescending(pair => pair.Value.Count).ToList();
+        itemBasesCollection.Clear();
+        goodsSetDict.Clear();
+
+        Debug.Log($"Iteration: sortedDict: {sortedDict.Count()}");
+
+        foreach (var sortedItem in sortedDict)
+        {
+            itemBasesCollection.Add(sortedItem.Key, sortedItem.Value);
+            goodsSetDict.Add(sortedItem.Key, sortedItem.Value.Count);
+
+            Debug.Log($"Iteration: sortedItem: {sortedItem.Key}, sortedItem.Value: {sortedItem.Value.Count}");
+        }
+    }
+
+    public void SortItemsData()
+    {
+        var sortedDict = goodsSetDict.OrderByDescending(pair => pair.Value);
+        goodsSetDict.Clear();
+
+        foreach (var data in sortedDict)
+            goodsSetDict.Add(data.Key, data.Value);
     }
 
     // Remove the respective 
     public void RemoveItemsDataFromNode(ItemType itemType, int itemsToRemoveCount)
     {
-        if (setsDict.ContainsKey(itemType))
+        if (goodsSetDict.ContainsKey(itemType))
         {
-            int availCount = setsDict[itemType];
+            int availCount = goodsSetDict[itemType];
             if (availCount > itemsToRemoveCount)
             {
                 availCount -= itemsToRemoveCount;
-                setsDict[itemType] = availCount;
+                goodsSetDict[itemType] = availCount;
             }
             else //if (availCount == itemsToRemoveCount)
             {
                 // TODO :: double check condition
                 Debug.Log($"### Removing item type :: availCount: {availCount}, itemsToRemoveCount: {itemsToRemoveCount}");
-                setsDict.Remove(itemType);
+                goodsSetDict.Remove(itemType);
             }
         }
     }
     #endregion
 
-    public int GetItemBaseCount() => itemBases.Count;
+    #region ITEMS_BASE_UPDATION
 
-    public ItemBase GetItemBase(int index) => itemBases[index];
+    public void AddToItemBasesCollection(ItemBase baseObj)
+    {
+        if (!itemBasesCollection.ContainsKey(baseObj.ItemType))
+            itemBasesCollection.Add(baseObj.ItemType, new List<ItemBase>() { baseObj });
+        else
+            itemBasesCollection[baseObj.ItemType].Add(baseObj);
+    }
+
+    public ItemBase RemoveFromItemBasesCollection(ItemType itemType)
+    {
+        //if (!itemBasesCollection.ContainsKey(itemType) || itemBasesCollection[itemType].Count < 1) return null;
+
+        Debug.Log($"#### itemBasesCollection: {itemBasesCollection != null}");
+        Debug.Log($"ItemToRemove: {itemBasesCollection.Count}");
+        ItemBase itemToRemove = itemBasesCollection[itemType][0];
+        itemBasesCollection[itemType].RemoveAt(0);
+
+        if (itemBasesCollection.Count == 0)
+            itemBasesCollection.Remove(itemType);
+
+        return itemToRemove;
+    }
+
+    #endregion
+
+    public int GetItemBaseCount()
+    {
+        int itemBaseCount = 0;
+        foreach (var data in itemBasesCollection)
+            itemBaseCount += data.Value.Count;
+
+        return itemBaseCount;
+    }
+
+    public List<ItemType> GetKeysForItems()
+    {
+        return itemBasesCollection.Keys.ToList();
+    }
+
+    public int GetSetsCountForItemType(ItemType itemType)
+    {
+        return itemBasesCollection[itemType].Count;
+    }
+
+    public ItemBase GetItemBase(int index, ItemType itemType)
+    {
+        return itemBasesCollection[itemType][index];
+    }
+
+    public List<ItemBase> GetSpecificItems(ItemType itemType)
+    {
+        try
+        {
+            return itemBasesCollection[itemType];
+            // return itemBasesCollection.ContainsKey(itemType) ? itemBasesCollection[itemType] : new List<ItemBase>();
+            // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Caught exception: " + ex.Message);
+        }
+
+        return new List<ItemBase>();
+    }
+
+    public int GetNeighborsCount() => neighborsHexOffsets.Count;
+
+    public int GetNeighborHexOffsetLength() => neighborsHexOffsets.Count;
+
+    public Vector3 GetNeighborHexOffset(int index)
+    {
+        return neighborsHexOffsets[index];
+    }
 
     public void AddNeighborsData(Vector3 hexOffset)
     {
@@ -85,14 +248,17 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Debug.Log("OnMouseDown");
         if (!isNodeOccupied) // game's not over
         {
-            isNodeOccupied = true;
-            m_NodeManager.OnNodeClicked(this);
+            nodeManager.OnNodeClicked(this);
         }
     }
 
+    public void SetNodeOccupiedState(bool state)
+    {
+        isNodeOccupied = state;
+    }
+    
     private void Awake()
     {
         m_NodePlacementLength = m_NodePlacements.Length;
@@ -104,5 +270,56 @@ public class Node : MonoBehaviour
             m_NodePlacementDatas[i].isOccupied = false;
             m_NodePlacementDatas[i].transform = m_NodePlacements[i];
         }
+    }
+
+    public void CheckIfNodeIsFullOrCleared()
+    {
+        var itemBaseCount = GetItemBaseCount();
+
+        Debug.Log($"Test13 itemBasesCollection.Count: {itemBasesCollection.Count}");
+
+        if (totalSlotsInNode == itemBaseCount && itemBasesCollection.Count == 1)
+        {
+            Debug.Log($"Test13 Pushing nodes back to pool");
+            SetObjectPoolManager();
+            OnNodeFull(); // TODO :: temporary logic, update with loading onto to truck
+
+            goodsSetDict.Clear();
+            itemBasesCollection.Clear();
+            SetNodeOccupiedState(false);
+        }
+        else if (itemBaseCount == 0)
+        {
+            // goodsSetDict.Clear();
+            // itemBasesCollection.Clear();
+            Debug.Log($"Test13 items are empty");
+            SetNodeOccupiedState(false);
+        }
+    }
+
+    private void OnNodeFull()
+    {
+        foreach (var itemBase in itemBasesCollection)
+        {
+            foreach (var item in itemBase.Value)
+            {
+                item.gameObject.SetActive(false);
+                objectPoolManager.PassObjectToPool(itemBase.Key, item);
+            }
+        }       
+            
+    }
+
+    private void SetObjectPoolManager()
+    {
+        objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
+    }
+
+    public void UpdateOccupiedSlotsState()
+    {
+        var itemsCount = GetItemBaseCount();
+
+        for (int index = 0; index < totalSlotsInNode; index++)
+            m_NodePlacementDatas[index].isOccupied = index < itemsCount;
     }
 }
