@@ -52,6 +52,7 @@ public class GoodsHandler : MonoBehaviour
     private void InitGoods()
     {
         lastUpdatedGoodsSet.Clear();
+
         // CreateGoodsSet();
         CreateGoodsSetTest();
     }

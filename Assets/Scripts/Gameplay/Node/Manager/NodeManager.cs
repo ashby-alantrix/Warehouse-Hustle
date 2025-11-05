@@ -16,10 +16,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     public bool IsNeighborNodeAvailableInGrid(string pos, out Node node)
     {
-        Debug.Log($"### test4 node: IsNeighborsNodeAvailable");
         node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
-        Debug.Log($"### test4 node: {node}");
-        Debug.Log($"### test4 nodesData.ContainsKey(pos): {nodesData.ContainsKey(pos)}");
         return nodesData.ContainsKey(pos);
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using DG.Tweening;
 using UnityEngine;
 
@@ -19,16 +20,15 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public void CheckNeighbors(Node selectedNode)
     {
-        Debug.Log($"KEYS: CheckNeighbors");
+        Debug.Log($"Test4 --------------------------------------");
+        Debug.Log($"Test4 CheckNeighbors");
         currentSelectedNode = selectedNode;
         SetNodeManager();
         SetGoodsPlacementManager();
         var setKeys = selectedNode.GetSetKeys();
 
-        Debug.Log($"KEYS: {setKeys.Count}");
         foreach (var key in setKeys)
         {
-            Debug.Log($"KEYS: {key}");
             ExploreNeighbors(key);
         }
     }
@@ -45,23 +45,25 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             SetNodeManager();
 
             var isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid(currentSelectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
+            Debug.Log($"Test4 IsNeighborNodeAvailable: {isNeighborsNodeAvailable}");
             if (isNeighborsNodeAvailable)
             {
-                Debug.Log($"### Test4 IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}");
+                Debug.Log($"Test4 IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}");
                 if (neighborNode.CheckIfSetItemsMatchesWithNeighbor(itemType, out int itemsCountInNeighbor))
                 {
                     isLastKey = neighborNode.IsLastKey(itemType);
                     MoveMatchedSetToCurrentNode(itemType, neighborNode, itemsCountInNeighbor);
                     currentSelectedNode.SortItemBases(); // need to rearrange
+                    goodsPlacementManager.RearrangeBasedOnSorting(currentSelectedNode);
                     
-                    Debug.Log($"IsLastKey: {isLastKey}");
+                    Debug.Log($"Test4IsLastKey: {isLastKey}");
                     if (!isLastKey)
                     {
                         CheckNeighbors(neighborNode);
                     }
 
-                    Debug.Log($"### Test12: selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
-                    Debug.Log($"### Test12: neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
+                    Debug.Log($"Test4: selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
+                    Debug.Log($"Test4: neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
                 }
             }
         }
