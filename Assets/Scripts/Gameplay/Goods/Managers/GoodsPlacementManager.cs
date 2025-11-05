@@ -50,13 +50,13 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         });
     }
 
-    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node selectedNode, Node neighborNode)
+    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node selectedNode, Node neighborNode, out Tween tweener)
     {
         // Debug.Log($"Test5: Neighbors position: {neighborNode.transform.position}");
+        tweener = null;
         var itemBases = neighborNode.GetSpecificItems(itemType);
 
         var itemBaseCount = selectedNode.GetItemBaseCount();
-        var totalSlots = selectedNode.GetTotalSlotsInNode();
 
         Debug.Log($"Test 11: itemBases: {itemBases.Count}");
         Debug.Log($"Test 11: itemType: {itemType}");
@@ -67,7 +67,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
             if (!nodePlacementData.isOccupied)
             {
                 var itemBase = itemBases[indexJ - itemBaseCount];
-                itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
+                tweener = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
             }
         }
     }

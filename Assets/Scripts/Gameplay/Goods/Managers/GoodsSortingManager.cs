@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 {
     private NodeManager nodeManager;
     private GoodsPlacementManager goodsPlacementManager;
+
+    private Tween currentTweener = null;
+    private Node currentSelectedNode = null;
 
     public void Initialize()
     {
@@ -15,78 +19,72 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public void CheckNeighbors(Node selectedNode)
     {
-        Debug.Log($"### Test4 CheckNeighbors");
+        Debug.Log($"KEYS: CheckNeighbors");
+        currentSelectedNode = selectedNode;
         SetNodeManager();
         SetGoodsPlacementManager();
         var setKeys = selectedNode.GetSetKeys();
 
-        // try
-        // {
-            foreach (var key in setKeys)
-            {
-                ExploreNeighbors(selectedNode, (ItemType)key);
-            }
-        // }
-        // catch (Exception ex)
-        // {
-        //     Debug.LogError($"Caught exception: {ex.Message}");
-        // }
+        Debug.Log($"KEYS: {setKeys.Count}");
+        foreach (var key in setKeys)
+        {
+            Debug.Log($"KEYS: {key}");
+            ExploreNeighbors(key);
+        }
     }
 
-    private void ExploreNeighbors(Node selectedNode, ItemType itemType)
-    {
-        int neighborsCount = selectedNode.GetNeighborsCount();
-        Debug.Log($"### Test4 ExploreNeighbors: " + neighborsCount);
+    private bool isLastKey = false;
 
-        int availSlots = 0;
+    private void ExploreNeighbors(ItemType itemType)
+    {
+        int neighborsCount = currentSelectedNode.GetNeighborsCount();
+
         for (int index = 0; index < neighborsCount; index++)
         {
             // Debug.Log($"### Test4: Neighbor index: " + index);
             SetNodeManager();
 
-            // Debug.Log($"### Test4 GetNeighborHexOffsetLength: {selectedNode.GetNeighborHexOffsetLength()}");
-
-            var isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid(selectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
-            Debug.Log($"### Test4: isNeighborsNodeAvailable: {isNeighborsNodeAvailable}");
+            var isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid(currentSelectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
             if (isNeighborsNodeAvailable)
             {
                 Debug.Log($"### Test4 IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}");
-                if (neighborNode.DoesNeighborHaveSimilarItem(itemType, out int itemsCountInNeighbor))
+                if (neighborNode.CheckIfSetItemsMatchesWithNeighbor(itemType, out int itemsCountInNeighbor))
                 {
-                    Debug.Log($"### Test4 DoesNeighborHaveSimilarItem: {itemType}, itemsCountInNeighbor: {itemsCountInNeighbor}");
-                    // move the nodes to the neighbor: (use a recursion based approach)
-                    //  -> case 1: if there are slots already available in the current node then take 
-                    //             the matching nodes and move them to current node followed by 
-                    //             sorting/refreshing the neighboring node and the current node
-                    //  -> case 2: if there are no slots available, check the neighbor's neighbors to see if there are matching items (using recursion)
-
-                    if (selectedNode.HasEmptySlots(out availSlots) && itemsCountInNeighbor <= availSlots)
+                    isLastKey = neighborNode.IsLastKey(itemType);
+                    MoveMatchedSetToCurrentNode(itemType, neighborNode, itemsCountInNeighbor);
+                    currentSelectedNode.SortItemBases(); // need to rearrange
+                    
+                    Debug.Log($"IsLastKey: {isLastKey}");
+                    if (!isLastKey)
                     {
-                        Debug.Log($"### Test4 HasEmptySlots: availSlots: {availSlots}");
-                        // update datas:
-                        //  -> update the goods data set in both nodes ||
-                        //  -> update the goods items collection (item bases) in both nodes 
-                        // change the occupied props
-
-                        neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
-                        selectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
-
-                        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, selectedNode, neighborNode);
-                        
-                        for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
-                        {
-                            ItemBase removedItem = neighborNode.RemoveFromItemBasesCollection(itemType);
-                            selectedNode.AddToItemBasesCollection(removedItem);
-                        }
+                        CheckNeighbors(neighborNode);
                     }
+
+                    Debug.Log($"### Test12: selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
+                    Debug.Log($"### Test12: neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
                 }
             }
         }
     }
-    
-    private void SortAndRefreshNode()
+
+    private void MoveMatchedSetToCurrentNode(ItemType itemType, Node neighborNode, int itemsCountInNeighbor)
     {
-        
+        neighborNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
+        currentSelectedNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
+
+        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, currentSelectedNode, neighborNode, out currentTweener);
+
+        for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
+        {
+            ItemBase removedItem = neighborNode.RemoveFromItemBasesCollection(itemType);
+            currentSelectedNode.AddToItemBasesCollection(removedItem);
+        }
+
+        currentTweener?.OnComplete(() =>
+        {
+            currentSelectedNode.CheckIfNodeIsFullOrCleared();
+            neighborNode.CheckIfNodeIsFullOrCleared();
+        });
     }
 
     private void SetNodeManager()

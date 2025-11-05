@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,7 +52,21 @@ public class GoodsHandler : MonoBehaviour
     private void InitGoods()
     {
         lastUpdatedGoodsSet.Clear();
-        CreateGoodsSet();
+        // CreateGoodsSet();
+        CreateGoodsSetTest();
+    }
+
+    private void CreateGoodsSetTest()
+    {
+        for (int i=0; i<2; i++)
+        {
+            var goodsSetObj = new GoodsSet();
+            UseTestData(ref goodsSetObj);
+            //goodsSetObj.type = GenerateRandomGoodsType();
+            //goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
+
+            lastUpdatedGoodsSet.Add(goodsSetObj);
+        }
     }
 
     private void CreateGoodsSet()
@@ -74,7 +89,7 @@ public class GoodsHandler : MonoBehaviour
     public void UseTestData(ref GoodsSet goodsSetObj)
     {
         goodsSetObj.type = goodsType[testGoodTypeIndex];
-        goodsSetObj.setCount = 4;
+        goodsSetObj.setCount = 2;
 
         testGoodTypeIndex = testGoodTypeIndex == 0 ? 1 : 0;
     }
