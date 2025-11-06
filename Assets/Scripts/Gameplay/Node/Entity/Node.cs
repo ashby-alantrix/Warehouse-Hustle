@@ -55,7 +55,7 @@ public class Node : MonoBehaviour
         this.nodeManager = nodeManager;
     }
 
-    public bool CheckIfSetItemsMatchesWithNeighbor(ItemType itemType, out int goodsCount)
+    public bool CheckIfSetItemMatches(ItemType itemType, out int goodsCount)
     {
         goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
         // Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);

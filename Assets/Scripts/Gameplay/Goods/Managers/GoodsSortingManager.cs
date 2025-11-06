@@ -61,7 +61,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private void ExploreNeighbors(ItemType currentItemKey)
     {
         int neighborsCount = currentSelectedNode.GetNeighborsCount();
-        int itemsToMove, goodsCount = 0;
+        int itemsToMove, goodsCount = 0, availSlots = 0;
 
         for (int index = 0; index < neighborsCount; index++)
         {
@@ -79,7 +79,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             if (isNeighborsNodeAvailable)
             {
                 Debug.Log($"IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}, name: {neighborNode.transform.name}");
-                if (neighborNode.CheckIfSetItemsMatchesWithNeighbor(currentItemKey, out goodsCount))
+                if (neighborNode.CheckIfSetItemMatches(currentItemKey, out goodsCount))
                 {
                     if (goodsCount == neighborNode.GetTotalSlotsInNode())
                         continue;
@@ -88,7 +88,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     Debug.Log($"CheckIfSetItemsMatchesWithNeighbor :: itemType: {currentItemKey}, itemsCountInNeighbor: {itemsToMove}");
                     isLastKey = neighborNode.IsLastKey(currentItemKey);
 
-                    MoveMatchedSetToNeighbor(currentItemKey, neighborNode, itemsToMove);
+                    if (neighborNode.HasEmptySlots(out availSlots))
+                    {
+                        itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
+                        MoveMatchedSetToNeighbor(currentItemKey, neighborNode, itemsToMove);
+                    }
 
                     // need to rearrange
                     currentSelectedNode.SortItemBases();
@@ -126,18 +130,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     {
         currentSelectedNode.UpdateOccupiedSlotsState();
         neighborNode.UpdateOccupiedSlotsState();
-    }
-
-    private void CheckTweenersCompletedStates()
-    {
-        return;
-        foreach (var tweenerObj in currentTweeners)
-        {
-            if (tweenerObj.IsComplete())
-            {
-                tweenerObj.Complete();       
-            }
-        }
     }
 
     private Tween currentTweener = null;

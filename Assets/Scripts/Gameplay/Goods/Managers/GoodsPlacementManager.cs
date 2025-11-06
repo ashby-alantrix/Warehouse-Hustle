@@ -72,7 +72,11 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         Debug.Log($"Test 11: itemBases: {currentItemBases.Count}");
         Debug.Log($"Test 11: itemType: {itemType}");
 
-        for (int indexJ = neighborItemBaseCount; indexJ < neighborItemBaseCount + currentItemBases.Count; indexJ++) // TODO :: logic needs to be updated
+        var additionalCount = neighborItemBaseCount + currentItemBases.Count;
+        var totalSlots = neighborNode.GetTotalSlotsInNode();
+        additionalCount = additionalCount > totalSlots ? totalSlots : additionalCount; 
+
+        for (int indexJ = neighborItemBaseCount; indexJ < additionalCount; indexJ++) // TODO :: logic needs to be updated
         {
             NodePlacementData nodePlacementData = neighborNode.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied) // change the state periodically
