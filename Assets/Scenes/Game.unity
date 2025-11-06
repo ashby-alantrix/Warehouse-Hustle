@@ -916,6 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goodsSortingManager: {fileID: 2092234182}
+  inputDelay: 1
 --- !u!1 &654069099
 GameObject:
   m_ObjectHideFlags: 0
@@ -3105,6 +3106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44a6853419a6d4f4bb9ecfcd31363d86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingDelay: 0.75
 --- !u!1 &2097377745
 GameObject:
   m_ObjectHideFlags: 0

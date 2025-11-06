@@ -15,6 +15,8 @@ public class GridManager : MonoBehaviour
     private float m_PreCols;
     private float m_BaseColCount;
 
+    private int tempCounter = 0;
+
     private GridData m_GridData;
     private Dictionary<float, List<float>> blockedGridValDict = new Dictionary<float, List<float>>();
     // private Dictionary
@@ -106,8 +108,10 @@ public class GridManager : MonoBehaviour
             if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
                 continue;
 
-            var instance =  Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            var instance = Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            tempCounter++;
             m_NodeManager.AddNodeInstance(instance);
+            instance.transform.name = $"{instance.transform.name} {tempCounter}";
         }
     }
 }

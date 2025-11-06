@@ -58,8 +58,18 @@ public class Node : MonoBehaviour
     public bool CheckIfSetItemsMatchesWithNeighbor(ItemType itemType, out int goodsCount)
     {
         goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
-        Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
+        // Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
 
+        return goodsSetDict.ContainsKey(itemType);
+    }
+
+    public int GetGoodsSetCount(ItemType itemType)
+    {
+        return goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+    }
+
+    public bool HasGoodsSet(ItemType itemType)
+    {
         return goodsSetDict.ContainsKey(itemType);
     }
 
@@ -107,10 +117,49 @@ public class Node : MonoBehaviour
     #region NODE_DATA_UPDATION
     public void AddItemsDataToNode(ItemType itemType, int itemsToAddCount)
     {
+        // Debug.Log($"AddItemsDataToNode");
+        // foreach (var data in goodsSetDict)
+        // {
+        //     Debug.Log($"GoodsKey: {data.Key}, GoodsCount: {data.Value}");
+        // }
+
+        // Debug.Log($"Before updating goods set");
+        // Debug.Log($"number of goods sets: {goodsSetDict.Count}");
+        // int itemsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+        // Debug.Log($"number of goods for set({itemType}): {itemsCount}");
+
         if (!goodsSetDict.ContainsKey(itemType))
             goodsSetDict.Add(itemType, itemsToAddCount);
         else
             goodsSetDict[itemType] += itemsToAddCount;
+
+        // Debug.Log($"After updating goods set");
+        // Debug.Log($"number of goods sets: {goodsSetDict.Count}");
+        // itemsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+        // Debug.Log($"number of goods for set({itemType}): {itemsCount}");
+    }
+
+    public void RemoveItemsDataFromNode(ItemType itemType, int itemsToRemoveCount)
+    {
+        if (goodsSetDict.ContainsKey(itemType))
+        {
+            int availCount = goodsSetDict[itemType];
+            if (availCount > itemsToRemoveCount)
+            {
+                availCount -= itemsToRemoveCount;
+                goodsSetDict[itemType] = availCount;
+
+                if (goodsSetDict[itemType] == 0)
+                    goodsSetDict.Remove(itemType);
+            }
+            else //if (availCount == itemsToRemoveCount)
+            {
+                // TODO :: double check condition
+                Debug.Log($"### Removing item type :: availCount: {availCount}, itemsToRemoveCount: {itemsToRemoveCount}");
+                goodsSetDict.Remove(itemType);
+                Debug.Log($"goodsSetDict.ContainsKey: {goodsSetDict.ContainsKey(itemType)}");
+            }
+        }
     }
 
     public void SortItemBases()
@@ -139,25 +188,6 @@ public class Node : MonoBehaviour
             goodsSetDict.Add(data.Key, data.Value);
     }
 
-    // Remove the respective 
-    public void RemoveItemsDataFromNode(ItemType itemType, int itemsToRemoveCount)
-    {
-        if (goodsSetDict.ContainsKey(itemType))
-        {
-            int availCount = goodsSetDict[itemType];
-            if (availCount > itemsToRemoveCount)
-            {
-                availCount -= itemsToRemoveCount;
-                goodsSetDict[itemType] = availCount;
-            }
-            else //if (availCount == itemsToRemoveCount)
-            {
-                // TODO :: double check condition
-                Debug.Log($"### Removing item type :: availCount: {availCount}, itemsToRemoveCount: {itemsToRemoveCount}");
-                goodsSetDict.Remove(itemType);
-            }
-        }
-    }
     #endregion
 
     #region ITEMS_BASE_UPDATION
@@ -172,15 +202,19 @@ public class Node : MonoBehaviour
 
     public ItemBase RemoveFromItemBasesCollection(ItemType itemType)
     {
-        //if (!itemBasesCollection.ContainsKey(itemType) || itemBasesCollection[itemType].Count < 1) return null;
+        // if (!itemBasesCollection.ContainsKey(itemType) || itemBasesCollection[itemType].Count < 1) return null;
 
         Debug.Log($"#### itemBasesCollection: {itemBasesCollection != null}");
         Debug.Log($"ItemToRemove: {itemBasesCollection.Count}");
         ItemBase itemToRemove = itemBasesCollection[itemType][0];
         itemBasesCollection[itemType].RemoveAt(0);
 
-        if (itemBasesCollection.Count == 0)
+        if (itemBasesCollection[itemType].Count == 0)
+        {
+            Debug.Log($"Removing item");
             itemBasesCollection.Remove(itemType);
+            Debug.Log($"after removal itemBasesCollection: {itemBasesCollection.Count}");
+        }
 
         return itemToRemove;
     }
@@ -194,6 +228,15 @@ public class Node : MonoBehaviour
             itemBaseCount += data.Value.Count;
 
         return itemBaseCount;
+    }
+
+    public int GetGoodsSetsCount()
+    {
+        int setsCount = 0;
+        foreach (var data in goodsSetDict)
+            setsCount += data.Value;
+
+        return setsCount;
     }
 
     public List<ItemType> GetKeysForItems()
@@ -248,8 +291,11 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
+        Debug.Log($"OnNodeClicked: OnMouseDown() :: name: {transform.name}, isNodeOccupied: {isNodeOccupied}");
+
         if (!isNodeOccupied) // game's not over
         {
+            Debug.Log($"OnNodeClicked: nodeManager.OnNodeClicked :: name: {transform.name}, isNodeOccupied: {isNodeOccupied}");
             nodeManager.OnNodeClicked(this);
         }
     }
@@ -276,11 +322,11 @@ public class Node : MonoBehaviour
     {
         var itemBaseCount = GetItemBaseCount();
 
-        Debug.Log($"Test13 itemBasesCollection.Count: {itemBasesCollection.Count}");
+        Debug.Log($"itemBasesCollection.Count: {itemBasesCollection.Count}");
 
-        if (totalSlotsInNode == itemBaseCount && itemBasesCollection.Count == 1)
+        if (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount)
         {
-            Debug.Log($"Test13 Pushing nodes back to pool");
+            Debug.Log($"Pushing nodes back to pool");
             SetObjectPoolManager();
             OnNodeFull(); // TODO :: temporary logic, update with loading onto to truck
 

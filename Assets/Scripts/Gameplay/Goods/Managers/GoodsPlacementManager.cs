@@ -7,6 +7,7 @@ using UnityEngine;
 public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 {
     [SerializeField] private GoodsSortingManager goodsSortingManager;
+    [SerializeField] private float tweenDelay = 1f;
 
     private bool canPlaceGoods = true;
 
@@ -24,11 +25,13 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         var totalItems = selectedNode.GetItemBaseCount();
 
         canPlaceGoods = false;
+        Debug.Log($"OnNodeClicked: PlaceGoodsInsideNode :: name: {selectedNode.transform.name}, canPlaceGoods: {canPlaceGoods}");
         IterateAndMoveNodesUsingDictionary(selectedNode, totalItems, ref nodesMoverTween);
 
         nodesMoverTween.OnComplete(() =>
         {
             canPlaceGoods = true;
+            Debug.Log($"OnNodeClicked: nodesMoverTween.OnComplete :: name: {selectedNode.transform.name}, canPlaceGoods: {canPlaceGoods}");
             goodsSortingManager.CheckNeighbors(selectedNode);
         });
     }
@@ -48,7 +51,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
             itemBase = selectedNode.GetItemBase(customIndexer, keys[counter]);
             itemBase.nodePlacementIndex = indexI;
-            nodesMoverTween = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
+            nodesMoverTween = itemBase.transform.DOMove(nodePlacementData.transform.position, tweenDelay);
 
             if (customIndexer == selectedNode.GetSetsCountForItemType(keys[counter]) - 1) // 3 == 4 - 1
             {
@@ -58,27 +61,37 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node selectedNode, Node neighborNode, out Tween tweener)
+    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node neighborNode, Node currentSelectedNode) //, out Tween tweener)
     {
         // Debug.Log($"Test5: Neighbors position: {neighborNode.transform.position}");
-        tweener = null;
-        var itemBases = neighborNode.GetSpecificItems(itemType);
+        Tweener tweener = null;
+        var currentItemBases = currentSelectedNode.GetSpecificItems(itemType);
 
-        var itemBaseCount = selectedNode.GetItemBaseCount();
+        var neighborItemBaseCount = neighborNode.GetItemBaseCount();
 
-        Debug.Log($"Test 11: itemBases: {itemBases.Count}");
+        Debug.Log($"Test 11: itemBases: {currentItemBases.Count}");
         Debug.Log($"Test 11: itemType: {itemType}");
 
-        for (int indexJ = itemBaseCount; indexJ < itemBaseCount + itemBases.Count; indexJ++) // TODO :: logic needs to be updated
+        for (int indexJ = neighborItemBaseCount; indexJ < neighborItemBaseCount + currentItemBases.Count; indexJ++) // TODO :: logic needs to be updated
         {
-            NodePlacementData nodePlacementData = selectedNode.RetrieveNodePlacementData(indexJ);
+            NodePlacementData nodePlacementData = neighborNode.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied) // change the state periodically
             {
-                var itemBase = itemBases[indexJ - itemBaseCount];
+                var itemBase = currentItemBases[indexJ - neighborItemBaseCount];
                 itemBase.nodePlacementIndex = indexJ;
                 tweener = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
             }
         }
+
+        tweener.OnComplete(() =>
+        {
+            Debug.Log($"MoveMatchedSetToNeighbor OnComplete");
+            Debug.Log($"MoveMatchedSetToNeighbor OnComplete: currentSelectedNode :: name: {currentSelectedNode.transform.name}, pos: {currentSelectedNode.transform.position}");
+            Debug.Log($"MoveMatchedSetToNeighbor OnComplete: neighborNode :: name: {neighborNode.transform.name}, pos: {neighborNode.transform.position}");
+
+            currentSelectedNode.CheckIfNodeIsFullOrCleared();
+            neighborNode.CheckIfNodeIsFullOrCleared();
+        });
     }
 
     public void RearrangeBasedOnSorting(Node currentNode)
