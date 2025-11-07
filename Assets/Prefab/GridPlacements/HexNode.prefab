@@ -173,6 +173,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4a660fc70ea4f4d98eecd7fdb9bd5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  occupiedMat: {fileID: 2100000, guid: 86ddcd1501237471595bb70ddf5382ec, type: 2}
+  unOccupiedMat: {fileID: 2100000, guid: 17f2e64e5942846dc9c4ff74b3dd5a52, type: 2}
+  meshRenderer: {fileID: 5551677101889557908}
   totalSlotsInNode: 12
   m_NodePlacements:
   - {fileID: 2913386627691581660}

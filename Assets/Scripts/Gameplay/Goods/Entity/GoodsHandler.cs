@@ -63,8 +63,6 @@ public class GoodsHandler : MonoBehaviour
         {
             var goodsSetObj = new GoodsSet();
             UseTestData(ref goodsSetObj);
-            //goodsSetObj.type = GenerateRandomGoodsType();
-            //goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
 
             lastUpdatedGoodsSet.Add(goodsSetObj);
         }
@@ -76,7 +74,6 @@ public class GoodsHandler : MonoBehaviour
         while (remCountInSet >= minGoods)
         {
             var goodsSetObj = new GoodsSet();
-            // UseTestData(ref goodsSetObj);
             goodsSetObj.type = GenerateRandomGoodsType();
             goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);
 

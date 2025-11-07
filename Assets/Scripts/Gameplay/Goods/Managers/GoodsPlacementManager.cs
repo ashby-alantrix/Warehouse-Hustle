@@ -61,41 +61,48 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node neighborNode, Node currentSelectedNode) //, out Tween tweener)
+    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node target, Node source) //, out Tween tweener)
     {
         // Debug.Log($"Test5: Neighbors position: {neighborNode.transform.position}");
         Tweener tweener = null;
-        var currentItemBases = currentSelectedNode.GetSpecificItems(itemType);
+        var currentItemBases = source.GetSpecificItems(itemType);
 
-        var neighborItemBaseCount = neighborNode.GetItemBaseCount();
+        var targetItemBaseCount = target.GetItemBaseCount();
 
         Debug.Log($"Test 11: itemBases: {currentItemBases.Count}");
         Debug.Log($"Test 11: itemType: {itemType}");
 
-        var additionalCount = neighborItemBaseCount + currentItemBases.Count;
-        var totalSlots = neighborNode.GetTotalSlotsInNode();
+        var additionalCount = targetItemBaseCount + currentItemBases.Count;
+        var totalSlots = target.GetTotalSlotsInNode();
         additionalCount = additionalCount > totalSlots ? totalSlots : additionalCount; 
 
-        for (int indexJ = neighborItemBaseCount; indexJ < additionalCount; indexJ++) // TODO :: logic needs to be updated
+        for (int indexJ = targetItemBaseCount; indexJ < additionalCount; indexJ++) // TODO :: logic needs to be updated
         {
-            NodePlacementData nodePlacementData = neighborNode.RetrieveNodePlacementData(indexJ);
+            NodePlacementData nodePlacementData = target.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied) // change the state periodically
             {
-                var itemBase = currentItemBases[indexJ - neighborItemBaseCount];
-                itemBase.nodePlacementIndex = indexJ;
+                var itemBase = currentItemBases[indexJ - targetItemBaseCount];
                 tweener = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
+                // // itemBase.nodePlacementIndex = indexJ;
             }
         }
 
         tweener.OnComplete(() =>
         {
-            Debug.Log($"MoveMatchedSetToNeighbor OnComplete");
-            Debug.Log($"MoveMatchedSetToNeighbor OnComplete: currentSelectedNode :: name: {currentSelectedNode.transform.name}, pos: {currentSelectedNode.transform.position}");
-            Debug.Log($"MoveMatchedSetToNeighbor OnComplete: neighborNode :: name: {neighborNode.transform.name}, pos: {neighborNode.transform.position}");
+            Debug.Log($"MoveMatchedSetToTarget OnComplete");
+            Debug.Log($"MoveMatchedSetToTarget OnComplete: source :: name: {source.transform.name}, pos: {source.transform.position}");
+            Debug.Log($"MoveMatchedSetToTarget OnComplete: target :: name: {target.transform.name}, pos: {target.transform.position}");
 
-            currentSelectedNode.CheckIfNodeIsFullOrCleared();
-            neighborNode.CheckIfNodeIsFullOrCleared();
+            source.CheckIfNodeIsFullOrCleared();
+            target.CheckIfNodeIsFullOrCleared();
+            KillTweener();
+
         });
+        
+        void KillTweener()
+        {
+            tweener.Kill();
+        }
     }
 
     public void RearrangeBasedOnSorting(Node currentNode)

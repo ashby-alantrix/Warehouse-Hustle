@@ -14,12 +14,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private NodeManager nodeManager;
     private GoodsPlacementManager goodsPlacementManager;
 
-    private Queue<Tween> currentTweeners = new Queue<Tween>();
-    private Node prevSelectedNode = null, currentSelectedNode = null;
+    private Node currentSelectedNode = null;
 
-    private bool isLastKey = false;
+    private bool foundDifferentKey = false;
     public bool isInitialized = false;
-    private int tweeners = 3;
 
     public void Initialize()
     {
@@ -33,14 +31,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         Debug.Log($"Test4 --------------------------------------");
         Debug.Log($"Test4 CheckNeighbors of selectedNode.position: {selectedNode.transform.position}, {selectedNode.transform.name}");
 
-        if (!isInitialized)
-        {
-            prevSelectedNode = selectedNode;
-            isInitialized = true;
-        }
-        else
-            prevSelectedNode = currentSelectedNode;
-            
         currentSelectedNode = selectedNode;
         
         SetNodeManager();
@@ -81,20 +71,49 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 Debug.Log($"IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}, name: {neighborNode.transform.name}");
                 if (neighborNode.CheckIfSetItemMatches(currentItemKey, out goodsCount))
                 {
+                    UpdateSlotStates(neighborNode);
                     if (goodsCount == neighborNode.GetTotalSlotsInNode())
                         continue;
 
-                    itemsToMove = currentSelectedNode.GetGoodsSetCount(currentItemKey);
-                    Debug.Log($"CheckIfSetItemsMatchesWithNeighbor :: itemType: {currentItemKey}, itemsCountInNeighbor: {itemsToMove}");
-                    isLastKey = neighborNode.IsLastKey(currentItemKey);
+                    Debug.Log($"CheckIfSetItemsMatchesWithNeighbor :: itemType: {currentItemKey}");
+                    foundDifferentKey = neighborNode.IsThereDifferentKey(currentItemKey);
 
-                    if (neighborNode.HasEmptySlots(out availSlots))
+                    var goodsCountInSelectedNode = currentSelectedNode.GetGoodsSetCount(currentItemKey);
+                    var goodsCountInNeighbor = neighborNode.GetGoodsSetCount(currentItemKey);
+
+                    if (currentSelectedNode.GetSetKeysCount() < neighborNode.GetSetKeysCount() || goodsCountInSelectedNode > goodsCountInNeighbor)
                     {
-                        itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
-                        MoveMatchedSetToNeighbor(currentItemKey, neighborNode, itemsToMove);
+                        var slotsRemaining = currentSelectedNode.GetTotalSlotsInNode() - currentSelectedNode.GetGoodsSetCount(currentItemKey);
+                        if (currentSelectedNode.HasEmptySlots(out availSlots))// && slotsRemaining == availSlots)
+                        {
+                            itemsToMove = neighborNode.GetGoodsSetCount(currentItemKey);
+                            itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
+                            MoveMatchedSetFromSourceToTarget(currentItemKey, sourceNode: neighborNode, targetNode: currentSelectedNode, itemsToMove);
+                        }
+                        else
+                        {
+                            // if there are still no slots available, try to free up the slots
+                            // use a caching system
+                            break;
+                        }
                     }
+                    else
+                    {
+                        if (neighborNode.HasEmptySlots(out availSlots))
+                        {
+                            itemsToMove = currentSelectedNode.GetGoodsSetCount(currentItemKey);
+                            itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
+                            MoveMatchedSetFromSourceToTarget(currentItemKey, sourceNode: currentSelectedNode, targetNode: neighborNode, itemsToMove);
+                        }
+                        else
+                        {
+                            // if there are still no slots available, try to free up the slots
+                            // use a caching system
+                            break;
+                        }
+                    }
+                    
 
-                    // need to rearrange
                     currentSelectedNode.SortItemBases();
                     neighborNode.SortItemBases();
 
@@ -102,9 +121,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     goodsPlacementManager.RearrangeBasedOnSorting(neighborNode); // do on tween completion if needed
                     //goodsPlacementManager.RearrangeBasedOnSorting(neighborNode); // do on tween completion
 
-                    Debug.Log($"IsLastKey: {isLastKey}");
+                    Debug.Log($"IsLastKey: {foundDifferentKey}");
                     UpdateSlotStates(neighborNode);
-                    if (!isLastKey) // add a better check for recursive calls
+                    if (foundDifferentKey) // TODO :: add a better check for recursive calls
                     {
                         Debug.Log("Recursion: calling recursive function");
                         CheckNeighbors(neighborNode, true); // 1st call left here 
@@ -134,44 +153,19 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private Tween currentTweener = null;
 
-    private void MoveMatchedSetToNeighbor(ItemType itemType, Node neighborNode, int itemsCountInNeighbor)
+    private void MoveMatchedSetFromSourceToTarget(ItemType itemType, Node sourceNode, Node targetNode, int itemsCountInNeighbor)
     {
-        Debug.Log($"MoveMatchedSetToNeighbor {itemType}, {neighborNode.transform.name}, {itemsCountInNeighbor}");
-        currentSelectedNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
-        neighborNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
+        Debug.Log($"MoveMatchedSetToNeighbor {itemType}, {targetNode.transform.name}, {itemsCountInNeighbor}");
+        sourceNode.RemoveItemsDataFromNode(itemType, itemsCountInNeighbor);
+        targetNode.AddItemsDataToNode(itemType, itemsCountInNeighbor);
 
-        if (currentTweeners.Count > tweeners)
-            currentTweener = currentTweeners.Dequeue();
-
-        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, neighborNode, currentSelectedNode); //, out currentTweener);
+        goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(itemType, targetNode, sourceNode); //, out currentTweener);
 
         for (int indexJ = 0; indexJ < itemsCountInNeighbor; indexJ++)
         {
-            ItemBase removedItem = currentSelectedNode.RemoveFromItemBasesCollection(itemType);
+            ItemBase removedItem = sourceNode.RemoveFromItemBasesCollection(itemType);
             if (removedItem)
-                neighborNode.AddToItemBasesCollection(removedItem);
-        }
-
-        // currentTweener.OnComplete(() =>
-        // {
-        //     Debug.Log($"MoveMatchedSetToNeighbor OnComplete");
-        //     Debug.Log($"MoveMatchedSetToNeighbor OnComplete: currentSelectedNode :: name: {currentSelectedNode.transform.name}, pos: {currentSelectedNode.transform.position}");
-        //     Debug.Log($"MoveMatchedSetToNeighbor OnComplete: neighborNode :: name: {neighborNode.transform.name}, pos: {neighborNode.transform.position}");
-
-        //     currentSelectedNode.CheckIfNodeIsFullOrCleared();
-        //     neighborNode.CheckIfNodeIsFullOrCleared();
-        // });
-
-        AddTweenToQueue();
-
-        void AddTweenToQueue()
-        {
-            currentTweeners.Enqueue(currentTweener);
-        }
-
-        Tween DequeueTween()
-        {
-            return currentTweeners.Dequeue();
+                targetNode.AddToItemBasesCollection(removedItem);
         }
     }
 

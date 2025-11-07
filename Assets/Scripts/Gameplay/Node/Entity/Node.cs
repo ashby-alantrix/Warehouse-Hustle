@@ -9,6 +9,11 @@ using System;
 
 public class Node : MonoBehaviour
 {
+    [SerializeField] private Material occupiedMat;
+    [SerializeField] private Material unOccupiedMat;
+
+    [SerializeField] private MeshRenderer meshRenderer;
+
     [SerializeField] private int totalSlotsInNode = 12;
     [SerializeField] private Transform[] m_NodePlacements;
 
@@ -49,6 +54,11 @@ public class Node : MonoBehaviour
     {
         return goodsSetDict.Keys.ToList();
     }
+
+    public int GetSetKeysCount()
+    {
+        return goodsSetDict.Keys.Count;
+    }
     
     public void InitNodeManager(NodeManager nodeManager)
     {
@@ -73,14 +83,15 @@ public class Node : MonoBehaviour
         return goodsSetDict.ContainsKey(itemType);
     }
 
-    public bool IsLastKey(ItemType itemType)
+    public bool IsThereDifferentKey(ItemType itemType)
     {
         Debug.Log($"IsLastKey:: {itemType}");
         if (goodsSetDict.Count > 0)
         {
             Debug.Log($"IsLastKey:: goodsSetDict.Keys: " + goodsSetDict.Keys.Count);
             Debug.Log($"IsLastKey:: {itemType} == {goodsSetDict.Keys.Last()}");
-            return itemType == goodsSetDict.Keys.Last();
+            return itemType != goodsSetDict.Keys.Last();
+            return goodsSetDict.Keys.Contains(itemType);
         }
         else
         {
@@ -303,6 +314,7 @@ public class Node : MonoBehaviour
     public void SetNodeOccupiedState(bool state)
     {
         isNodeOccupied = state;
+        meshRenderer.material = isNodeOccupied ? occupiedMat : unOccupiedMat;
     }
     
     private void Awake()
@@ -338,7 +350,7 @@ public class Node : MonoBehaviour
         {
             // goodsSetDict.Clear();
             // itemBasesCollection.Clear();
-            Debug.Log($"Test13 items are empty");
+            Debug.Log($"MoveMatchedSetToTarget OnComplete items are empty");
             SetNodeOccupiedState(false);
         }
     }
@@ -368,4 +380,6 @@ public class Node : MonoBehaviour
         for (int index = 0; index < totalSlotsInNode; index++)
             m_NodePlacementDatas[index].isOccupied = index < itemsCount;
     }
+
+    
 }
