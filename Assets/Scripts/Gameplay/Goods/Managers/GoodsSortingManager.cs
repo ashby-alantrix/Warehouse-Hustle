@@ -81,7 +81,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     var goodsCountInSelectedNode = currentSelectedNode.GetGoodsSetCount(currentItemKey);
                     var goodsCountInNeighbor = neighborNode.GetGoodsSetCount(currentItemKey);
 
-                    if (currentSelectedNode.GetSetKeysCount() < neighborNode.GetSetKeysCount() || goodsCountInSelectedNode > goodsCountInNeighbor)
+                    if (currentSelectedNode.GetSetKeysCount() < neighborNode.GetSetKeysCount()) // || goodsCountInSelectedNode > goodsCountInNeighbor)
                     {
                         var slotsRemaining = currentSelectedNode.GetTotalSlotsInNode() - currentSelectedNode.GetGoodsSetCount(currentItemKey);
                         if (currentSelectedNode.HasEmptySlots(out availSlots))// && slotsRemaining == availSlots)

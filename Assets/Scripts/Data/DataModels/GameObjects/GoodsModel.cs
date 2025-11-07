@@ -3,12 +3,18 @@
 [System.Serializable]
 public enum ItemType
 {
-    Bullet = 0,
-    Armour = 1,
-    Weapon = 2,
-    Boots = 3,
+    Item1 = 0,
+    Item2 = 1,
+    Item3 = 2,
+    Item4 = 3,
+    Item5 = 4,
+    Item6 = 5,
+    Item7 = 6,
+    Item8 = 7,
+    Item9 = 8,
+    Item10 = 9,
 
-    MAX = 4
+    MAX = 10
 }
 
 public class GoodsModel
