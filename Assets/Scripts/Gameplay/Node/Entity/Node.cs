@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
+using Newtonsoft.Json;
 
 public class Node : MonoBehaviour
 {
@@ -67,6 +68,7 @@ public class Node : MonoBehaviour
 
     public bool CheckIfSetItemMatches(ItemType itemType, out int goodsCount)
     {
+        Debug.Log($"JsonData: {JsonConvert.SerializeObject(goodsSetDict)}");
         goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
         // Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
 
@@ -123,6 +125,8 @@ public class Node : MonoBehaviour
         var goodsDataSet = goodsManager.GoodsHandler.CurrentGoodsPlacer.GetGoodsDataSet();
         foreach (var data in goodsDataSet)
             AddItemsDataToNode(data.type, data.setCount);
+
+        Debug.Log($"goodsDataSetJson for {this.name}: {JsonConvert.SerializeObject(goodsDataSet)}");
     }
 
     #region NODE_DATA_UPDATION

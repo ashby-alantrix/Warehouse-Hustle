@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class GoodsInputPlatform : MonoBehaviour
@@ -87,7 +88,7 @@ public class GoodsInputPlatform : MonoBehaviour
     
     public void InitGoodsView(List<GoodsSet> goodsSet)
     {
-        Debug.Log($"### InitGoodsView: {goodsSet.Count}");
+        Debug.Log($"### InitGoodsView: goodsDataSetJson: {JsonConvert.SerializeObject(goodsSet)}");
         // this.goodsDataSet.Clear();
         this.goodsDataSet = goodsSet;
     }

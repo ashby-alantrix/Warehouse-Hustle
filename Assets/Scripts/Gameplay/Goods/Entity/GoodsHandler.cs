@@ -2,6 +2,7 @@ using DG.Tweening;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class GoodsSet
@@ -94,11 +95,46 @@ public class GoodsHandler : MonoBehaviour
 
     public void UpdateGoodsInputPlatform()
     {
-        currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
+        currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(nextGoodsPlacer.GetGoodsDataSet()));
 
         currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()));
 
         TweenNextObjectsToCurrentInputPlatform();
+    }
+
+    public void SwapInputPlatformsData()
+    {
+        var storedNextGoodsSet = new List<GoodsSet>(nextGoodsPlacer.GetGoodsDataSet()); //
+        var storedNextBaseObjects = new List<ItemBase>(nextGoodsPlacer.GetBaseObjects()); //
+
+        int count = currentGoodsPlacer.GetBaseObjectsCount();
+        Tween inputPlatformTween1 = null, inputPlatformTween2 = null;
+        ItemBase itemBase = null;
+
+        for (int index = 0; index < count; index++)
+        {
+            itemBase = currentGoodsPlacer.GetItemBasedOnIndex(index);
+            inputPlatformTween1 = itemBase.transform.DOMove(
+                nextGoodsPlacer.GetSpawnPointTransform(index).position,
+                1f
+            );
+        }
+
+        nextGoodsPlacer.InitGoodsView(new List<GoodsSet>(currentGoodsPlacer.GetGoodsDataSet()));
+        nextGoodsPlacer.SetBaseObjects(new List<ItemBase>(currentGoodsPlacer.GetBaseObjects()));
+
+        count = storedNextBaseObjects.Count;
+        for (int index = 0; index < count; index++)
+        {
+            itemBase = storedNextBaseObjects[index];
+            inputPlatformTween2 = itemBase.transform.DOMove(
+                currentGoodsPlacer.GetSpawnPointTransform(index).position,
+                1f
+            );
+        }
+
+        currentGoodsPlacer.InitGoodsView(new List<GoodsSet>(storedNextGoodsSet));
+        currentGoodsPlacer.SetBaseObjects(new List<ItemBase>(storedNextBaseObjects));
     }
 
     private void UpdateNextInputGoods()

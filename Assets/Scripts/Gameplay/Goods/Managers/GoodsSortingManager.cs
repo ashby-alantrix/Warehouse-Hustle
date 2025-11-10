@@ -69,7 +69,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             if (isNeighborsNodeAvailable)
             {
                 Debug.Log($"IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}, name: {neighborNode.transform.name}");
-                if (neighborNode.CheckIfSetItemMatches(currentItemKey, out goodsCount))
+                var matchFound = neighborNode.CheckIfSetItemMatches(currentItemKey, out goodsCount);
+                Debug.Log($"CheckIfSetItemMatches :: currentItemKey: {currentItemKey}, goodsCount: {goodsCount}");
+                if (matchFound)
                 {
                     UpdateSlotStates(neighborNode);
                     if (goodsCount == neighborNode.GetTotalSlotsInNode())
@@ -81,11 +83,15 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     var goodsCountInSelectedNode = currentSelectedNode.GetGoodsSetCount(currentItemKey);
                     var goodsCountInNeighbor = neighborNode.GetGoodsSetCount(currentItemKey);
 
-                    if (currentSelectedNode.GetSetKeysCount() < neighborNode.GetSetKeysCount()) // || goodsCountInSelectedNode > goodsCountInNeighbor)
+                    Debug.Log($"currentSelectedNode.GetSetKeysCount(): {currentSelectedNode.GetSetKeysCount()}, neighborNode.GetSetKeysCount(): {neighborNode.GetSetKeysCount()}");
+                    if (currentSelectedNode.GetSetKeysCount() <= neighborNode.GetSetKeysCount()) // || goodsCountInSelectedNode > goodsCountInNeighbor)
                     {
                         var slotsRemaining = currentSelectedNode.GetTotalSlotsInNode() - currentSelectedNode.GetGoodsSetCount(currentItemKey);
+
+                        Debug.Log($"current selected node has less keys");
                         if (currentSelectedNode.HasEmptySlots(out availSlots))// && slotsRemaining == availSlots)
                         {
+                            Debug.Log($"current selected node has empty slots");
                             itemsToMove = neighborNode.GetGoodsSetCount(currentItemKey);
                             itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
                             MoveMatchedSetFromSourceToTarget(currentItemKey, sourceNode: neighborNode, targetNode: currentSelectedNode, itemsToMove);
