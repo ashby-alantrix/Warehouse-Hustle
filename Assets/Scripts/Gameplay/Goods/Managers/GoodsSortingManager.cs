@@ -9,7 +9,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private GoodsPlacementManager goodsPlacementManager;
 
     private Node currentSelectedNode = null;
-    private Dictionary<ItemType, HashSet<string>> connectedNodesDict = new Dictionary<ItemType, HashSet<string>>();
+    private Dictionary<ItemType, List<string>> connectedNodesDict = new Dictionary<ItemType, List<string>>();
 
     private bool foundDifferentKey = false;
     public bool isInitialized = false;
@@ -34,6 +34,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         {
             InitializeConnectedNodesForItem(key);
         }
+
+        foreach (var key in currentNodesSetKeys)
+        {
+            CheckConnectedNodes(key);
+        }
     }
     
     private void InitializeConnectedNodesForItem(ItemType setItemKey)
@@ -45,7 +50,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         for (int indexI = 0; indexI < neighborsCount; indexI++)
         {
-            isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid($"{currentSelectedNode.GetNeighborHexOffset(indexI)}", out Node neighborNode);
+            isNeighborsNodeAvailable = nodeManager.IsNodeAvailableInGrid($"{currentSelectedNode.GetNeighborHexOffset(indexI)}", out Node neighborNode);
             if (isNeighborsNodeAvailable && neighborNode.HasGoodsSet(setItemKey))
             {
                 StoreConnectedNodesForEachType(setItemKey, $"{currentSelectedNode.GetNeighborHexOffset(indexI)}");
@@ -55,23 +60,111 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public void StoreConnectedNodesForEachType(ItemType setItemKey, string nodePosStr)
     {
-        if (connectedNodesDict.ContainsKey(setItemKey))
+        if (connectedNodesDict.ContainsKey(setItemKey) && !connectedNodesDict[setItemKey].Contains(nodePosStr))
         {
             connectedNodesDict[setItemKey].Add(nodePosStr);
         }
         else
         {
-            connectedNodesDict.Add(setItemKey, new HashSet<string>() { nodePosStr });
+            connectedNodesDict.Add(setItemKey, new List<string>() { nodePosStr });
         }
     }
 
     private Node firstNode = null, secondNode = null;
+    private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
 
-    private void CheckConnectedNodes(ItemType setItemKey)
+    private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
-        if (connectedNodesDict.ContainsKey(setItemKey) && connectedNodesDict[setItemKey].Count <= 1) return;
 
+        if (!connectedNodesDict.ContainsKey(currentSetItemKey))
+        {
+            Debug.LogError($"Connected nodes dictionary doesn't contain setItemKey: {currentSetItemKey}");
+            return;
+        }
 
+        if (connectedNodesDict.ContainsKey(currentSetItemKey) && connectedNodesDict[currentSetItemKey].Count <= 1)
+        {
+            connectedNodesDict[currentSetItemKey].Clear();
+            return;
+        }
+
+        nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][0], out firstNode);
+        nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][1], out secondNode);
+
+        if (firstNode.HasEmptySlots(out currentAvailSlots)) // if firstNode has slots THEN 
+        {
+            itemsToMove = secondNode.GetGoodsSetCount(currentSetItemKey);
+            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
+
+            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: secondNode, targetNode: firstNode, itemsToMove);
+
+            if (firstNode.HasCachedData())
+            {
+                UpdateSecondNodeWithCachedData(firstNode.GetCachedData()); // TODO :: Finish up rem logic
+            }
+        }
+        else if (firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
+        {
+            cacheCount = Mathf.Min(firstNode.GetGoodsSetCount(otherSetItemKey), secondNode.GetGoodsSetCount(currentSetItemKey));
+            firstNode.StoreCachedData(cacheCount, otherSetItemKey);
+            firstNode.FreeUpGoodsSet(cacheCount, otherSetItemKey);
+        }
+        // else if () // recursing for another key if firstNode runs out of empty slots
+        // {
+
+        // }
+        else if (secondNode.HasEmptySlots(out currentAvailSlots))
+        {
+            itemsToMove = firstNode.GetGoodsSetCount(currentSetItemKey);
+            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
+
+            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: firstNode, targetNode: secondNode, itemsToMove);
+
+            if (secondNode.HasCachedData())
+            {
+                UpdateFirstNodeWithCachedData(secondNode.GetCachedData()); // TODO :: Finish up rem logic
+            }
+        }
+        else
+        {
+
+        }
+
+        UpdateConnectedNodeStates();
+    }
+
+    private void UpdateFirstNodeWithCachedData(int cachedData)
+    {
+
+    }
+
+    private void UpdateSecondNodeWithCachedData(int cachedData)
+    {
+
+    }
+    
+    private void UpdateConnectedNodeStates()
+    {
+        // foreach node in connectedNodes
+        // var isFilled = node.IsFilled
+        // var nodeHasNoItem = !node.Contain(itemKey)
+        // var isNodeEmpty = node.IsEmpty()
+
+        // if (isFilled || nodeHasNoItem || isNodeEmpty)
+        // {   
+        // remove(node) from dictionary for that particular type
+        // if (node has an item type which is present in dictionary but not added to hashset) // when nodes are rearranged the items could go on to nodes that weren't previously added onto the connectedNodes list.
+        //     add node to hashset for that particular itemType
+        // if (isNodeEmpty)
+        //     // check the dictionary to see which types have this node in their hashset and if node is present remove it.
+
+        // }
+
+        bool isFilled, nodeHasNoItem, isNodeEmpty;
+        foreach (var connectedNodeSet in connectedNodesDict)
+        {
+            // isFilled = connectedNodeSet
+        }
     }
 
     #region OLD FLOW FOR SORTING AND MERGING
@@ -113,7 +206,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             Debug.Log($"currentSelectedNode.name: {currentSelectedNode.transform.name}");
             Debug.Log($"NeighborsCount: {currentSelectedNode.GetNeighborsCount()}");
             Debug.Log($"NeighborsIndex: {index}");
-            var isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid(currentSelectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
+            var isNeighborsNodeAvailable = nodeManager.IsNodeAvailableInGrid(currentSelectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
             Debug.Log($"IsNeighborNodeAvailable: {isNeighborsNodeAvailable}");
             if (isNeighborsNodeAvailable)
             {

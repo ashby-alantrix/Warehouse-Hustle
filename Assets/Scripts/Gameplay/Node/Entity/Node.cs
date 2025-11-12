@@ -26,6 +26,7 @@ public class Node : MonoBehaviour
 
     private Dictionary<ItemType, int> goodsSetDict = new Dictionary<ItemType, int>();
     private Dictionary<ItemType, List<ItemBase>> itemBasesCollection = new Dictionary<ItemType, List<ItemBase>>();
+    private Dictionary<ItemType, int> cachedGoodsSet = new Dictionary<ItemType, int>();
 
     public Dictionary<ItemType, List<ItemBase>> ItemBasesCollection => itemBasesCollection;
 
@@ -47,6 +48,51 @@ public class Node : MonoBehaviour
 
         availSlots = totalSlotsInNode - totalSlotsOccupied;
         return availSlots != 0;
+    }
+
+    public bool HasCachedData()
+    {
+        return false;
+    }
+
+    public int GetCachedData() // TODO :: change return type and data to send back here
+    {
+        return 0;
+    }
+
+    public void StoreCachedData(int cacheCount, ItemType otherSetItemKey)
+    {
+        // store the goods set 
+        // store the item bases
+        if (!cachedGoodsSet.ContainsKey(otherSetItemKey))
+            cachedGoodsSet.Add(otherSetItemKey, cacheCount);
+    }
+
+    public void FreeUpGoodsSet(int cacheCount, ItemType otherSetItemKey)
+    {
+        if (goodsSetDict.ContainsKey(otherSetItemKey))
+        {
+            goodsSetDict[otherSetItemKey] -= cacheCount;
+        }
+    }
+
+    public bool GetNextKeyAfterCurrent(ItemType currentType, out ItemType itemType)
+    {
+        foreach (var goodSet in goodsSetDict)
+        {
+            if (goodSet.Key == currentType)
+            {
+                continue;
+            }
+            else
+            {
+                itemType = goodSet.Key;
+                return true;
+            }
+        }
+
+        itemType = ItemType.MAX;
+        return false;
     }
 
     public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;
@@ -386,6 +432,4 @@ public class Node : MonoBehaviour
         for (int index = 0; index < totalSlotsInNode; index++)
             m_NodePlacementDatas[index].isOccupied = index < itemsCount;
     }
-
-    
 }
