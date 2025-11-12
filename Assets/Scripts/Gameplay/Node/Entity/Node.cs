@@ -294,6 +294,8 @@ public class Node : MonoBehaviour
         return neighborsHexOffsets[index];
     }
 
+    public string GetNodePos() => $"{transform.position}";
+
     public void AddNeighborsData(Vector3 hexOffset)
     {
         neighborsHexOffsets.Add(hexOffset);

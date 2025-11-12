@@ -32,6 +32,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         {
             canPlaceGoods = true;
             Debug.Log($"OnNodeClicked: nodesMoverTween.OnComplete :: name: {selectedNode.transform.name}, canPlaceGoods: {canPlaceGoods}");
+            // goodsSortingManager.CheckNeighbors(selectedNode);
             goodsSortingManager.CheckNeighbors(selectedNode);
         });
     }

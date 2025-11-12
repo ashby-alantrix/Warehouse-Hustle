@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
@@ -15,6 +9,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private GoodsPlacementManager goodsPlacementManager;
 
     private Node currentSelectedNode = null;
+    private Dictionary<ItemType, HashSet<string>> connectedNodesDict = new Dictionary<ItemType, HashSet<string>>();
 
     private bool foundDifferentKey = false;
     public bool isInitialized = false;
@@ -26,13 +21,67 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public Node GetCurrentSelectedNode() => currentSelectedNode;
 
+    public void CheckNeighbors(Node selectedNode)
+    {
+        SetNodeManager();
+        currentSelectedNode = selectedNode;
+
+        var currentNodesSetKeys = selectedNode.GetSetKeys();
+        foreach (var key in currentNodesSetKeys)
+            Debug.Log($"each key: {key}");
+
+        foreach (var key in currentNodesSetKeys) // . // o // *
+        {
+            InitializeConnectedNodesForItem(key);
+        }
+    }
+    
+    private void InitializeConnectedNodesForItem(ItemType setItemKey)
+    {
+        int neighborsCount = currentSelectedNode.GetNeighborsCount();
+        bool isNeighborsNodeAvailable = false;
+
+        StoreConnectedNodesForEachType(setItemKey, currentSelectedNode.GetNodePos());
+
+        for (int indexI = 0; indexI < neighborsCount; indexI++)
+        {
+            isNeighborsNodeAvailable = nodeManager.IsNeighborNodeAvailableInGrid($"{currentSelectedNode.GetNeighborHexOffset(indexI)}", out Node neighborNode);
+            if (isNeighborsNodeAvailable && neighborNode.HasGoodsSet(setItemKey))
+            {
+                StoreConnectedNodesForEachType(setItemKey, $"{currentSelectedNode.GetNeighborHexOffset(indexI)}");
+            }
+        }
+    }
+
+    public void StoreConnectedNodesForEachType(ItemType setItemKey, string nodePosStr)
+    {
+        if (connectedNodesDict.ContainsKey(setItemKey))
+        {
+            connectedNodesDict[setItemKey].Add(nodePosStr);
+        }
+        else
+        {
+            connectedNodesDict.Add(setItemKey, new HashSet<string>() { nodePosStr });
+        }
+    }
+
+    private Node firstNode = null, secondNode = null;
+
+    private void CheckConnectedNodes(ItemType setItemKey)
+    {
+        if (connectedNodesDict.ContainsKey(setItemKey) && connectedNodesDict[setItemKey].Count <= 1) return;
+
+
+    }
+
+    #region OLD FLOW FOR SORTING AND MERGING
     public void CheckNeighbors(Node selectedNode, bool useDebug = false)
     {
         Debug.Log($"Test4 --------------------------------------");
         Debug.Log($"Test4 CheckNeighbors of selectedNode.position: {selectedNode.transform.position}, {selectedNode.transform.name}");
 
         currentSelectedNode = selectedNode;
-        
+
         SetNodeManager();
         SetGoodsPlacementManager();
 
@@ -150,6 +199,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             }
         }
     }
+    #endregion 
 
     private void UpdateSlotStates(Node neighborNode)
     {
