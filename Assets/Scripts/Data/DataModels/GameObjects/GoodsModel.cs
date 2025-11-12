@@ -9,12 +9,12 @@ public enum ItemType
     Item4 = 3,
     Item5 = 4,
     Item6 = 5,
-    Item7 = 6,
-    Item8 = 7,
-    Item9 = 8,
-    Item10 = 9,
+    // Item7 = 6,
+    // Item8 = 7,
+    // Item9 = 8,
+    // Item10 = 9,
 
-    MAX = 10
+    MAX = 6
 }
 
 public class GoodsModel
