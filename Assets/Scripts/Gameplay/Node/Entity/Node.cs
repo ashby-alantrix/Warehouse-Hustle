@@ -96,6 +96,8 @@ public class Node : MonoBehaviour
 
     public bool GetNextKeyAfterCurrent(ItemType currentType, out ItemType itemType)
     {
+        Debug.Log($"GetNextKeyAfterCurrent");
+        Debug.Log($"goodsSetDict: {goodsSetDict.Count}");
         foreach (var goodSet in goodsSetDict)
         {
             if (goodSet.Key == currentType)
@@ -105,11 +107,14 @@ public class Node : MonoBehaviour
             else
             {
                 itemType = goodSet.Key;
+                Debug.Log($"currentType: {currentType}, itemType: {itemType}");
                 return true;
             }
         }
 
         itemType = ItemType.MAX;
+
+        Debug.Log($"currentType: {currentType}, itemType: {itemType}");
         return false;
     }
 
@@ -205,11 +210,8 @@ public class Node : MonoBehaviour
 
     public bool IsThereDifferentKey(ItemType itemType)
     {
-        Debug.Log($"IsLastKey:: {itemType}");
         if (goodsSetDict.Count > 0)
         {
-            Debug.Log($"IsLastKey:: goodsSetDict.Keys: " + goodsSetDict.Keys.Count);
-            Debug.Log($"IsLastKey:: {itemType} == {goodsSetDict.Keys.Last()}");
             return itemType != goodsSetDict.Keys.Last();
             return goodsSetDict.Keys.Contains(itemType);
         }
@@ -300,7 +302,6 @@ public class Node : MonoBehaviour
         foreach (var data in goodsDataSet)
             AddItemsDataToNode(data.type, data.setCount);
 
-        Debug.Log($"goodsDataSetJson for {this.name}: {JsonConvert.SerializeObject(goodsDataSet)}");
     }
 
     #region NODE_DATA_UPDATION
@@ -344,9 +345,7 @@ public class Node : MonoBehaviour
             else //if (availCount == itemsToRemoveCount)
             {
                 // TODO :: double check condition
-                Debug.Log($"### Removing item type :: availCount: {availCount}, itemsToRemoveCount: {itemsToRemoveCount}");
                 goodsSetDict.Remove(itemType);
-                Debug.Log($"goodsSetDict.ContainsKey: {goodsSetDict.ContainsKey(itemType)}");
             }
         }
     }
@@ -357,14 +356,10 @@ public class Node : MonoBehaviour
         itemBasesCollection.Clear();
         goodsSetDict.Clear();
 
-        Debug.Log($"Iteration: sortedDict: {sortedDict.Count()}");
-
         foreach (var sortedItem in sortedDict)
         {
             itemBasesCollection.Add(sortedItem.Key, sortedItem.Value);
             goodsSetDict.Add(sortedItem.Key, sortedItem.Value.Count);
-
-            Debug.Log($"Iteration: sortedItem: {sortedItem.Key}, sortedItem.Value: {sortedItem.Value.Count}");
         }
     }
 
@@ -397,6 +392,7 @@ public class Node : MonoBehaviour
         Debug.Log($"ItemToRemove: {itemBasesCollection.Count}");
         ItemBase itemToRemove = itemBasesCollection[itemType][0];
         itemBasesCollection[itemType].RemoveAt(0);
+        Debug.Log($"ItemType based count: {itemBasesCollection[itemType].Count}");
 
         if (itemBasesCollection[itemType].Count == 0)
         {
@@ -442,11 +438,9 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Debug.Log($"OnNodeClicked: OnMouseDown() :: name: {transform.name}, isNodeOccupied: {isNodeOccupied}");
 
         if (!isNodeOccupied) // game's not over
         {
-            Debug.Log($"OnNodeClicked: nodeManager.OnNodeClicked :: name: {transform.name}, isNodeOccupied: {isNodeOccupied}");
             nodeManager.OnNodeClicked(this);
         }
     }
@@ -455,6 +449,7 @@ public class Node : MonoBehaviour
     {
         isNodeOccupied = state;
         meshRenderer.material = isNodeOccupied ? occupiedMat : unOccupiedMat;
+        Debug.Log($"SetNodeOccupiedState: {isNodeOccupied}");
     }
     
     private void Awake()
@@ -474,11 +469,10 @@ public class Node : MonoBehaviour
     {
         var itemBaseCount = GetItemBaseCount();
 
-        Debug.Log($"itemBasesCollection.Count: {itemBasesCollection.Count}");
+        Debug.Log($"Nodename: {this.name}, itemBaseCount: {itemBaseCount}");
 
         if (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount)
         {
-            Debug.Log($"Pushing nodes back to pool");
             SetObjectPoolManager();
             OnNodeFull(); // TODO :: temporary logic, update with loading onto to truck
 
@@ -490,7 +484,6 @@ public class Node : MonoBehaviour
         {
             // goodsSetDict.Clear();
             // itemBasesCollection.Clear();
-            Debug.Log($"MoveMatchedSetToTarget OnComplete items are empty");
             SetNodeOccupiedState(false);
         }
     }

@@ -16,6 +16,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private bool foundDifferentKey = false;
     public bool isInitialized = false;
 
+    private Node firstNode = null, secondNode = null;
+    private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<GoodsSortingManager>(this);
@@ -62,7 +65,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         bool isNeighborsNodeAvailable = false;
 
         StoreConnectedNodesForEachType(setItemKey, currentSelectedNode.GetNodePos());
-        Debug.Log($"#### :: SetItemKey: {setItemKey}, currentSelectedNode: {currentSelectedNode.name}");
 
         for (int indexI = 0; indexI < neighborsCount; indexI++)
         {
@@ -70,35 +72,34 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             if (isNeighborsNodeAvailable && neighborNode.HasGoodsSet(setItemKey))
             {
                 StoreConnectedNodesForEachType(setItemKey, $"{currentSelectedNode.GetNeighborHexOffset(indexI)}");
-                Debug.Log($"#### :: SetItemKey: {setItemKey}, neighborNode: {neighborNode.name}");
             }
         }
     }
 
     public void StoreConnectedNodesForEachType(ItemType setItemKey, string nodePosStr)
     {
-        if (connectedNodesDict.ContainsKey(setItemKey) && !connectedNodesDict[setItemKey].Contains(nodePosStr))
+        if (!connectedNodesDict.ContainsKey(setItemKey))
+        {
+            Debug.Log($"connectedNodesDict: {connectedNodesDict.ContainsKey(setItemKey)}");
+            connectedNodesDict.Add(setItemKey, new List<string>() { nodePosStr });
+        }
+        else if (!connectedNodesDict[setItemKey].Contains(nodePosStr))
         {
             connectedNodesDict[setItemKey].Add(nodePosStr);
         }
-        else
-        {
-            connectedNodesDict.Add(setItemKey, new List<string>() { nodePosStr });
-        }
     }
-
-    private Node firstNode = null, secondNode = null;
-    // private bool firstNodeHasCachedData = false, foundCachedDataForSecondNode = false;
-    private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
 
     private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
+        Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");
         if (!connectedNodesDict.ContainsKey(currentSetItemKey))
         {
             Debug.LogError($"Connected nodes dictionary doesn't contain setItemKey: {currentSetItemKey}");
             return;
         }
 
+        Debug.Log($"::: connectedNodesDict.ContainsKey(currentSetItemKey): {connectedNodesDict.ContainsKey(currentSetItemKey)}");
+        Debug.Log($"::: connectedNodesDict[currentSetItemKey].Count: {connectedNodesDict[currentSetItemKey].Count}");
         if (connectedNodesDict.ContainsKey(currentSetItemKey) && connectedNodesDict[currentSetItemKey].Count <= 1)
         {
             connectedNodesDict[currentSetItemKey].Clear();
@@ -107,9 +108,43 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][0], out firstNode);
         nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][1], out secondNode);
-        
-        if (firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
+
+        if (firstNode.HasEmptySlots(out currentAvailSlots) && firstNode.GetSetKeys().Count < secondNode.GetSetKeys().Count) // if firstNode has slots THEN 
         {
+            Debug.Log($"Second condition :: First node has empty slots: {firstNode.name}, {currentAvailSlots}");
+            itemsToMove = secondNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
+            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
+            Debug.Log($"itemsToMove: {itemsToMove}");
+
+            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: secondNode, targetNode: firstNode, itemsToMove); // tween op
+            SortAndRearrangeFirstAndSecondNode(); // tween op
+
+            // DO the logic below only after the tweening is complete from sorting
+            if (firstNode.HasCachedData() && secondNode.HasCachedDataRef(firstNode.GetCachedKeys(), out ItemType foundKey))
+            {
+                Debug.Log($"Has cached data");
+                UpdateSecondNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
+            }
+        }
+        else if (secondNode.HasEmptySlots(out currentAvailSlots))
+        {
+            Debug.Log($"Fourth condition :: First node has empty slots: {secondNode.name}");
+            itemsToMove = firstNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
+            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
+
+            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: firstNode, targetNode: secondNode, itemsToMove);
+            SortAndRearrangeFirstAndSecondNode();
+
+            if (secondNode.HasCachedData() && firstNode.HasCachedDataRef(secondNode.GetCachedKeys(), out ItemType foundKey))
+            {
+                UpdateFirstNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
+            }
+        }
+        else if (firstNode.GetSetKeys().Count > 1 && firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
+        {
+            Debug.Log($"First condition, otherSetItemKey: {otherSetItemKey}, firstNode: {firstNode.name}");
+            Debug.Log($"First condition, setcount: {firstNode.GetSetKeys().Count}");
+
             cacheCount = Mathf.Min(firstNode.GetGoodsSetCountForSpecificItem(otherSetItemKey), secondNode.GetGoodsSetCountForSpecificItem(currentSetItemKey));
 
             firstNode.StoreCachedData(otherSetItemKey, cacheCount);
@@ -122,45 +157,19 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             goodsPlacementManager.RearrangeBasedOnSorting(firstNode); // tween op
             firstNode.UpdateOccupiedSlotsState();
         }
-        else if (firstNode.HasEmptySlots(out currentAvailSlots)) // if firstNode has slots THEN 
-        {
-            itemsToMove = secondNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
-            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
-
-            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: secondNode, targetNode: firstNode, itemsToMove); // tween op
-            SortAndRearrangeFirstAndSecondNode(); // tween op
-
-            // DO the logic below only after the tweening is complete from sorting
-            if (firstNode.HasCachedData() && secondNode.HasCachedDataRef(firstNode.GetCachedKeys(), out ItemType foundKey))
-            {
-                UpdateSecondNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
-            }
-        }
         else if (GetFirstOtherMatchingKeyBetweenNodes(currentSetItemKey, out ItemType otherMatchingItemKey) 
                 && secondNode.HasEmptySlots(out int availSlots) && availSlots == firstNode.GetGoodsSetCountForSpecificItem(otherMatchingItemKey)) // recursing for another key if firstNode runs out of empty slots
         {
+            Debug.Log($"Third condition :: Found matching key between sets");
             CheckConnectedNodes(otherMatchingItemKey);
-        }
-        else if (secondNode.HasEmptySlots(out currentAvailSlots))
-        {
-            itemsToMove = firstNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
-            itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
-
-            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: firstNode, targetNode: secondNode, itemsToMove);
-            SortAndRearrangeFirstAndSecondNode();
-
-            if (secondNode.HasCachedData() && firstNode.HasCachedDataRef(secondNode.GetCachedKeys(), out ItemType foundKey))
-            {
-                UpdateFirstNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
-            }
         }
         else if (secondNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey1) && firstNode.HasGoodsSet(currentSetItemKey)) // TODO :: Double check this case, could be useful if both first and second node is full
         {
-            Debug.LogError($"CheckConnectedNodes :: double check this logic...");
+            Debug.LogError($"Fifth condition: CheckConnectedNodes :: double check this logic...");
         }
         else
         {
-            Debug.LogError($"CheckConnectedNodes :: no op...");
+            Debug.LogError($"Sixth condition: CheckConnectedNodes :: no op...");
         }
 
         UpdateConnectedNodeStates(currentSetItemKey);
@@ -197,6 +206,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         goodsPlacementManager.RearrangeBasedOnSorting(firstNode); // do on tween completion if needed
         goodsPlacementManager.RearrangeBasedOnSorting(secondNode);
+
+        firstNode.UpdateOccupiedSlotsState();
+        secondNode.UpdateOccupiedSlotsState();
     }
 
     private void UpdateFirstNodeWithCachedData(ItemType cachedKey)
@@ -228,10 +240,15 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         int cacheCount = firstNode.GetCachedData(cachedKey);
         if (secondNode.HasEmptySlots(out int availSlots))
         {
+            Debug.Log($"Second node availSlots: {availSlots}, cachedKey: {cachedKey}");
             availSlots = cacheCount > availSlots ? availSlots : cacheCount;
+            Debug.Log($"updated availSlots: {availSlots}");
 
             firstNode.RemoveItemsDataFromCachedData(cachedKey, availSlots);
+
+            Debug.Log($"before goods update: " + secondNode.GetGoodsSetCountForSpecificItem(cachedKey));
             secondNode.AddItemsDataToNode(cachedKey, availSlots);
+            Debug.Log($"after goods update: " + secondNode.GetGoodsSetCountForSpecificItem(cachedKey));
 
             goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(cachedKey, target: secondNode, source: firstNode, hasCachedKey: true); // rearranging using item bases
 
@@ -266,6 +283,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
                 if (isFilled || nodeHasNoItem || isNodeEmpty)
                 {
+                    Debug.Log($"UpdateConnectedNodeStates: {isFilled}, {nodeHasNoItem}, {isNodeEmpty}");
                     currentSetKeys[indexer++] = nodePosStr;
 
                     UpdateConnectedStateInOtherNodes(nodeHasNoItem, isNodeEmpty, nodePosStr);

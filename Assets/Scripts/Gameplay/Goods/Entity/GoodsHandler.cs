@@ -139,7 +139,6 @@ public class GoodsHandler : MonoBehaviour
 
     private void UpdateNextInputGoods()
     {
-        Debug.Log($"{name}.UpdateNextInputGoods :: ");
         InitGoods();
         nextGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
         nextGoodsPlacer.PlaceGoods();

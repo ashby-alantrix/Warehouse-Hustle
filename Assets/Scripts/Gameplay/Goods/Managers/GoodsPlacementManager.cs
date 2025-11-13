@@ -25,13 +25,11 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         var totalItems = selectedNode.GetItemBaseCount();
 
         canPlaceGoods = false;
-        Debug.Log($"OnNodeClicked: PlaceGoodsInsideNode :: name: {selectedNode.transform.name}, canPlaceGoods: {canPlaceGoods}");
         IterateAndMoveNodesUsingDictionary(selectedNode, totalItems, ref nodesMoverTween);
 
         nodesMoverTween.OnComplete(() =>
         {
             canPlaceGoods = true;
-            Debug.Log($"OnNodeClicked: nodesMoverTween.OnComplete :: name: {selectedNode.transform.name}, canPlaceGoods: {canPlaceGoods}");
             // goodsSortingManager.CheckNeighbors(selectedNode);
             goodsSortingManager.CheckNeighbors(selectedNode);
         });
@@ -86,9 +84,13 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         var totalSlots = target.GetTotalSlotsInNode();
         additionalCount = additionalCount > totalSlots ? totalSlots : additionalCount; 
 
+        Debug.Log($"Test 11: targetItemBaseCount: {targetItemBaseCount}");
+        Debug.Log($"Test 11: additionalCount: {additionalCount}");
+
         for (int indexJ = targetItemBaseCount; indexJ < additionalCount; indexJ++) // TODO :: logic needs to be updated
         {
             NodePlacementData nodePlacementData = target.RetrieveNodePlacementData(indexJ);
+            Debug.Log($"nodePlacementData.isOccupied: {nodePlacementData.isOccupied}");
             if (!nodePlacementData.isOccupied) // change the state periodically
             {
                 itemBase = currentItemBases[indexJ - targetItemBaseCount];
@@ -102,8 +104,10 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
             Debug.Log($"MoveMatchedSetToTarget OnComplete: source :: name: {source.transform.name}, pos: {source.transform.position}");
             Debug.Log($"MoveMatchedSetToTarget OnComplete: target :: name: {target.transform.name}, pos: {target.transform.position}");
 
+
             source.CheckIfNodeIsFullOrCleared();
             target.CheckIfNodeIsFullOrCleared();
+
             KillTweener();
 
         });
