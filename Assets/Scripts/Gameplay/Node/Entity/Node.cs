@@ -10,13 +10,14 @@ using Newtonsoft.Json;
 
 public class Node : MonoBehaviour
 {
+    #region Variables or objects
     [SerializeField] private Material occupiedMat;
     [SerializeField] private Material unOccupiedMat;
 
     [SerializeField] private MeshRenderer meshRenderer;
 
-    [SerializeField] private int totalSlotsInNode = 12;
     [SerializeField] private Transform[] m_NodePlacements;
+    [SerializeField] private int totalSlotsInNode = 12;
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
@@ -24,15 +25,26 @@ public class Node : MonoBehaviour
     private NodePlacementData[] m_NodePlacementDatas;
     private List<Vector3> neighborsHexOffsets = new List<Vector3>();
 
+    #region Dictionaries for item data collection
+
     private Dictionary<ItemType, int> goodsSetDict = new Dictionary<ItemType, int>();
     private Dictionary<ItemType, List<ItemBase>> itemBasesCollection = new Dictionary<ItemType, List<ItemBase>>();
     private Dictionary<ItemType, int> cachedGoodsSet = new Dictionary<ItemType, int>();
+    private Dictionary<ItemType, List<ItemBase>> cachedItemBases = new Dictionary<ItemType, List<ItemBase>>();
 
-    public Dictionary<ItemType, List<ItemBase>> ItemBasesCollection => itemBasesCollection;
+    #endregion
 
+    #region Managers
     private NodeManager nodeManager;
     private GoodsManager goodsManager;
     private ObjectPoolManager objectPoolManager;
+
+    #endregion
+
+    #endregion
+
+    #region Getter methods
+    public Dictionary<ItemType, List<ItemBase>> GetItemBasesCollection => itemBasesCollection;
 
     public int GetItemTypeCount() => goodsSetDict.Count;
 
@@ -52,28 +64,34 @@ public class Node : MonoBehaviour
 
     public bool HasCachedData()
     {
-        return false;
+        return cachedGoodsSet.Count > 0; // TODO :: Improve the check if req while moving forward
     }
 
-    public int GetCachedData() // TODO :: change return type and data to send back here
+    public ItemType[] GetCachedKeys()
     {
-        return 0;
+        return cachedGoodsSet.Keys.ToArray();
     }
 
-    public void StoreCachedData(int cacheCount, ItemType otherSetItemKey)
+    public int GetCachedData(ItemType matchType) // TODO :: change return type and data to send back here
     {
-        // store the goods set 
-        // store the item bases
-        if (!cachedGoodsSet.ContainsKey(otherSetItemKey))
-            cachedGoodsSet.Add(otherSetItemKey, cacheCount);
+        return cachedGoodsSet[matchType];
     }
 
-    public void FreeUpGoodsSet(int cacheCount, ItemType otherSetItemKey)
+    public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;
+
+    public List<ItemType> GetSetKeys()
     {
-        if (goodsSetDict.ContainsKey(otherSetItemKey))
-        {
-            goodsSetDict[otherSetItemKey] -= cacheCount;
-        }
+        return goodsSetDict.Keys.ToList();
+    }
+
+    public int GetSetKeysCount()
+    {
+        return goodsSetDict.Keys.Count;
+    }
+
+    public List<ItemBase> GetCachedItemBase(ItemType itemType)
+    {
+        return cachedItemBases[itemType];
     }
 
     public bool GetNextKeyAfterCurrent(ItemType currentType, out ItemType itemType)
@@ -95,40 +113,94 @@ public class Node : MonoBehaviour
         return false;
     }
 
-    public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;
-
-    public List<ItemType> GetSetKeys()
+    public int GetItemBaseCount()
     {
-        return goodsSetDict.Keys.ToList();
+        int itemBaseCount = 0;
+        foreach (var data in itemBasesCollection)
+            itemBaseCount += data.Value.Count;
+
+        return itemBaseCount;
     }
 
-    public int GetSetKeysCount()
+    public int GetTotalGoodsSetsCount()
     {
-        return goodsSetDict.Keys.Count;
-    }
-    
-    public void InitNodeManager(NodeManager nodeManager)
-    {
-        this.nodeManager = nodeManager;
-    }
+        int setsCount = 0;
+        foreach (var data in goodsSetDict)
+            setsCount += data.Value;
 
-    public bool CheckIfSetItemMatches(ItemType itemType, out int goodsCount)
-    {
-        Debug.Log($"JsonData: {JsonConvert.SerializeObject(goodsSetDict)}");
-        goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
-        // Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
-
-        return goodsSetDict.ContainsKey(itemType);
+        return setsCount;
     }
 
-    public int GetGoodsSetCount(ItemType itemType)
+    public List<ItemType> GetKeysForItems()
+    {
+        return itemBasesCollection.Keys.ToList();
+    }
+
+    public int GetSetsCountForItemType(ItemType itemType)
+    {
+        return itemBasesCollection[itemType].Count;
+    }
+
+    public ItemBase GetItemBase(int index, ItemType itemType)
+    {
+        return itemBasesCollection[itemType][index];
+    }
+
+    public List<ItemBase> GetSpecificItems(ItemType itemType)
+    {
+        try
+        {
+            return itemBasesCollection[itemType];
+            // return itemBasesCollection.ContainsKey(itemType) ? itemBasesCollection[itemType] : new List<ItemBase>();
+            // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Caught exception: " + ex.Message);
+        }
+
+        return new List<ItemBase>();
+    }
+
+    public string GetNodePos() => $"{transform.position}";
+
+    public int GetNeighborsCount() => neighborsHexOffsets.Count;
+
+    public int GetNeighborHexOffsetLength() => neighborsHexOffsets.Count;
+
+    public Vector3 GetNeighborHexOffset(int index)
+    {
+        return neighborsHexOffsets[index];
+    }
+
+    public int GetGoodsSetCountForSpecificItem(ItemType itemType)
     {
         return goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+    }
+
+    public bool HasCachedDataRef(ItemType[] cachedItemKeys, out ItemType foundKey)
+    {
+        foundKey = ItemType.MAX;
+        foreach (ItemType item in cachedItemKeys)
+        {
+            if (HasGoodsSet(item))
+            {
+                foundKey = item;
+                return true;                
+            }
+        }
+
+        return false;
     }
 
     public bool HasGoodsSet(ItemType itemType)
     {
         return goodsSetDict.ContainsKey(itemType);
+    }
+
+    public bool IsNodeFilled()
+    {
+        return !HasEmptySlots(out int availSlots) && goodsSetDict.Count == 1;
     }
 
     public bool IsThereDifferentKey(ItemType itemType)
@@ -146,8 +218,64 @@ public class Node : MonoBehaviour
             // Debug.Log($"IsLastKey:: not last key");
             return false;
         }
+    }
 
-        return goodsSetDict.Count > 0 ? itemType == goodsSetDict.Keys.Last() : false;
+    public NodePlacementData RetrieveNodePlacementData(int index)
+    {
+        return m_NodePlacementDatas[index];
+    }
+
+    #endregion
+
+    public void StoreCachedData(ItemType otherSetItemKey, int cacheCount)
+    {
+        // store the goods set 
+        // store the item bases
+        if (!cachedGoodsSet.ContainsKey(otherSetItemKey))
+            cachedGoodsSet.Add(otherSetItemKey, cacheCount);
+        else 
+            cachedGoodsSet[otherSetItemKey] += cacheCount;
+    }
+
+    public void FreeUpGoodsSet(ItemType otherSetItemKey, int cacheCount)
+    {
+        if (goodsSetDict.ContainsKey(otherSetItemKey))
+        {
+            goodsSetDict[otherSetItemKey] -= cacheCount;
+        }
+    }
+
+    public void CacheAndStoreItemBases(ItemType otherSetItemKey, int cacheCount)
+    {
+        if (!cachedItemBases.ContainsKey(otherSetItemKey))
+        {
+            cachedItemBases.Add(otherSetItemKey, new List<ItemBase>());
+            AddToCachedItemBases(otherSetItemKey, cacheCount);
+        }
+        else 
+            AddToCachedItemBases(otherSetItemKey, cacheCount);
+    }
+
+    private void AddToCachedItemBases(ItemType otherSetItemKey, int cacheCount)
+    {
+        for (int indexI = 0; indexI < cacheCount; indexI++)
+        {
+            cachedItemBases[otherSetItemKey].Add(RemoveFromItemBasesCollection(otherSetItemKey));
+        }
+    }
+
+    public void InitNodeManager(NodeManager nodeManager)
+    {
+        this.nodeManager = nodeManager;
+    }
+
+    public bool CheckIfSetItemMatches(ItemType itemType, out int goodsCount)
+    {
+        Debug.Log($"JsonData: {JsonConvert.SerializeObject(goodsSetDict)}");
+        goodsCount = goodsSetDict.ContainsKey(itemType) ? goodsSetDict[itemType] : 0;
+        // Debug.Log($"Test 5: DoesNeighborHaveSimilarItem: itemType: " + itemType + ", goodsCount: " + goodsCount);
+
+        return goodsSetDict.ContainsKey(itemType);
     }
 
     public void InitItemsData()
@@ -251,7 +379,7 @@ public class Node : MonoBehaviour
 
     #endregion
 
-    #region ITEMS_BASE_UPDATION
+    #region ITEMS_UPDATION
 
     public void AddToItemBasesCollection(ItemBase baseObj)
     {
@@ -280,76 +408,36 @@ public class Node : MonoBehaviour
         return itemToRemove;
     }
 
+    public void RemoveItemsDataFromCachedData(ItemType cachedKey, int availSlots)
+    {
+        if (cachedGoodsSet.ContainsKey(cachedKey))
+        {
+            cachedGoodsSet[cachedKey] -= availSlots;
+            if (cachedGoodsSet[cachedKey] == 0)
+                cachedGoodsSet.Remove(cachedKey);
+        }
+    }
+
+    public ItemBase RemoveAndRetrieveFromCachedItemBases(ItemType itemType)
+    {
+        ItemBase itemToRemove = cachedItemBases[itemType][0];
+        cachedItemBases[itemType].RemoveAt(0);
+
+        if (cachedItemBases[itemType].Count == 0)
+        {
+            Debug.Log($"Removing item");
+            cachedItemBases.Remove(itemType);
+            Debug.Log($"after removal itemBasesCollection: {cachedItemBases.Count}");
+        }
+
+        return itemToRemove;
+    }
+
     #endregion
-
-    public int GetItemBaseCount()
-    {
-        int itemBaseCount = 0;
-        foreach (var data in itemBasesCollection)
-            itemBaseCount += data.Value.Count;
-
-        return itemBaseCount;
-    }
-
-    public int GetGoodsSetsCount()
-    {
-        int setsCount = 0;
-        foreach (var data in goodsSetDict)
-            setsCount += data.Value;
-
-        return setsCount;
-    }
-
-    public List<ItemType> GetKeysForItems()
-    {
-        return itemBasesCollection.Keys.ToList();
-    }
-
-    public int GetSetsCountForItemType(ItemType itemType)
-    {
-        return itemBasesCollection[itemType].Count;
-    }
-
-    public ItemBase GetItemBase(int index, ItemType itemType)
-    {
-        return itemBasesCollection[itemType][index];
-    }
-
-    public List<ItemBase> GetSpecificItems(ItemType itemType)
-    {
-        try
-        {
-            return itemBasesCollection[itemType];
-            // return itemBasesCollection.ContainsKey(itemType) ? itemBasesCollection[itemType] : new List<ItemBase>();
-            // return itemBasesCollection.Select(item => item).Where(item => item.ItemType == itemType).ToList();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("Caught exception: " + ex.Message);
-        }
-
-        return new List<ItemBase>();
-    }
-
-    public int GetNeighborsCount() => neighborsHexOffsets.Count;
-
-    public int GetNeighborHexOffsetLength() => neighborsHexOffsets.Count;
-
-    public Vector3 GetNeighborHexOffset(int index)
-    {
-        return neighborsHexOffsets[index];
-    }
-
-    public string GetNodePos() => $"{transform.position}";
 
     public void AddNeighborsData(Vector3 hexOffset)
     {
         neighborsHexOffsets.Add(hexOffset);
-    }
-
-    public NodePlacementData RetrieveNodePlacementData(int index)
-    {
-        return m_NodePlacementDatas[index];
     }
 
     public void OnMouseDown()

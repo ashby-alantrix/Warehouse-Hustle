@@ -60,14 +60,23 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
                 counter++;
             }
         }
+
+        nodesMoverTween.OnComplete(() =>
+        {
+            selectedNode.UpdateOccupiedSlotsState();
+            // KillTween();
+        });
     }
 
-    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node target, Node source) //, out Tween tweener)
+    public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node target, Node source, bool hasCachedKey = false)
     {
-        // Debug.Log($"Test5: Neighbors position: {neighborNode.transform.position}");
-        Tweener tweener = null;
-        var currentItemBases = source.GetSpecificItems(itemType);
+        // sorting is required if using goods set count instead of item base count as truth
+        // or cache the item bases as well
 
+        Tweener tweener = null;
+        ItemBase itemBase = null;
+
+        var currentItemBases = hasCachedKey ? source.GetCachedItemBase(itemType) : source.GetSpecificItems(itemType);
         var targetItemBaseCount = target.GetItemBaseCount();
 
         Debug.Log($"Test 11: itemBases: {currentItemBases.Count}");
@@ -82,9 +91,8 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
             NodePlacementData nodePlacementData = target.RetrieveNodePlacementData(indexJ);
             if (!nodePlacementData.isOccupied) // change the state periodically
             {
-                var itemBase = currentItemBases[indexJ - targetItemBaseCount];
+                itemBase = currentItemBases[indexJ - targetItemBaseCount];
                 tweener = itemBase.transform.DOMove(nodePlacementData.transform.position, 1f);
-                // // itemBase.nodePlacementIndex = indexJ;
             }
         }
 

@@ -27,7 +27,6 @@ public class InterfaceManager
 
         if (!interfacesDict.ContainsKey(interfaceType))
         {
-            Debug.Log("adding to interface dict: " + interfaceType);
             interfacesDict.Add(interfaceType, interfaceInst);
         }
     }

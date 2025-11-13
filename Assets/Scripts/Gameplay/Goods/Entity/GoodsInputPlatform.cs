@@ -88,8 +88,6 @@ public class GoodsInputPlatform : MonoBehaviour
     
     public void InitGoodsView(List<GoodsSet> goodsSet)
     {
-        Debug.Log($"### InitGoodsView: goodsDataSetJson: {JsonConvert.SerializeObject(goodsSet)}");
-        // this.goodsDataSet.Clear();
         this.goodsDataSet = goodsSet;
     }
 }
