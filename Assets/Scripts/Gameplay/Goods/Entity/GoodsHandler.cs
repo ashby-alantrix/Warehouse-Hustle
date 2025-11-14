@@ -60,7 +60,8 @@ public class GoodsHandler : MonoBehaviour
 
     private void CreateGoodsSetTest()
     {
-        for (int i=0; i<2; i++)
+        testGoodTypeIndex = 0;
+        for (int i=0; i<3; i++)
         {
             var goodsSetObj = new GoodsSet();
             UseTestData(ref goodsSetObj);
@@ -88,9 +89,10 @@ public class GoodsHandler : MonoBehaviour
     public void UseTestData(ref GoodsSet goodsSetObj)
     {
         goodsSetObj.type = goodsType[testGoodTypeIndex];
-        goodsSetObj.setCount = 2;
+        goodsSetObj.setCount = 3; // check 2 and 3
 
-        testGoodTypeIndex = testGoodTypeIndex == 0 ? 1 : 0;
+        testGoodTypeIndex++;
+        // testGoodTypeIndex = testGoodTypeIndex == 0 ? 1 : 0;
     }
 
     public void UpdateGoodsInputPlatform()

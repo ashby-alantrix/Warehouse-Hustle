@@ -62,6 +62,11 @@ public class Node : MonoBehaviour
         return availSlots != 0;
     }
 
+    public bool IsEmpty()
+    {
+        return !isNodeOccupied;
+    }
+
     public bool HasCachedData()
     {
         return cachedGoodsSet.Count > 0; // TODO :: Improve the check if req while moving forward
@@ -75,6 +80,15 @@ public class Node : MonoBehaviour
     public int GetCachedData(ItemType matchType) // TODO :: change return type and data to send back here
     {
         return cachedGoodsSet[matchType];
+    }
+
+    public int GetTotalCachedSetsCount()
+    {
+        int setsCount = 0;
+        foreach (var data in cachedGoodsSet)
+            setsCount += data.Value;
+
+        return setsCount;
     }
 
     public Dictionary<ItemType, int> GetSetDict() => goodsSetDict;

@@ -57,6 +57,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         {
             CheckConnectedNodes(key);
         }
+
+        foreach (var connectedNodeSet in connectedNodesDict)
+        {
+            Debug.Log($"connectedNodeSet after update: {connectedNodeSet.Key}, {connectedNodesDict[connectedNodeSet.Key].Count}");
+        }
     }
     
     private void InitializeConnectedNodesForItem(ItemType setItemKey)
@@ -74,6 +79,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 StoreConnectedNodesForEachType(setItemKey, $"{currentSelectedNode.GetNeighborHexOffset(indexI)}");
             }
         }
+
+        foreach (var key in connectedNodesDict.Keys)
+        {
+            Debug.Log($"ConnectedNodesData: For key {key}");
+            foreach (var nodeValStr in connectedNodesDict[key])
+            {
+                nodeManager.IsNodeAvailableInGrid(nodeValStr, out Node node);
+                Debug.Log($"ConnectedNodesData: For key {key}, value: {nodeValStr}, node: {node.name}");
+            }
+        }
     }
 
     public void StoreConnectedNodesForEachType(ItemType setItemKey, string nodePosStr)
@@ -89,6 +104,103 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
+    private void CheckIfCachedDataIsLeft(Node source, ItemType cachedKey)
+    {
+        int availSlots = 0;
+        Node foundNeighbor = null;
+        if (source.HasCachedData() && source.HasEmptySlots(out availSlots) && availSlots == firstNode.GetCachedData(cachedKey))
+        {
+            UpdateNodeWithCachedData(cachedKey, source: source, target: source);
+        }
+        else if (GetMatchingNeighborWithAvailSlots(cachedKey, source, out foundNeighbor, out availSlots))
+        {
+            UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
+            var cacheDataLen = source.GetCachedData(cachedKey) - availSlots;
+            if (cacheDataLen > 0)
+            {
+                CheckIfCachedDataIsLeft(source, cachedKey);
+            }
+        }
+        else
+        {
+            if (FindEmptyNeighbor(source, out foundNeighbor))
+            {
+                UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
+            }
+            else 
+            {
+                if (FindNewNeighborWithEmptySlots(source,  neighbor: out foundNeighbor, out availSlots))
+                {
+                    UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
+                    var cacheDataLen = source.GetCachedData(cachedKey) - availSlots;
+                    if (cacheDataLen > 0)
+                    {
+                        CheckIfCachedDataIsLeft(source, cachedKey);
+                    }
+                }
+            }
+        }
+    }
+
+    private bool GetMatchingNeighborWithAvailSlots(ItemType cachedKey, Node source, out Node neighbor, out int availSlots)
+    {
+        neighbor = null;
+        availSlots = 0;
+        var neigbhorsCount = source.GetNeighborsCount();
+
+        for (int indexI = 0; indexI < neigbhorsCount; indexI++)
+        {
+            if (nodeManager.IsNodeAvailableInGrid($"{source.GetNeighborHexOffset(indexI)}", out neighbor))
+            {
+                if (neighbor.HasGoodsSet(cachedKey) && neighbor.HasEmptySlots(out availSlots))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private bool FindEmptyNeighbor(Node source, out Node neighbor)
+    {
+        neighbor = null;
+        var neigbhorsCount = source.GetNeighborsCount();
+
+        for (int indexI = 0; indexI < neigbhorsCount; indexI++)
+        {
+            if (nodeManager.IsNodeAvailableInGrid($"{source.GetNeighborHexOffset(indexI)}", out neighbor))
+            {
+                if (neighbor.IsEmpty())
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private bool FindNewNeighborWithEmptySlots(Node source, out Node neighbor, out int availSlots)
+    {
+        neighbor = null;
+        availSlots = 0;
+        var neigbhorsCount = source.GetNeighborsCount();
+
+        for (int indexI = 0; indexI < neigbhorsCount; indexI++)
+        {
+            if (nodeManager.IsNodeAvailableInGrid($"{source.GetNeighborHexOffset(indexI)}", out neighbor))
+            {
+                if (neighbor.HasEmptySlots(out availSlots))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
         Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");
@@ -102,16 +214,27 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         Debug.Log($"::: connectedNodesDict[currentSetItemKey].Count: {connectedNodesDict[currentSetItemKey].Count}");
         if (connectedNodesDict.ContainsKey(currentSetItemKey) && connectedNodesDict[currentSetItemKey].Count <= 1)
         {
+            if (firstNode && firstNode.HasCachedData())
+                foreach (var key in firstNode.GetCachedKeys())
+                    CheckIfCachedDataIsLeft(firstNode, key);
+
+            if (secondNode && secondNode.HasCachedData())
+                foreach (var key in secondNode.GetCachedKeys())
+                    CheckIfCachedDataIsLeft(secondNode, key);
+
             connectedNodesDict[currentSetItemKey].Clear();
+            Debug.Log($"::: clearing connectedNodesDict[currentSetItemKey] for {currentSetItemKey}");
             return;
         }
+
+        Debug.Log($"::: skipped clearing of connectedNodesDict[currentSetItemKey]");
 
         nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][0], out firstNode);
         nodeManager.IsNodeAvailableInGrid(connectedNodesDict[currentSetItemKey][1], out secondNode);
 
         if (firstNode.HasEmptySlots(out currentAvailSlots) && firstNode.GetSetKeys().Count < secondNode.GetSetKeys().Count) // if firstNode has slots THEN 
         {
-            Debug.Log($"Second condition :: First node has empty slots: {firstNode.name}, {currentAvailSlots}");
+            Debug.Log($"1st condition :: First node has empty slots: {firstNode.name}, {currentAvailSlots}");
             itemsToMove = secondNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
             itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
             Debug.Log($"itemsToMove: {itemsToMove}");
@@ -123,12 +246,13 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             if (firstNode.HasCachedData() && secondNode.HasCachedDataRef(firstNode.GetCachedKeys(), out ItemType foundKey))
             {
                 Debug.Log($"Has cached data");
-                UpdateSecondNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
+                UpdateNodeWithCachedData(foundKey, source: firstNode, target: secondNode);
+                // UpdateSecondNodeWithCachedData(foundKey); 
             }
         }
         else if (secondNode.HasEmptySlots(out currentAvailSlots))
         {
-            Debug.Log($"Fourth condition :: First node has empty slots: {secondNode.name}");
+            Debug.Log($"2nd condition :: Second node has empty slots: {secondNode.name}");
             itemsToMove = firstNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
             itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
 
@@ -137,13 +261,14 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
             if (secondNode.HasCachedData() && firstNode.HasCachedDataRef(secondNode.GetCachedKeys(), out ItemType foundKey))
             {
-                UpdateFirstNodeWithCachedData(foundKey); // TODO :: Finish up rem logic
+                UpdateNodeWithCachedData(foundKey, source: secondNode, target: firstNode);
+                // UpdateFirstNodeWithCachedData(foundKey); 
             }
         }
         else if (firstNode.GetSetKeys().Count > 1 && firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
         {
-            Debug.Log($"First condition, otherSetItemKey: {otherSetItemKey}, firstNode: {firstNode.name}");
-            Debug.Log($"First condition, setcount: {firstNode.GetSetKeys().Count}");
+            Debug.Log($"3rd condition, otherSetItemKey: {otherSetItemKey}, firstNode: {firstNode.name}");
+            Debug.Log($"3rd condition, setcount: {firstNode.GetSetKeys().Count}");
 
             cacheCount = Mathf.Min(firstNode.GetGoodsSetCountForSpecificItem(otherSetItemKey), secondNode.GetGoodsSetCountForSpecificItem(currentSetItemKey));
 
@@ -160,16 +285,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         else if (GetFirstOtherMatchingKeyBetweenNodes(currentSetItemKey, out ItemType otherMatchingItemKey) 
                 && secondNode.HasEmptySlots(out int availSlots) && availSlots == firstNode.GetGoodsSetCountForSpecificItem(otherMatchingItemKey)) // recursing for another key if firstNode runs out of empty slots
         {
-            Debug.Log($"Third condition :: Found matching key between sets");
+            Debug.Log($"4th condition :: Found matching key between sets");
             CheckConnectedNodes(otherMatchingItemKey);
         }
         else if (secondNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey1) && firstNode.HasGoodsSet(currentSetItemKey)) // TODO :: Double check this case, could be useful if both first and second node is full
         {
-            Debug.LogError($"Fifth condition: CheckConnectedNodes :: double check this logic...");
+            Debug.LogError($"5th condition: CheckConnectedNodes :: double check this logic...");
         }
         else
         {
-            Debug.LogError($"Sixth condition: CheckConnectedNodes :: no op...");
+            Debug.LogError($"6th condition: CheckConnectedNodes :: no op...");
         }
 
         UpdateConnectedNodeStates(currentSetItemKey);
@@ -209,6 +334,35 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         firstNode.UpdateOccupiedSlotsState();
         secondNode.UpdateOccupiedSlotsState();
+    }
+
+    private void UpdateNodeWithCachedData(ItemType cachedKey, Node source, Node target)
+    {
+        int cacheCount = source.GetCachedData(cachedKey);
+        if (target.HasEmptySlots(out int availSlots))
+        {
+            Debug.Log($"Second node availSlots: {availSlots}, cachedKey: {cachedKey}");
+            availSlots = cacheCount > availSlots ? availSlots : cacheCount;
+            Debug.Log($"updated availSlots: {availSlots}");
+
+            source.RemoveItemsDataFromCachedData(cachedKey, availSlots);
+
+            Debug.Log($"before goods update: " + target.GetGoodsSetCountForSpecificItem(cachedKey));
+            target.AddItemsDataToNode(cachedKey, availSlots);
+            Debug.Log($"after goods update: " + target.GetGoodsSetCountForSpecificItem(cachedKey));
+
+            goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(cachedKey, target: target, source: source, hasCachedKey: true); // rearranging using item bases
+
+            for (int indexJ = 0; indexJ < availSlots; indexJ++)
+            {
+                ItemBase removedItem = source.RemoveAndRetrieveFromCachedItemBases(cachedKey);
+                if (removedItem)
+                    target.AddToItemBasesCollection(removedItem);
+            }
+
+            target.SortItemsData();
+            target.SortItemBases();
+        }
     }
 
     private void UpdateFirstNodeWithCachedData(ItemType cachedKey)
@@ -283,7 +437,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
                 if (isFilled || nodeHasNoItem || isNodeEmpty)
                 {
-                    Debug.Log($"UpdateConnectedNodeStates: {isFilled}, {nodeHasNoItem}, {isNodeEmpty}");
+                    Debug.Log($"UpdateConnectedNodeStates for {currentNode.name}: {isFilled}, {nodeHasNoItem}, {isNodeEmpty}");
                     currentSetKeys[indexer++] = nodePosStr;
 
                     UpdateConnectedStateInOtherNodes(nodeHasNoItem, isNodeEmpty, nodePosStr);
@@ -298,6 +452,21 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             connectedNodesDict[currentSetItemKey].Remove(currentSetKeys[indexI]);
         }
 
+        void UpdateConnectedStateInOtherNodes(bool nodeHasNoItem, bool isNodeEmpty, string nodePosStr)
+        {
+            if (nodeHasNoItem)
+            {
+                AddNodesToOtherConnectedTypes(nodePosStr);
+            }
+            else if (isNodeEmpty)
+            {
+                RemoveEmptyNodesFromOtherConnectedTypes(nodePosStr);
+            }
+        }
+
+        // Summary:
+        // if other keys are moved to a new node, the new node with those keys have to updated to dictionary 
+        // for connecting the new node for that specific item type
         void AddNodesToOtherConnectedTypes(string nodePosStr)
         {
             foreach (var key in connectedNodesDict.Keys)
@@ -305,9 +474,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 if (key == currentSetItemKey) continue;
                 
                 nodeManager.IsNodeAvailableInGrid(nodePosStr, out var newFoundNode);
-                if (newFoundNode.HasGoodsSet(key) && !connectedNodesDict[key].Contains(nodePosStr))
+                if (connectedNodesDict[key].Count > 0 && newFoundNode.HasGoodsSet(key) && !connectedNodesDict[key].Contains(nodePosStr))
                 {
                     connectedNodesDict[key].Add(nodePosStr);
+                    Debug.Log($"adding node: {newFoundNode.name} to connectedNodesDict for key: {key}");
                 }
             }
         }
@@ -320,18 +490,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 
                 if (connectedNodesDict[key].Contains(nodePosStr))
                     connectedNodesDict[key].Remove(nodePosStr);
-            }
-        }
-
-        void UpdateConnectedStateInOtherNodes(bool nodeHasNoItem, bool isNodeEmpty, string nodePosStr)
-        {
-            if (nodeHasNoItem)
-            {
-                AddNodesToOtherConnectedTypes(nodePosStr);
-            }
-            else if (isNodeEmpty)
-            {
-                RemoveEmptyNodesFromOtherConnectedTypes(nodePosStr);
             }
         }
     }
