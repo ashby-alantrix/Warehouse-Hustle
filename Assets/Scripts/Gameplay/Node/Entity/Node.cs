@@ -79,7 +79,7 @@ public class Node : MonoBehaviour
 
     public int GetCachedData(ItemType matchType) // TODO :: change return type and data to send back here
     {
-        return cachedGoodsSet[matchType];
+        return cachedGoodsSet.ContainsKey(matchType) ? cachedGoodsSet[matchType] : 0;
     }
 
     public int GetTotalCachedSetsCount()

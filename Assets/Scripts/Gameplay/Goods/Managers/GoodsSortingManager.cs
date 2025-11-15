@@ -206,6 +206,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
+        ItemType otherSetItemKey;
+
         Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");
         if (!connectedNodesDict.ContainsKey(currentSetItemKey))
         {
@@ -275,7 +277,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                 // UpdateFirstNodeWithCachedData(foundKey); 
             }
         }
-        else if (firstNode.GetSetKeys().Count > 1 && firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
+        else if (firstNode.GetSetKeys().Count > 1 && firstNode.GetNextKeyAfterCurrent(currentSetItemKey, out otherSetItemKey) && secondNode.HasGoodsSet(currentSetItemKey)) // swapping scenario when multiple keys are involved
         {
             Debug.Log($"3rd condition, otherSetItemKey: {otherSetItemKey}, firstNode: {firstNode.name}");
             Debug.Log($"3rd condition, setcount: {firstNode.GetSetKeys().Count}");
@@ -298,9 +300,24 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             Debug.Log($"4th condition :: Found matching key between sets");
             CheckConnectedNodes(otherMatchingItemKey);
         }
-        else if (secondNode.GetNextKeyAfterCurrent(currentSetItemKey, out ItemType otherSetItemKey1) && firstNode.HasGoodsSet(currentSetItemKey)) // TODO :: Double check this case, could be useful if both first and second node is full
+        else if (secondNode.GetNextKeyAfterCurrent(currentSetItemKey, out otherSetItemKey) && firstNode.HasGoodsSet(currentSetItemKey)) // TODO :: Double check this case, could be useful if both first and second node is full
         {
             Debug.LogError($"5th condition: CheckConnectedNodes :: double check this logic...");
+
+            Debug.Log($"5th condition, otherSetItemKey: {otherSetItemKey}, secondNode: {secondNode.name}");
+            Debug.Log($"5th condition, setcount: {secondNode.GetSetKeys().Count}");
+
+            cacheCount = Mathf.Min(secondNode.GetGoodsSetCountForSpecificItem(otherSetItemKey), firstNode.GetGoodsSetCountForSpecificItem(currentSetItemKey));
+
+            secondNode.StoreCachedData(otherSetItemKey, cacheCount);
+            secondNode.FreeUpGoodsSet(otherSetItemKey, cacheCount);
+            secondNode.SortItemsData();
+
+            secondNode.CacheAndStoreItemBases(otherSetItemKey, cacheCount);
+            secondNode.SortItemBases();
+
+            goodsPlacementManager.RearrangeBasedOnSorting(secondNode);
+            secondNode.UpdateOccupiedSlotsState();
         }
         else
         {
