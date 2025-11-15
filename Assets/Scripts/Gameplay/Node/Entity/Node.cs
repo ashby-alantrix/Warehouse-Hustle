@@ -103,6 +103,11 @@ public class Node : MonoBehaviour
         return goodsSetDict.Keys.Count;
     }
 
+    public bool HasCachedItemType(ItemType type)
+    {
+        return cachedItemBases.ContainsKey(type);
+    }
+
     public List<ItemBase> GetCachedItemBase(ItemType itemType)
     {
         return cachedItemBases[itemType];

@@ -106,9 +106,12 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private void CheckIfCachedDataIsLeft(Node source, ItemType cachedKey)
     {
+        if (!source.HasCachedItemType(cachedKey))
+            return;
+
         int availSlots = 0;
         Node foundNeighbor = null;
-        if (source.HasCachedData() && source.HasEmptySlots(out availSlots) && availSlots == firstNode.GetCachedData(cachedKey))
+        if (source.HasCachedData() && source.HasEmptySlots(out availSlots) && availSlots == source.GetCachedData(cachedKey))
         {
             UpdateNodeWithCachedData(cachedKey, source: source, target: source);
         }
@@ -239,8 +242,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
             Debug.Log($"itemsToMove: {itemsToMove}");
 
-            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: secondNode, targetNode: firstNode, itemsToMove); // tween op
-            SortAndRearrangeFirstAndSecondNode(); // tween op
+            if (itemsToMove > 0)
+            {
+                MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: secondNode, targetNode: firstNode, itemsToMove); // tween op
+                SortAndRearrangeFirstAndSecondNode(); // tween op
+            }
 
             // DO the logic below only after the tweening is complete from sorting
             if (firstNode.HasCachedData() && secondNode.HasCachedDataRef(firstNode.GetCachedKeys(), out ItemType foundKey))
@@ -256,8 +262,12 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             itemsToMove = firstNode.GetGoodsSetCountForSpecificItem(currentSetItemKey);
             itemsToMove = itemsToMove > currentAvailSlots ? currentAvailSlots : itemsToMove;
 
-            MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: firstNode, targetNode: secondNode, itemsToMove);
-            SortAndRearrangeFirstAndSecondNode();
+            Debug.Log($"ItemsToMove: {itemsToMove}");
+            if (itemsToMove > 0)
+            {
+                MoveMatchedSetFromSourceToTarget(currentSetItemKey, sourceNode: firstNode, targetNode: secondNode, itemsToMove);
+                SortAndRearrangeFirstAndSecondNode();
+            }
 
             if (secondNode.HasCachedData() && firstNode.HasCachedDataRef(secondNode.GetCachedKeys(), out ItemType foundKey))
             {

@@ -74,6 +74,9 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         Tweener tweener = null;
         ItemBase itemBase = null;
 
+        if (source.HasCachedItemType(itemType) && source.GetCachedItemBase(itemType) != null)
+            Debug.Log($"Got cached itemss");
+
         var currentItemBases = hasCachedKey ? source.GetCachedItemBase(itemType) : source.GetSpecificItems(itemType);
         var targetItemBaseCount = target.GetItemBaseCount();
 
