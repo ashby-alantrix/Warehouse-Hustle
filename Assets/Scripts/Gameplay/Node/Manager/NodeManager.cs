@@ -6,7 +6,9 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     [SerializeField] private HexData[] m_HexDatas;
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 
+
     private GoodsManager m_GoodsManager;
+    private TrucksLoaderManager trucksLoaderManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
     public void Initialize()
@@ -63,6 +65,18 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         SetGoodsManager();
         m_GoodsManager.GoodsHandler.UpdateGoodsInputPlatform();
+    }
+
+    public void OnNodeFilled(Node filledNode, ItemType filledKey)
+    {
+        SetTrucksLoaderManager();
+
+        trucksLoaderManager.LoadGoodsOntoTruck(filledNode.GetSpecificItems(filledKey));
+    }
+
+    private void SetTrucksLoaderManager()
+    {
+        trucksLoaderManager = trucksLoaderManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<TrucksLoaderManager>() : trucksLoaderManager;
     }
 
     private void SetGoodsPlacementManager()

@@ -1,10 +1,6 @@
 using UnityEngine;
 
-public class ItemBase : MonoBehaviour
+public class ObjectBase : MonoBehaviour
 {
-    [SerializeField] private ItemType itemType;
-
-    public int nodePlacementIndex;
-
-    public ItemType ItemType => itemType;
+    
 }

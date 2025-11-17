@@ -1,12 +1,9 @@
-using System.Diagnostics.SymbolStore;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine;
 using System;
+using UnityEngine;
+using System.Linq;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class Node : MonoBehaviour
 {
@@ -37,7 +34,6 @@ public class Node : MonoBehaviour
     #region Managers
     private NodeManager nodeManager;
     private GoodsManager goodsManager;
-    private ObjectPoolManager objectPoolManager;
 
     #endregion
 
@@ -509,20 +505,7 @@ public class Node : MonoBehaviour
 
     private void OnNodeFull()
     {
-        foreach (var itemBase in itemBasesCollection)
-        {
-            foreach (var item in itemBase.Value)
-            {
-                item.gameObject.SetActive(false);
-                objectPoolManager.PassObjectToPool(itemBase.Key, item);
-            }
-        }       
-            
-    }
-
-    private void SetObjectPoolManager()
-    {
-        objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
+        nodeManager.OnNodeFilled(this, goodsSetDict.First().Key);  
     }
 
     public void UpdateOccupiedSlotsState()

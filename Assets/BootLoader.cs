@@ -13,8 +13,8 @@ public class BootLoader : MonoBehaviour
 
     private void Start()
     {
-        DG.Tweening.DOTween.useSafeMode = false;
-        DG.Tweening.DOTween.logBehaviour = LogBehaviour.ErrorsOnly;
+        // DG.Tweening.DOTween.useSafeMode = false;
+        // DG.Tweening.DOTween.logBehaviour = LogBehaviour.ErrorsOnly;
         
         InterfaceManager.InitInstance();
 

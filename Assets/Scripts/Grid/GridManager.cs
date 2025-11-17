@@ -7,6 +7,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private NodeManager m_NodeManager;
 
     [SerializeField] private GameObject m_HexNode;
+    [SerializeField] private GameObject m_NodesParent;
+
     [SerializeField] private TextAsset m_GridJson;
 
     private float m_Rows; // z
@@ -109,6 +111,7 @@ public class GridManager : MonoBehaviour
                 continue;
 
             var instance = Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            instance.transform.SetParent(m_NodesParent.transform);
             tempCounter++;
             m_NodeManager.AddNodeInstance(instance);
             instance.transform.name = $"{instance.transform.name} {tempCounter}";
