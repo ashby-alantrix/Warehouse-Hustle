@@ -592,6 +592,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015c5ed859bb94f11be726303a2bf445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotsPlacer:
+    m_NodePlacements:
+    - {fileID: 8151987005731907799}
+    - {fileID: 3171260139265310159}
+    - {fileID: 5527138173399076679}
+    - {fileID: 3048152681410548278}
+    - {fileID: 6812037752696876635}
+    - {fileID: 6742185955310734940}
+    - {fileID: 5982947140905409307}
+    - {fileID: 2918017030932776440}
+    - {fileID: 166913505909576271}
+    - {fileID: 8686181223586994445}
+    - {fileID: 4638638811250789187}
+    - {fileID: 759129786094965843}
+    totalSlotsInNode: 12
 --- !u!1 &3403372010511631094
 GameObject:
   m_ObjectHideFlags: 0

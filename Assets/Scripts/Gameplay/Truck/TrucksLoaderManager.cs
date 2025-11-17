@@ -5,11 +5,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+public class ItemLoadData
+{
+    public ItemType itemType;
+    public List<ItemBase> itemBases;
+}
+
 public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
 {
+    [SerializeField] private GoodsWaitingQueuer goodsWaitingQueuer;
     [SerializeField] private GameObject truckPrefab;
     [SerializeField] private Transform spawnStartPoint;
     [SerializeField] private Transform newTruckSpawnPoint;
+    [SerializeField] private Transform truckDestPoint;
+
     [SerializeField] private int spawnCount;
     [SerializeField] private float trucksMoverInterval = 1f;
     [SerializeField] private float goodsMoverInterval = 1f;
@@ -23,8 +32,8 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
     private List<Vector3> spawnPoints = new List<Vector3>(); // static 
     private List<TruckBase> truckBases = new List<TruckBase>(); // dynamic
 
-    private Action onTruckReachedDestination;
-    // private List<ItemBase> itemBases = new List<ItemBase>();
+    private int goodsInQueueCounter = 0;
+    private List<ItemLoadData> itemLoadDatas = new List<ItemLoadData>();
 
     public void Initialize()
     {
@@ -35,14 +44,20 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
         SpawnTrucks();
     }
 
-    public IEnumerator LoadGoodsOntoTruck(List<ItemBase> itemBases, ItemType filledGoodType)
+    public void LoadGoodsOntoTruck(List<ItemBase> itemBases, ItemType filledGoodType)
     {
         if (isLoadingInProcess)
         {
-            
+            itemLoadDatas.Add(new ItemLoadData
+            {
+                itemType = filledGoodType,
+                itemBases = itemBases
+            });
+
+            goodsWaitingQueuer.InitGoods(itemBases);
+            return;
         }
 
-        yield return new WaitUntil(() => !isLoadingInProcess);
         isLoadingInProcess = true;
         Tween truckLoadingTween = null;
 
@@ -51,32 +66,26 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
             truckLoadingTween = itemBases[indexI].transform.DOMove(currentActiveTruck.TruckGoodsLoader.SlotsPlacer.GetPosDataBasedOnIndex(indexI), goodsMoverInterval);
         }
 
-        truckLoadingTween.OnComplete(() =>
-        {
-            currentActiveTruck = null;
-            isLoadingInProcess = false;
-        });
+        truckLoadingTween.OnComplete(() => OnCurrentTruckLoadingComplete(itemBases, filledGoodType));
+    }
 
-        onTruckReachedDestination += () => 
+    private void OnCurrentTruckLoadingComplete(List<ItemBase> itemBases, ItemType filledGoodType)
+    {
+        currentActiveTruck.transform.DOMove(truckDestPoint.position, 1f).OnComplete(() =>
         {
             foreach (var itemBase in itemBases)
             {
                 objectPoolManager.PassObjectToPool($"{filledGoodType}", PoolType.Item, itemBase);
                 itemBase.gameObject.SetActive(false);
-            }     
-        };
-    }
+            }
+        });
 
-    // TODO :: Call when truck moves to end of the screen
-    private void OnTruckReachedDestination()
-    {
-        onTruckReachedDestination?.Invoke();
-        Invoke(nameof(RemovedInvokedEvent), 0.5f);
-    }
+        // TODO :: move rem trucks here
 
-    private void RemovedInvokedEvent()
-    {
-        onTruckReachedDestination = null;
+        //currentActiveTruck = null;
+        isLoadingInProcess = false;
+        if (itemLoadDatas.Count > 0)
+            LoadGoodsOntoTruck(itemLoadDatas[0].itemBases, itemLoadDatas[0].itemType);
     }
 
     private void SetObjectPoolManager()
