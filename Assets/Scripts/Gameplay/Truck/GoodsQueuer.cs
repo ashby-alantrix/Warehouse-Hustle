@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TruckGoodsLoader : MonoBehaviour
+public class GoodsQueuer : MonoBehaviour
 {
     [SerializeField] private SlotsPlacer slotsPlacer;
 

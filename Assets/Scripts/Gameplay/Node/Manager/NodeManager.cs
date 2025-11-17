@@ -71,7 +71,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     {
         SetTrucksLoaderManager();
 
-        trucksLoaderManager.LoadGoodsOntoTruck(filledNode.GetSpecificItems(filledKey));
+        trucksLoaderManager.LoadGoodsOntoTruck(filledNode.GetSpecificItems(filledKey), filledKey);
     }
 
     private void SetTrucksLoaderManager()

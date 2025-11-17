@@ -488,7 +488,6 @@ public class Node : MonoBehaviour
 
         if (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount)
         {
-            SetObjectPoolManager();
             OnNodeFull(); // TODO :: temporary logic, update with loading onto to truck
 
             goodsSetDict.Clear();

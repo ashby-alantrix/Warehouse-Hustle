@@ -15,6 +15,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
     [SerializeField] private float goodsMoverInterval = 1f;
     [SerializeField] private Vector3 spawnOffset;
     
+    private bool isLoadingInProcess = false;
     private TruckBase currentActiveTruck = null;
     private ObjectPoolManager objectPoolManager;
     private Vector3 currentSpawnPos = Vector3.zero;
@@ -34,12 +35,27 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
         SpawnTrucks();
     }
 
-    public void LoadGoodsOntoTruck(List<ItemBase> itemBases, ItemType filledGoodType)
+    public IEnumerator LoadGoodsOntoTruck(List<ItemBase> itemBases, ItemType filledGoodType)
     {
+        if (isLoadingInProcess)
+        {
+            
+        }
+
+        yield return new WaitUntil(() => !isLoadingInProcess);
+        isLoadingInProcess = true;
+        Tween truckLoadingTween = null;
+
         for (int indexI = 0; indexI < itemBases.Count; indexI++)
         {
-            itemBases[indexI].transform.DOMove(currentActiveTruck.TruckGoodsLoader.GetPosDataBasedOnIndex(indexI), goodsMoverInterval);
+            truckLoadingTween = itemBases[indexI].transform.DOMove(currentActiveTruck.TruckGoodsLoader.SlotsPlacer.GetPosDataBasedOnIndex(indexI), goodsMoverInterval);
         }
+
+        truckLoadingTween.OnComplete(() =>
+        {
+            currentActiveTruck = null;
+            isLoadingInProcess = false;
+        });
 
         onTruckReachedDestination += () => 
         {
