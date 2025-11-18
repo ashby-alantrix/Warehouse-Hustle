@@ -128,13 +128,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         {
             if (FindEmptyNeighbor(source, out foundNeighbor))
             {
+                foundNeighbor.SetNodeOccupiedState(true);
                 UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
             }
             else 
             {
                 if (FindNewNeighborWithEmptySlots(source,  neighbor: out foundNeighbor, out availSlots))
                 {
+                    Debug.LogError($"Found new neighbor: {foundNeighbor.name}");
                     UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
+                    foundNeighbor.SetNodeOccupiedState(true);
                     var cacheDataLen = source.GetCachedData(cachedKey) - availSlots;
                     if (cacheDataLen > 0)
                     {
@@ -389,59 +392,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
             target.SortItemsData();
             target.SortItemBases();
-        }
-    }
-
-    private void UpdateFirstNodeWithCachedData(ItemType cachedKey)
-    {
-        int cacheCount = secondNode.GetCachedData(cachedKey);
-        if (firstNode.HasEmptySlots(out int availSlots))
-        {
-            availSlots = cacheCount > availSlots ? availSlots : cacheCount;
-
-            secondNode.RemoveItemsDataFromCachedData(cachedKey, availSlots);
-            firstNode.AddItemsDataToNode(cachedKey, availSlots);
-
-            goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(cachedKey, target: firstNode, source: secondNode, hasCachedKey: true); // rearranging using item bases
-
-            for (int indexJ = 0; indexJ < availSlots; indexJ++)
-            {
-                ItemBase removedItem = secondNode.RemoveAndRetrieveFromCachedItemBases(cachedKey);
-                if (removedItem)
-                    firstNode.AddToItemBasesCollection(removedItem);
-            }
-
-            firstNode.SortItemsData();
-            firstNode.SortItemBases();
-        }
-    }
-
-    private void UpdateSecondNodeWithCachedData(ItemType cachedKey)
-    {
-        int cacheCount = firstNode.GetCachedData(cachedKey);
-        if (secondNode.HasEmptySlots(out int availSlots))
-        {
-            Debug.Log($"Second node availSlots: {availSlots}, cachedKey: {cachedKey}");
-            availSlots = cacheCount > availSlots ? availSlots : cacheCount;
-            Debug.Log($"updated availSlots: {availSlots}");
-
-            firstNode.RemoveItemsDataFromCachedData(cachedKey, availSlots);
-
-            Debug.Log($"before goods update: " + secondNode.GetGoodsSetCountForSpecificItem(cachedKey));
-            secondNode.AddItemsDataToNode(cachedKey, availSlots);
-            Debug.Log($"after goods update: " + secondNode.GetGoodsSetCountForSpecificItem(cachedKey));
-
-            goodsPlacementManager.RearrangeGoodsBetweenSelectedNodeAndNeighbor(cachedKey, target: secondNode, source: firstNode, hasCachedKey: true); // rearranging using item bases
-
-            for (int indexJ = 0; indexJ < availSlots; indexJ++)
-            {
-                ItemBase removedItem = firstNode.RemoveAndRetrieveFromCachedItemBases(cachedKey);
-                if (removedItem)
-                    secondNode.AddToItemBasesCollection(removedItem);
-            }
-
-            secondNode.SortItemsData();
-            secondNode.SortItemBases();
         }
     }
     

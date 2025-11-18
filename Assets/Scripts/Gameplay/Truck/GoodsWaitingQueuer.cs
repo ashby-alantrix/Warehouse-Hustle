@@ -2,39 +2,45 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+[System.Serializable]
+public class GoodsQueuerData
+{
+    public GoodsQueuer goodsQueuer;
+    public bool isOccupied;
+}
 
 public class GoodsWaitingQueuer : MonoBehaviour
 {
-    [SerializeField] private List<GoodsQueuer> goodsQueuers;
+    [SerializeField] private List<GoodsQueuerData> goodsQueuers = new List<GoodsQueuerData>();
 
     private int lastFilledIndex = -1;
 
-    public GoodsQueuer GetGoodsQueuer()
+    public GoodsQueuerData GetGoodsQueuer()
     {
-        lastFilledIndex += 1;
-        if (lastFilledIndex >= goodsQueuers.Count) Debug.LogError($"Index out of range");
-
-        return goodsQueuers[lastFilledIndex];
+        int unoccupiedIndex = goodsQueuers.FindIndex(goodsQueuers => !goodsQueuers.isOccupied);
+        Debug.Log($"Unoccupied index: {unoccupiedIndex}");
+        
+        return goodsQueuers.FirstOrDefault(goodsQueuer => !goodsQueuer.isOccupied);
     }
 
-    public GoodsQueuer GetInitGoodsQueuer()
+    public void InitGoods(List<ItemBase> itemBases, out GoodsQueuerData goodsQueuerData)
     {
-        if (lastFilledIndex == -1) return null;
+        goodsQueuerData = GetGoodsQueuer();
+        if (goodsQueuerData == null) 
+        {
+            Debug.LogError($"Goods queuer data is null");
+            return;
+        }
 
-        GoodsQueuer goodsQueuer = goodsQueuers[0];
-        goodsQueuers.RemoveAt(0);
-        return goodsQueuer;
-    }
-
-    public void InitGoods(List<ItemBase> itemBases)
-    {
-        GoodsQueuer goodsQueuer = GetGoodsQueuer();
+        goodsQueuerData.isOccupied = true;
         Tween tweener = null;
 
-        for (int indexI = 0; indexI < goodsQueuer.SlotsPlacer.TotalSlotsInNode; indexI++)
+        for (int indexI = 0; indexI < goodsQueuerData.goodsQueuer.SlotsPlacer.TotalSlotsInNode; indexI++)
         {
-            tweener = itemBases[indexI].transform.DOMove(goodsQueuer.SlotsPlacer.GetPosDataBasedOnIndex(indexI), 1f);
+            tweener = itemBases[indexI].transform.DOMove(goodsQueuerData.goodsQueuer.SlotsPlacer.GetPosDataBasedOnIndex(indexI), 1f);
         }
 
         tweener.OnComplete(() => tweener.Kill());

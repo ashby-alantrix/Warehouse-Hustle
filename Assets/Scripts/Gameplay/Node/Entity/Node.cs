@@ -453,10 +453,9 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-
         if (!isNodeOccupied) // game's not over
         {
-            nodeManager.OnNodeClicked(this);
+            nodeManager.OnNodeClickedOrFound(this);
         }
     }
 

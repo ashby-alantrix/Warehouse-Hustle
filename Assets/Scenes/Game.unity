@@ -214,6 +214,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc6371f32442483a8be257faf08d99f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goodsQueuers:
+  - goodsQueuer: {fileID: 1893170216}
+    isOccupied: 0
+  - goodsQueuer: {fileID: 1918080788}
+    isOccupied: 0
+  - goodsQueuer: {fileID: 1764035418}
+    isOccupied: 0
 --- !u!1 &43447795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,7 +1830,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654069099}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1400001, y: 0, z: -1.68}
+  m_LocalPosition: {x: -1.4230001, y: 0, z: -1.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2030,7 +2037,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 708140645}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.98, y: 0, z: -1.68}
+  m_LocalPosition: {x: 1.4169998, y: 0, z: -1.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2273,7 +2280,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748605760}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5630002, y: 0, z: -1.663}
+  m_LocalPosition: {x: 0, y: 0, z: -1.663}
   m_LocalScale: {x: 0.49619, y: 0.49619, z: 0.49619}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3042,6 +3049,37 @@ Transform:
   m_Father: {fileID: 890024103}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1105664763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1105664764}
+  m_Layer: 0
+  m_Name: NewTruckSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1105664764
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105664763}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 20
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1140677736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3679,6 +3717,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 890024103}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1326502805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1326502806}
+  m_Layer: 0
+  m_Name: TruckDestPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1326502806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326502805}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -13, y: 0, z: 7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1332581781
 GameObject:
@@ -4652,13 +4721,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf94f10ce64ea4c12be0ed187e697a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goodsWaitingQueuer: {fileID: 26715762}
   truckPrefab: {fileID: 3314648758486136530, guid: 70e968f2c1fdd48a29ace484ad39edbc, type: 3}
   spawnStartPoint: {fileID: 641092810}
-  newTruckSpawnPoint: {fileID: 0}
+  newTruckSpawnPoint: {fileID: 1105664764}
+  truckDestPoint: {fileID: 1326502806}
+  spawnOffset: {x: 2.5, y: 0, z: 0}
   spawnCount: 6
   trucksMoverInterval: 1
   goodsMoverInterval: 1
-  spawnOffset: {x: 2.5, y: 0, z: 0}
 --- !u!1 &1625796661
 GameObject:
   m_ObjectHideFlags: 0

@@ -62,7 +62,7 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
         return objectBase;
     }
     
-    public void PassObjectToPool(string poolItemTypeInfo, PoolType poolType, ItemBase objectBase)
+    public void PassObjectToPool<T>(string poolItemTypeInfo, PoolType poolType, T objectBase) where T : ObjectBase
     {
         ObjectPoolBase poolToUse = GetUsedPool(GetPoolInfoBasedOnType(poolItemTypeInfo, poolType), poolType);
 

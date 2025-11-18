@@ -54,7 +54,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    public void OnNodeClicked(Node selectedNode)
+    public void OnNodeClickedOrFound(Node selectedNode)
     {
         SetGoodsPlacementManager();
         if (!goodsPlacementManager.CanPlaceGoods) return;
@@ -71,7 +71,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     {
         SetTrucksLoaderManager();
 
-        trucksLoaderManager.LoadGoodsOntoTruck(filledNode.GetSpecificItems(filledKey), filledKey);
+        trucksLoaderManager.LoadOrStoreNextGoods(filledNode.GetSpecificItems(filledKey), filledKey);
     }
 
     private void SetTrucksLoaderManager()
