@@ -20,6 +20,9 @@ public class GridManager : MonoBehaviour
     private int tempCounter = 0;
 
     private GridData m_GridData;
+    public Transform NodesParent => m_NodesParent.transform;
+    public NodeManager NodeManager => m_NodeManager;
+
     private Dictionary<float, List<float>> blockedGridValDict = new Dictionary<float, List<float>>();
     // private Dictionary
 
@@ -27,10 +30,21 @@ public class GridManager : MonoBehaviour
     {
         m_GridData = JsonConvert.DeserializeObject<GridData>(m_GridJson.text);
 
-        InitGridData();
+        Init();
     }
 
-    void InitGridData()
+    public void Init()
+    {
+        InitGridData();
+        m_NodeManager.InitNeighborsToNodes();
+    }
+
+    public void InitGridInfo(GridData gridData)
+    {
+        m_GridData = gridData;
+    }
+
+    public void InitGridData()
     {
         var nodeOffset = (m_HexNode.transform.localScale.z / 2) + (m_HexNode.transform.localScale.z / 4); // 0.75
 
@@ -52,8 +66,6 @@ public class GridManager : MonoBehaviour
 
             m_RowPosition += nodeOffset;
         }
-
-        m_NodeManager.InitNeighborsToNodes();
     }
 
     void GenerateGrid()
@@ -116,5 +128,15 @@ public class GridManager : MonoBehaviour
             m_NodeManager.AddNodeInstance(instance);
             instance.transform.name = $"{instance.transform.name} {tempCounter}";
         }
+    }
+
+    public void ClearData()
+    {
+        m_Rows = 0;
+        m_RowPosition = 0;
+        m_Cols = 0;
+        m_PreCols = 0;
+        m_BaseColCount = 0;
+        blockedGridValDict.Clear();
     }
 }
