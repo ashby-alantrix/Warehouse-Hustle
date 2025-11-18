@@ -11,9 +11,9 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private TextAsset m_GridJson;
 
-    private float m_Rows; // z
+    private int m_Rows; // z
+    private int m_Cols; // x
     private float m_RowPosition; // z
-    private float m_Cols; // x
     private float m_PreCols;
     private float m_BaseColCount;
 
@@ -55,7 +55,7 @@ public class GridManager : MonoBehaviour
             m_Rows = nodeInfo.gridValues.row;
             m_Cols = nodeInfo.gridValues.col;
 
-            var blockedGridValLength = nodeInfo.blockedGridValues.Length;
+            var blockedGridValLength = nodeInfo.blockedGridValues.Count;
             blockedGridValDict.Add(m_Rows, new List<float>(blockedGridValLength));
             for (int i = 0; i < blockedGridValLength; i++)
             {
@@ -117,7 +117,7 @@ public class GridManager : MonoBehaviour
             m_BaseColCount = m_Cols;
         }
 
-        for (float j = 0; j < m_Cols; j++)
+        for (int j = 0; j < m_Cols; j++)
         {
             if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
                 continue;
@@ -125,7 +125,7 @@ public class GridManager : MonoBehaviour
             var instance = Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
             instance.transform.SetParent(m_NodesParent.transform);
             tempCounter++;
-            m_NodeManager.AddNodeInstance(instance);
+            m_NodeManager.AddNodeInstance(instance, m_Rows, j);
             instance.transform.name = $"{instance.transform.name} {tempCounter}";
         }
     }

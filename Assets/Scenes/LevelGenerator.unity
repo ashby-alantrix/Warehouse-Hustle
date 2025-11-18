@@ -248,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelEditorButtonType: 1
+  button: {fileID: 0}
 --- !u!114 &678803352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,8 +523,9 @@ GameObject:
   - component: {fileID: 944068610}
   - component: {fileID: 944068612}
   - component: {fileID: 944068611}
+  - component: {fileID: 944068613}
   m_Layer: 5
-  m_Name: DebugPanel
+  m_Name: LevelGeneratorPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -589,6 +591,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944068609}
   m_CullTransparentMesh: 1
+--- !u!114 &944068613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944068609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eb7958be617a45b98c618fdb773f7a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelEditorBtns:
+  - {fileID: 2101553773}
+  - {fileID: 678803351}
 --- !u!1 &1071934275
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +649,6 @@ GameObject:
   - component: {fileID: 1094121594}
   - component: {fileID: 1094121593}
   - component: {fileID: 1094121592}
-  - component: {fileID: 1094121596}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -723,19 +739,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1094121596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094121591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2eb7958be617a45b98c618fdb773f7a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelEditorBtns: []
 --- !u!1 &1417782429
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NodeManager: {fileID: 1686467630}
-  m_HexNode: {fileID: 9206597145249496062, guid: 60479e4eda010482488707fbf11c123b, type: 3}
+  m_HexNode: {fileID: 9206597145249496062, guid: 3f1a0759a408a4be5b930570bc852a8e, type: 3}
   m_NodesParent: {fileID: 1071934275}
   m_GridJson: {fileID: 4900000, guid: 93b2547994276417790ea9a221c3e2fe, type: 3}
 --- !u!1 &1455855343
@@ -922,28 +925,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f9141d19b444858befc5dae6ea0481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLevelGeneratorTest: 1
   m_GridData:
     nodeInfos:
     - gridValues:
-        row: 1
-        col: 3
+        row: 0
+        col: 0
       blockedGridValues: []
     - gridValues:
-        row: 2
-        col: 2
+        row: 0
+        col: 0
       blockedGridValues: []
     - gridValues:
-        row: 3
-        col: 3
+        row: 0
+        col: 0
       blockedGridValues: []
     - gridValues:
-        row: 4
-        col: 2
+        row: 0
+        col: 0
       blockedGridValues: []
     - gridValues:
-        row: 5
-        col: 3
+        row: 0
+        col: 0
       blockedGridValues: []
   gridManager: {fileID: 1417782431}
 --- !u!1 &1686467628
@@ -990,6 +992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c6171c688e64613b96b3fe03d11540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridManagerTest: {fileID: 1593295251}
   m_HexDatas:
   - hexSide: 0
     offset:
@@ -1355,3 +1358,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelEditorButtonType: 0
+  button: {fileID: 2101553772}

@@ -1,9 +1,12 @@
 
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
 [System.Serializable]
 public class GridValues
 {
-    public float row;
-    public float col;
+    public int row;
+    public int col;
 }
 
 [System.Serializable]
@@ -11,7 +14,10 @@ public class NodeInfo
 {
     public GridValues gridValues;
 
-    public GridValues[] blockedGridValues;
+    public List<GridValues> blockedGridValues;
+
+    //[JsonIgnore]
+    //public List<string> blockedGridValueStr;
 }
 
 [System.Serializable]

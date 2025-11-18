@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class LevelEditorButton : MonoBehaviour
 {
     public LevelEditorButtonType levelEditorButtonType;
-    public Button button;
+    [HideInInspector] public Button button;
 
     void Awake()
     {

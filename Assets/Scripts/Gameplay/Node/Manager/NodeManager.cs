@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class NodeManager : MonoBehaviour, IBase, IBootLoader
 {
+#if UNITY_EDITOR
+    [SerializeField] private GridManagerTest gridManagerTest;
+#endif
+
     [SerializeField] private HexData[] m_HexDatas;
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 
@@ -26,9 +30,18 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         return nodesData.ContainsKey(pos);
     }
 
-    public void AddNodeInstance(GameObject instance)
+    public void AddNodeInstance(GameObject instance, int row, int col)
     {
         var nodeInst = instance.GetComponent<Node>();
+
+        Debug.Log($"AddNodeInstance");
+#if UNITY_EDITOR
+        Debug.Log($"AddNodeInstance for editor specific code");
+        var nodeInstTest = instance.GetComponent<NodeTest>();
+        nodeInstTest.InitGridManagerTest(gridManagerTest, row, col);
+#endif
+        Debug.Log($"AddNodeInstance for ");
+
         nodeInst.InitNodeManager(this);
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
     }
@@ -61,7 +74,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void OnNodeClickedOrFound(Node selectedNode)
     {
         SetGoodsPlacementManager();
-        if (!goodsPlacementManager.CanPlaceGoods) return;
+        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods) return;
 
         selectedNode.SetNodeOccupiedState(true);
         
