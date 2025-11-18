@@ -6,7 +6,6 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     [SerializeField] private HexData[] m_HexDatas;
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 
-
     private GoodsManager m_GoodsManager;
     private TrucksLoaderManager trucksLoaderManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
@@ -14,6 +13,11 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
+    }
+
+    public void ClearNodesData()
+    {
+        nodesData.Clear();
     }
 
     public bool IsNodeAvailableInGrid(string pos, out Node node)
