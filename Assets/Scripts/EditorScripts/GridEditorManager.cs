@@ -4,33 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GridManagerTest : MonoBehaviour
+public class GridEditorManager : MonoBehaviour
 {
     public static bool isLevelGeneratorTest = false;
 
     public GridData m_GridData;
-    public GridManager gridManager;
 
+    public GridManagerEditor gridManagerEditor;
     private void Awake()
     {
         isLevelGeneratorTest = true;
     }
 
-    [ContextMenu("GenerateGridData")]
     public void GenerateNewGridData()
     {
         ClearAllNodesData();
-        gridManager.ClearData();
-        gridManager.InitGridInfo(m_GridData);
-        gridManager.InitGridData();
+        gridManagerEditor.ClearData();
+        gridManagerEditor.InitGridInfo(m_GridData);
+        gridManagerEditor.InitGridData();
     }
 
     private void ClearAllNodesData()
     {
-        foreach (Transform child in gridManager.NodesParent)
+        foreach (Transform child in gridManagerEditor.NodesParent)
             Destroy(child.gameObject);
 
-        gridManager.NodeManager.ClearNodesData();
+        gridManagerEditor.NodeManagerEditor.ClearNodesData();
     }
 
     public void RemoveBlockedGridValue(int row, int col)
@@ -55,6 +54,7 @@ public class GridManagerTest : MonoBehaviour
 
     public void AddBlockedGridValue(int row, int col)
     {
+        Debug.Log($"Add blocked grid value: {row}, {col}");
         foreach (var nodeInfo in m_GridData.nodeInfos)
         {
             if (nodeInfo.gridValues.row != row)

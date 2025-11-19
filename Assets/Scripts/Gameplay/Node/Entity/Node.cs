@@ -453,7 +453,7 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (!isNodeOccupied && !GridManagerTest.isLevelGeneratorTest) // game's not over
+        if (!isNodeOccupied) // game's not over
         {
             nodeManager.OnNodeClickedOrFound(this);
         }

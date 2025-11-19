@@ -30,7 +30,9 @@ public class GridManager : MonoBehaviour
     {
         m_GridData = JsonConvert.DeserializeObject<GridData>(m_GridJson.text);
 
-        Init();
+        Debug.Log($"GridManagerTest.isLevelGeneratorTest: {GridEditorManager.isLevelGeneratorTest}");
+        if (!GridEditorManager.isLevelGeneratorTest)
+            Init();
     }
 
     public void Init()
@@ -42,10 +44,13 @@ public class GridManager : MonoBehaviour
     public void InitGridInfo(GridData gridData)
     {
         m_GridData = gridData;
+
+        Debug.Log($"GridData: {JsonConvert.SerializeObject(m_GridData)}");
     }
 
     public void InitGridData()
     {
+        Debug.Log($"Init grid data");
         var nodeOffset = (m_HexNode.transform.localScale.z / 2) + (m_HexNode.transform.localScale.z / 4); // 0.75
 
         foreach (var nodeInfo in m_GridData.nodeInfos)
@@ -56,7 +61,9 @@ public class GridManager : MonoBehaviour
             m_Cols = nodeInfo.gridValues.col;
 
             var blockedGridValLength = nodeInfo.blockedGridValues.Count;
-            blockedGridValDict.Add(m_Rows, new List<float>(blockedGridValLength));
+            if (!blockedGridValDict.ContainsKey(m_Rows))
+                blockedGridValDict.Add(m_Rows, new List<float>(blockedGridValLength));
+
             for (int i = 0; i < blockedGridValLength; i++)
             {
                 blockedGridValDict[m_Rows].Add(nodeInfo.blockedGridValues[i].col);
@@ -120,12 +127,14 @@ public class GridManager : MonoBehaviour
         for (int j = 0; j < m_Cols; j++)
         {
             if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
+            {
                 continue;
+            }
 
             var instance = Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
             instance.transform.SetParent(m_NodesParent.transform);
             tempCounter++;
-            m_NodeManager.AddNodeInstance(instance, m_Rows, j);
+            m_NodeManager.AddNodeInstance(instance, m_Rows, j + 1);
             instance.transform.name = $"{instance.transform.name} {tempCounter}";
         }
     }

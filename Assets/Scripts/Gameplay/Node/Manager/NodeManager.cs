@@ -4,7 +4,7 @@ using UnityEngine;
 public class NodeManager : MonoBehaviour, IBase, IBootLoader
 {
 #if UNITY_EDITOR
-    [SerializeField] private GridManagerTest gridManagerTest;
+    [SerializeField] private GridEditorManager gridManagerTest;
 #endif
 
     [SerializeField] private HexData[] m_HexDatas;
@@ -33,14 +33,6 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void AddNodeInstance(GameObject instance, int row, int col)
     {
         var nodeInst = instance.GetComponent<Node>();
-
-        Debug.Log($"AddNodeInstance");
-#if UNITY_EDITOR
-        Debug.Log($"AddNodeInstance for editor specific code");
-        var nodeInstTest = instance.GetComponent<NodeTest>();
-        nodeInstTest.InitGridManagerTest(gridManagerTest, row, col);
-#endif
-        Debug.Log($"AddNodeInstance for ");
 
         nodeInst.InitNodeManager(this);
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
