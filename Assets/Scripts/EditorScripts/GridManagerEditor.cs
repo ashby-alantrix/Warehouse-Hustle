@@ -8,7 +8,7 @@ public class GridManagerEditor : MonoBehaviour
 {
     [SerializeField] private TextAsset customJsonTextAsset;
     [SerializeField] private bool useCustomJson;
-    private bool overriteJson = false;
+    [SerializeField] private bool overriteJson = false;
 
     [SerializeField] private NodeManagerEditor nodeManagerEditor;
     [SerializeField] private GridEditorManager gridEditorManager;
