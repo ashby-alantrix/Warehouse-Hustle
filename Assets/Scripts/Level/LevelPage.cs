@@ -13,8 +13,8 @@ public class LevelPage : MonoBehaviour
     [SerializeField] private Transform currentFinishedLvlTransform;
     [SerializeField] private Transform newUnlockedLvlTransform;
 
-    [SerializeField] private Vector3 startAdditionalPos = new Vector3(0f, 50f, 0);
-    [SerializeField] private Vector3 finalAdditionalPos = new Vector3(0f, 25f, 0);
+    [SerializeField] private Vector3 startAdditionalSlideOffset = new Vector3(0f, 50f, 0);
+    [SerializeField] private Vector3 finalAdditionalSlideOffset = new Vector3(0f, 25f, 0);
 
     [SerializeField] private float startTweenDelay = 0.25f;
     [SerializeField] private float finalTweenDelay = 0.25f;
@@ -59,14 +59,14 @@ public class LevelPage : MonoBehaviour
         }    
         else if (levelManager.CurrentLevelNumber <= levelManager.TotalLevelsCount)
         {
-            string lvlPos = $"{currentFinishedLvlTransform.position + finalAdditionalPos}";
+            string lvlPos = $"{currentFinishedLvlTransform.position + finalAdditionalSlideOffset}";
             if (levelsDict.ContainsKey(lvlPos))
             {
                 currentFinishedLvl = levelsDict[lvlPos];
                 currentFinishedLvl.OnLevelCompleted();
             }
             
-            lvlPos = $"{newUnlockedLvlTransform.position + finalAdditionalPos}";
+            lvlPos = $"{newUnlockedLvlTransform.position + finalAdditionalSlideOffset}";
             if (levelsDict.ContainsKey(lvlPos))
             {
                 newUnlockedLvl = levelsDict[lvlPos];
@@ -81,14 +81,14 @@ public class LevelPage : MonoBehaviour
     {
         Tween tween = null, tween1 = null, tween2 = null;
 
-        StartTween(out tween, additionalPos: startAdditionalPos, delay: startTweenDelay, useOffset: true);
+        StartTween(out tween, additionalPos: startAdditionalSlideOffset, delay: startTweenDelay, useOffset: true);
         tween.OnComplete(() =>
         {
             // // tween.Kill();
             StartTween(out tween1, additionalPos: Vector3.zero, levelObjectSlideDelay, useOffset: false);
             tween1.OnComplete(() =>
             {
-                StartTween(out tween2, additionalPos: finalAdditionalPos, finalTweenDelay, useOffset: false);
+                StartTween(out tween2, additionalPos: finalAdditionalSlideOffset, finalTweenDelay, useOffset: false);
                 tween2.OnComplete(() =>
                 {
                     Level lastLevel = levelsQueue.Last();
@@ -120,7 +120,7 @@ public class LevelPage : MonoBehaviour
                     {
                         levelsQueue.Enqueue(dequeuedLevel);
                         dequeuedLevel.gameObject.SetActive(true);
-                        dequeuedLevel.SetLevelBarricade();
+                        dequeuedLevel.SetLevelEndBarricade();
                     }
 
                     foreach (var level in levelsQueue)

@@ -42,7 +42,7 @@ public class Level : MonoBehaviour
         playBtn.SetActive(state);
     }
 
-    public void SetLevelBarricade()
+    public void SetLevelEndBarricade()
     {
         HasBarricade = true;
         barricade.SetActive(true);
