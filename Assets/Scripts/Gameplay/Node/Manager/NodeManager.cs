@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class NodeManager : MonoBehaviour, IBase, IBootLoader
 {
-#if UNITY_EDITOR
-    [SerializeField] private GridEditorManager gridManagerTest;
-#endif
-
     [SerializeField] private HexData[] m_HexDatas;
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 

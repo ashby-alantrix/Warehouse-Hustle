@@ -16,6 +16,8 @@ public class Level : MonoBehaviour
 
     public bool HasBarricade { get; internal set; }
 
+    private LevelManager levelManager;
+
     public void OnLevelCompleted()
     {
         TogglePlayBtnState(false);
@@ -51,5 +53,11 @@ public class Level : MonoBehaviour
     public void ShowRestartButton()
     {
         restartBtn.SetActive(true);
+    }
+
+    public void OnClick_PlayButton()
+    {
+        levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
+        levelManager.LoadLevelInGame();
     }
 }

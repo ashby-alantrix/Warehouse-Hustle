@@ -48,4 +48,9 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
     {
         levelPage.OnLevelComplete();
     }
+
+    public void LoadLevelInGame()
+    {
+        MainSingleton.Instance.LoadGameplayScene();
+    }
 }
