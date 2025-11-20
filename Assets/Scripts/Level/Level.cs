@@ -1,11 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
 public class Level : MonoBehaviour
 {
+    [SerializeField] private float animScale = 1f;
+    [SerializeField] private float btnScaleDelay = 0.5f;
+    [SerializeField] private Transform levelContent;
+    [SerializeField] private Transform btnContent;
+    
     [SerializeField] private int levelNum;
     [SerializeField] private GameObject playBtn;
     [SerializeField] private GameObject restartBtn;
@@ -22,6 +28,27 @@ public class Level : MonoBehaviour
     {
         TogglePlayBtnState(false);
         // grey out the level object sprite or replace the sprite with a greyed out one
+    }
+
+    public void PlayScaleInAnims()
+    {
+        ScaleLevelContent();
+        if (playBtn.activeInHierarchy || restartBtn.activeInHierarchy)
+            Invoke(nameof(ScaleLevelButton), btnScaleDelay);
+    }
+
+    private void ScaleLevelContent()
+    {
+        Debug.Log($"ScaleLevelContent");
+        levelContent.localScale = Vector3.zero;
+        Tween tween = levelContent.DOScale(Vector3.one, animScale);
+        tween.OnComplete(() => tween.Kill());
+    }
+
+    private void ScaleLevelButton()
+    {
+        btnContent.localScale = Vector3.zero;
+        btnContent.DOScale(Vector3.one, animScale);
     }
 
     public void OnLevelUnlocked()

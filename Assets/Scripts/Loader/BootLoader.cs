@@ -2,14 +2,10 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public interface IBootLoader
-{
-    public void Initialize();
-}
-
 public class BootLoader : MonoBehaviour
 {
     [SerializeField] private GameObject[] baseObjects;
+    [SerializeField] private GameObject[] uiBases;
 
     private void Start()
     {
@@ -18,7 +14,12 @@ public class BootLoader : MonoBehaviour
         
         InterfaceManager.InitInstance();
 
-        foreach (GameObject bootloader in baseObjects)
-            bootloader.GetComponent<IBootLoader>().Initialize();
+        if (baseObjects != null && baseObjects.Length > 0)
+            foreach (GameObject bootloader in baseObjects)
+                bootloader.GetComponent<IBootLoader>().Initialize();
+
+        if (uiBases != null && uiBases.Length > 0)
+            foreach (GameObject uiBase in uiBases)
+                uiBase.GetComponent<IUIBase>().Initialize();
     }
 }

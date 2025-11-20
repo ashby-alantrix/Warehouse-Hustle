@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour, IBootLoader, IBase
 {
-    [SerializeField] private LevelPage levelPage;
+    [SerializeField] private LevelScreen levelPage;
 
     private int currentLevelNumber = 1;
 
@@ -19,6 +19,16 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
     public void SetCurrentLevelNumber(int currentLevelNumber)
     {
         this.currentLevelNumber = currentLevelNumber;
+    }
+
+    public LevelsInfo GetCurrentLevelsInfo()
+    {
+        return levelDataDictionary.ContainsKey(currentLevelNumber) ? levelDataDictionary[currentLevelNumber] : null;
+    }
+
+    public LevelsInfo GetLevelsInfo(int levelNum)
+    {
+        return levelDataDictionary.ContainsKey(levelNum) ? levelDataDictionary[levelNum] : null;
     }
 
     public void Initialize()

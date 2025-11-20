@@ -4,7 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-public class LevelPage : MonoBehaviour
+public class LevelScreen : UIBase
 {
     [SerializeField] private Level[] levelObjects;
     [SerializeField] private Level currentFinishedLvl, newUnlockedLvl;
@@ -33,6 +33,21 @@ public class LevelPage : MonoBehaviour
     {
         foreach (var levelObject in levelObjects)
             levelsQueue.Enqueue(levelObject);
+    }
+
+    void OnEnable()
+    {
+        StartCoroutine(StartLevelObjectAnims());
+    }
+
+    private IEnumerator StartLevelObjectAnims()
+    {
+        foreach (var levelObject in levelsQueue)
+        {
+            Debug.Log($"levelObject: {levelObject.name}");
+            levelObject.PlayScaleInAnims();
+            yield return new WaitForSeconds(0.25f);
+        }
     }
 
     public void InitLevelManager(LevelManager levelManager)

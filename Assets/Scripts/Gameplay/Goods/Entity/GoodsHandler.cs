@@ -16,7 +16,8 @@ public class GoodsHandler : MonoBehaviour
     [SerializeField] private GoodsInputPlatform currentGoodsPlacer;
     [SerializeField] private GoodsInputPlatform nextGoodsPlacer;
     [SerializeField] private byte minGoods = 2;
-    [SerializeField] private byte maxGoods = 12;
+    [SerializeField] private byte minGoodsInSet = 2;
+    [SerializeField] private byte maxGoodsInSet = 3;
 
     private ItemType[] goodsType;
     private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
@@ -24,18 +25,18 @@ public class GoodsHandler : MonoBehaviour
     public GoodsInputPlatform CurrentGoodsPlacer => currentGoodsPlacer;
     public GoodsInputPlatform NextGoodsPlacer => nextGoodsPlacer;
 
-    public void InitGoodsInfo()
+    public void InitGoodsInfo(int goodTypeCount)
     {
-        InitGoodsTypes();
+        InitGoodsTypes(goodTypeCount);
         InitCurrentAndNextGoods();
     }
 
-    private void InitGoodsTypes()
+    private void InitGoodsTypes(int goodTypeCount)
     {
-        int maxElements = (int)ItemType.MAX;
-        goodsType = new ItemType[maxElements];
+        // // int maxElements = (int)ItemType.MAX;
+        goodsType = new ItemType[goodTypeCount];
 
-        for (int index = 0; index < maxElements; index++)
+        for (int index = 0; index < goodTypeCount; index++)
             goodsType[index] = (ItemType)index;
     }
 
@@ -72,9 +73,12 @@ public class GoodsHandler : MonoBehaviour
 
     private void CreateGoodsSet()
     {
-        int remCountInSet = (byte)UnityEngine.Random.Range(minGoods, maxGoods);
+        int remCountInSet = (byte)UnityEngine.Random.Range(minGoods, maxGoodsInSet);
         while (remCountInSet >= minGoods)
         {
+            if (lastUpdatedGoodsSet.Count == maxGoodsInSet)
+                break;
+
             var goodsSetObj = new GoodsSet();
             goodsSetObj.type = GenerateRandomGoodsType();
             goodsSetObj.setCount = GenerateRandomSetCount(remCountInSet);

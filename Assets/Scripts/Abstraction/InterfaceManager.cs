@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InterfaceManager : MonoBehaviour
+public class InterfaceManager
 {
     private Dictionary<string, IBase> interfacesDict = new Dictionary<string, IBase>();
 
@@ -19,16 +19,6 @@ public class InterfaceManager : MonoBehaviour
         }
         Debug.Log($"Initialized interface manager: {Instance}");
     }
-
-    // // void Awake()
-    // // {
-    // //     if (Instance == null)
-    // //         Instance = this;
-    // //     else 
-    // //         DestroyImmediate(gameObject);
-        
-    // //     DontDestroyOnLoad(Instance);
-    // // }
 
     public InterfaceManager()
     {
