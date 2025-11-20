@@ -1,20 +1,55 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+public enum LevelState
+{
+    Progress, 
+    Won,
+    Lost
+}
 
 public class LevelManager : MonoBehaviour, IBootLoader, IBase
 {
     [SerializeField] private LevelScreen levelPage;
 
     private int currentLevelNumber = 1;
+    private LevelState levelState = LevelState.Progress;
 
     private UserDataBehaviour userDataBehaviour;
+    private UIManager userDataBehaviourui;
+    private UIManager uiManager;
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
 
     public int TotalLevelsCount => levelDataDictionary.Count;
     public int CurrentLevelNumber => currentLevelNumber;
+    public LevelState LevelState => levelState;
+
+    public void OnLevelStateChange(LevelState state)
+    {
+        SetUIManager();
+        levelState = state;
+        switch (levelState)
+        {
+            case LevelState.Progress:
+            break;
+            case LevelState.Won:
+                uiManager.OnLevelWon();
+            break;
+            case LevelState.Lost:
+                uiManager.OnLevelLost();
+            break;
+            default: break;
+        }
+    }
+
+    private void SetUIManager()
+    {
+        uiManager = uiManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<UIManager>() : uiManager;
+    }
 
     public void SetCurrentLevelNumber(int currentLevelNumber)
     {

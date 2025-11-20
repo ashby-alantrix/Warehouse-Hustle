@@ -31,9 +31,9 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    public UIBase GetScreen(UIType uiType)
+    public UIBase GetScreen<T>(UIType uiType) where T : UIBase
     {
-        return screensDict.ContainsKey(uiType) ? screensDict[uiType] : null;
+        return screensDict.ContainsKey(uiType) ? (T)screensDict[uiType] : null;
     }
 
     public void ShowScreen(UIType uiType)

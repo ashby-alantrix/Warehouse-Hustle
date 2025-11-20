@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NodeManager : MonoBehaviour, IBase, IBootLoader
@@ -7,12 +9,19 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
 
     private GoodsManager m_GoodsManager;
+    private LevelManager levelManager;
     private TrucksLoaderManager trucksLoaderManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
+        SetLevelManager();
+    }
+
+    private void SetLevelManager()
+    {
+        levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
     }
 
     public void ClearNodesData()
@@ -92,5 +101,11 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private void SetGoodsManager()
     {
         m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
+    }
+
+    public void CheckIfNodesAreLeft()
+    {
+        if (nodesData.All(nodeData => nodeData.Value.isNodeOccupied))
+            levelManager.OnLevelStateChange(LevelState.Lost);
     }
 }

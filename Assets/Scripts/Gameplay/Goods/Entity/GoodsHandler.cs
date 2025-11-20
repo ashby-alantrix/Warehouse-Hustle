@@ -18,6 +18,7 @@ public class GoodsHandler : MonoBehaviour
     [SerializeField] private byte minGoods = 2;
     [SerializeField] private byte minGoodsInSet = 2;
     [SerializeField] private byte maxGoodsInSet = 3;
+    [SerializeField] private byte totalGoodsAvail = 10;
 
     private ItemType[] goodsType;
     private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
@@ -73,7 +74,7 @@ public class GoodsHandler : MonoBehaviour
 
     private void CreateGoodsSet()
     {
-        int remCountInSet = (byte)UnityEngine.Random.Range(minGoods, maxGoodsInSet);
+        int remCountInSet = (byte)UnityEngine.Random.Range(minGoods, totalGoodsAvail);
         while (remCountInSet >= minGoods)
         {
             if (lastUpdatedGoodsSet.Count == maxGoodsInSet)

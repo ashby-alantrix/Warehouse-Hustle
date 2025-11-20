@@ -487,7 +487,7 @@ public class Node : MonoBehaviour
 
         if (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount)
         {
-            OnNodeFull(); // TODO :: temporary logic, update with loading onto to truck
+            OnNodeFull();
 
             goodsSetDict.Clear();
             itemBasesCollection.Clear();
@@ -498,6 +498,10 @@ public class Node : MonoBehaviour
             // goodsSetDict.Clear();
             // itemBasesCollection.Clear();
             SetNodeOccupiedState(false);
+        }
+        else
+        {
+            nodeManager.CheckIfNodesAreLeft();
         }
     }
 
