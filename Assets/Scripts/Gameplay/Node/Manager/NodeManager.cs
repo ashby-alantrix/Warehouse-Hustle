@@ -71,7 +71,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void OnNodeClickedOrFound(Node selectedNode)
     {
         SetGoodsPlacementManager();
-        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods) return;
+        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel) return;
 
         selectedNode.SetNodeOccupiedState(true);
         

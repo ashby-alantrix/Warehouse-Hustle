@@ -33,10 +33,35 @@ public class LevelScreen : UIBase
     {
         foreach (var levelObject in levelObjects)
             levelsQueue.Enqueue(levelObject);
+
+        var posVal = Vector3.zero;
+        foreach (var level in levelsQueue)
+        {
+            posVal = level.transform.position + finalAdditionalSlideOffset;
+            if (!levelsDict.ContainsKey($"{posVal}"))
+                levelsDict[$"{posVal}"] = level;
+            else 
+                levelsDict.Add($"{posVal}", level);
+        }
     }
 
     void OnEnable()
     {
+        StartCoroutine(ShowLevelPageAnims());
+    }
+
+    private IEnumerator ShowLevelPageAnims()
+    {
+        yield return new WaitUntil(() => levelManager != null && levelManager.HasInitializedLevelsData);
+        
+        foreach (var lvlPair in levelsDict)
+        {
+            if (lvlPair.Value.LevelNum == levelManager.CurrentLevelNumber)
+                lvlPair.Value.ShowSelectedLevelView();
+            else 
+                lvlPair.Value.ShowUnselectedLevelView();
+        }
+
         StartCoroutine(StartLevelObjectAnims());
     }
 
@@ -48,6 +73,9 @@ public class LevelScreen : UIBase
             levelObject.PlayScaleInAnims();
             yield return new WaitForSeconds(0.25f);
         }
+
+        if (levelManager.CurrentLevelNumber > 1)
+            TriggerScrollingAnim();
     }
 
     public void InitLevelManager(LevelManager levelManager)
@@ -64,35 +92,33 @@ public class LevelScreen : UIBase
         }
     }
 
-    public void OnLevelComplete()
+    private void OnLevelComplete()
     {
         if (levelManager.CurrentLevelNumber == 1)
         {
-            currentFinishedLvl.OnLevelCompleted();
-            newUnlockedLvl.OnLevelUnlocked();
-            TriggerAnim();
-        }    
+            // // currentFinishedLvl = levelsDict.First().Value;
+            currentFinishedLvl.ShowUnselectedLevelView();
+            newUnlockedLvl.ShowSelectedLevelView();
+        }
         else if (levelManager.CurrentLevelNumber <= levelManager.TotalLevelsCount)
         {
             string lvlPos = $"{currentFinishedLvlTransform.position + finalAdditionalSlideOffset}";
             if (levelsDict.ContainsKey(lvlPos))
             {
                 currentFinishedLvl = levelsDict[lvlPos];
-                currentFinishedLvl.OnLevelCompleted();
+                currentFinishedLvl.ShowUnselectedLevelView();
             }
-            
+
             lvlPos = $"{newUnlockedLvlTransform.position + finalAdditionalSlideOffset}";
             if (levelsDict.ContainsKey(lvlPos))
             {
                 newUnlockedLvl = levelsDict[lvlPos];
-                newUnlockedLvl.OnLevelUnlocked();
+                newUnlockedLvl.ShowSelectedLevelView();
             }
-
-            TriggerAnim();
         }
     }
 
-    public void TriggerAnim()
+    public void TriggerScrollingAnim()
     {
         Tween tween = null, tween1 = null, tween2 = null;
 

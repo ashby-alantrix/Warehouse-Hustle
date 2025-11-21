@@ -10,7 +10,9 @@ public enum UIType
     FTUE_Popup,
     MenuSettingsPopup,
     RestartPopup,
-    LevelCompletePopup
+    LevelCompletePopup,
+    GameOverPopup,
+    LevelFailPopup
 }
 
 public class UIBase : MonoBehaviour, IUIBase

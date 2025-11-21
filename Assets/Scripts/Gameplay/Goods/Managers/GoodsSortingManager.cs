@@ -7,7 +7,9 @@ using Unity.VisualScripting;
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 {
     [SerializeField] private float sortingDelay = 0.75f;
+
     private NodeManager nodeManager;
+    private LevelManager levelManager;
     private GoodsPlacementManager goodsPlacementManager;
 
     private Node currentSelectedNode = null;
@@ -19,9 +21,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private Node firstNode = null, secondNode = null;
     private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
 
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<GoodsSortingManager>(this);
+        levelManager = InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>();
     }
 
     public Node GetCurrentSelectedNode() => currentSelectedNode;
@@ -209,6 +213,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
+        if (!levelManager.CanPlayLevel) return;
+        
         ItemType otherSetItemKey;
 
         Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");

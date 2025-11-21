@@ -18,15 +18,17 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
     private int currentLevelNumber = 1;
     private LevelState levelState = LevelState.Progress;
 
-    private UserDataBehaviour userDataBehaviour;
-    private UIManager userDataBehaviourui;
     private UIManager uiManager;
+    private UserDataBehaviour userDataBehaviour;
+    
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
 
     public int TotalLevelsCount => levelDataDictionary.Count;
     public int CurrentLevelNumber => currentLevelNumber;
     public LevelState LevelState => levelState;
+    public bool HasInitializedLevelsData = false;
+    public bool CanPlayLevel = true;
 
     public void OnLevelStateChange(LevelState state)
     {
@@ -35,11 +37,14 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
         switch (levelState)
         {
             case LevelState.Progress:
+                CanPlayLevel = true;
             break;
             case LevelState.Won:
+                CanPlayLevel = false;
                 uiManager.OnLevelWon();
             break;
             case LevelState.Lost:
+                CanPlayLevel = false;
                 uiManager.OnLevelLost();
             break;
             default: break;
@@ -76,6 +81,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
         InitLevelsInfoToDict();
         levelPage.InitLevelManager(this);
         levelPage.InitLevelObjects();
+        HasInitializedLevelsData = true;
     }
 
     public void InitLevelsInfoToDict()
@@ -87,11 +93,6 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
                 levelDataDictionary.Add(levelData.level, levelData.levelsInfo);
             }
         }
-    }
-
-    public void OnLevelCompleted()
-    {
-        levelPage.OnLevelComplete();
     }
 
     public void LoadLevelInGame()
