@@ -14,6 +14,7 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<PopupManager>(this);
+        screensDict.Clear();
     }
 
     public void RegisterScreen(UIBase uiBase)
@@ -31,7 +32,7 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    public UIBase GetScreen<T>(UIType uiType) where T : UIBase
+    public T GetScreen<T>(UIType uiType) where T : UIBase
     {
         return screensDict.ContainsKey(uiType) ? (T)screensDict[uiType] : null;
     }
@@ -59,8 +60,4 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    private void OnDestroy()
-    {
-        screensDict.Clear();
-    }
 }

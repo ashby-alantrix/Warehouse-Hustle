@@ -11,16 +11,17 @@ public enum LevelState
     Lost
 }
 
-public class LevelManager : MonoBehaviour, IBootLoader, IBase
+public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
-    [SerializeField] private LevelScreen levelPage;
 
     private int currentLevelNumber = 1;
     private LevelState levelState = LevelState.Progress;
 
+    private LevelScreen levelPage;
     private UIManager uiManager;
     private UserDataBehaviour userDataBehaviour;
-    
+    private PopupManager popupManager;
+
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
 
@@ -28,7 +29,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
     public int CurrentLevelNumber => currentLevelNumber;
     public LevelState LevelState => levelState;
     public bool HasInitializedLevelsData = false;
-    public bool CanPlayLevel = true;
+    public bool CanPlayLevel = true; // TODO :: Change the name of the variable according to logic
 
     public void OnLevelStateChange(LevelState state)
     {
@@ -41,7 +42,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
             break;
             case LevelState.Won:
                 CanPlayLevel = false;
-                uiManager.OnLevelWon();
+                uiManager.OnLevelWon(GetCurrentLevelsInfo().coinsRewardToGive);
             break;
             case LevelState.Lost:
                 CanPlayLevel = false;
@@ -76,9 +77,15 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase
         InterfaceManager.Instance?.RegisterInterface<LevelManager>(this);
 
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
-        levelConfigData = userDataBehaviour.GetLevelsDatas();
+        popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
+    }
 
+    public void InitializeData()
+    {
+        levelConfigData = userDataBehaviour.GetLevelsDatas();
         InitLevelsInfoToDict();
+
+        levelPage = popupManager.GetScreen<LevelScreen>(UIType.LevelsScreen);
         levelPage.InitLevelManager(this);
         levelPage.InitLevelObjects();
         HasInitializedLevelsData = true;

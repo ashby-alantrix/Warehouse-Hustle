@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 6675618273690061588}
   - component: {fileID: 2252487255324389944}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: SelectedLvlText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1017,7 +1017,7 @@ GameObject:
   - component: {fileID: 7784576549199515205}
   - component: {fileID: 5875259147690956006}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: UnselectedLvlText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1355,4 +1355,5 @@ MonoBehaviour:
   playBtn: {fileID: 2581594466346634463}
   restartBtn: {fileID: 4625878439111303718}
   barricade: {fileID: 5682536936630483654}
-  levelText: {fileID: 2252487255324389944}
+  selLevelText: {fileID: 2252487255324389944}
+  unselLevelText: {fileID: 5875259147690956006}

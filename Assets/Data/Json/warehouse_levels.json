@@ -4,7 +4,8 @@
       "level": 1,
       "levelsInfo": {
         "goodType": 2,
-        "goodsToLoad": 24
+        "goodsToLoad": 24,
+        "coinsRewardToGive": 50
       }
     },
     {

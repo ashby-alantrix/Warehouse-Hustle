@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Pool;
 
 public class ItemLoadData
 {
@@ -12,7 +13,7 @@ public class ItemLoadData
     public GoodsQueuerData goodsQueuerData;
 }
 
-public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
+public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
     [SerializeField] private GoodsWaitingQueuer goodsWaitingQueuer;
     [SerializeField] private GameObject truckPrefab;
@@ -52,6 +53,10 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
         SetObjectPoolManager();
         SetLevelManager();
         SetUIManager();
+    }
+
+    public void InitializeData()
+    {
         SpawnTrucks();
     }
 
@@ -164,7 +169,9 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase
     {
         for (int indexI = 0; indexI < spawnCount; indexI++)
         {
-            truckBases.Add(objectPoolManager.GetObjectFromPool<TruckBase>($"{TruckType.Truck1}", PoolType.Truck));
+            var pooledObject = objectPoolManager.GetObjectFromPool<TruckBase>($"{TruckType.Truck1}", PoolType.Truck);
+            Debug.Log($"Pooled object: {pooledObject}");
+            truckBases.Add(pooledObject);
 
             truckBases[indexI].transform.position = currentSpawnPos;
             truckBases[indexI].gameObject.SetActive(true);

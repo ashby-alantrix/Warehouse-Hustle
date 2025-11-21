@@ -20,16 +20,19 @@ public class Level : MonoBehaviour
     [SerializeField] private GameObject playBtn;
     [SerializeField] private GameObject restartBtn;
     [SerializeField] private GameObject barricade;
-    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI selLevelText;
+    [SerializeField] private TextMeshProUGUI unselLevelText;
 
     public int LevelNum => levelNum;
 
     public bool HasBarricade { get; internal set; }
 
     private LevelManager levelManager;
+    private bool isSelected = false;
 
     public void ShowUnselectedLevelView()
     {
+        isSelected = false;
         TogglePlayBtnState(false);
         // grey out the level object sprite or replace the sprite with a greyed out one
         ToggleLevelObjectStates(false);
@@ -37,6 +40,7 @@ public class Level : MonoBehaviour
 
     public void ShowSelectedLevelView()
     {
+        isSelected = true;
         // change to level selected sprite and scale the level object
         if (HasBarricade)
         {
@@ -76,12 +80,18 @@ public class Level : MonoBehaviour
     public void SetLevelText(int levelNum)
     {
         this.levelNum = levelNum;
-        levelText.text = $"LEVEL {levelNum}";
+        if (isSelected)
+            selLevelText.text = $"LEVEL {levelNum}";
+        else 
+            unselLevelText.text = $"LEVEL {levelNum}";
     }
 
     public void TogglePlayBtnState(bool state)
     {
+        Debug.Log($"LevelNum :: {levelNum}, {state}");
         playBtn.SetActive(state);
+        if (state)
+            ScaleLevelButton();
     }
 
     public void SetLevelEndBarricade()
@@ -99,5 +109,6 @@ public class Level : MonoBehaviour
     {
         levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
         levelManager.LoadLevelInGame();
+        levelManager.OnLevelStateChange(LevelState.Progress);
     }
 }

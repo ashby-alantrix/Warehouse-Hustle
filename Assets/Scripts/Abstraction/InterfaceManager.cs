@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InterfaceManager
 {
-    private Dictionary<string, IBase> interfacesDict = new Dictionary<string, IBase>();
+    private static Dictionary<string, IBase> interfacesDict = new Dictionary<string, IBase>();
 
     #region Singleton
     public static InterfaceManager Instance { get; private set; }
@@ -18,6 +18,11 @@ public class InterfaceManager
             Debug.Log("Initialized interface manager");
         }
         Debug.Log($"Initialized interface manager: {Instance}");
+        Debug.Log($"Initialized interface manager: {interfacesDict.Count}");
+        foreach (var pair in interfacesDict)
+        {
+            Debug.Log($"Initialized interface manager: key: {pair.Key}, value: {pair.Value}");
+        }
     }
 
     public InterfaceManager()
@@ -33,6 +38,10 @@ public class InterfaceManager
         if (!interfacesDict.ContainsKey(interfaceType))
         {
             interfacesDict.Add(interfaceType, interfaceInst);
+        }
+        else
+        {
+            interfacesDict[interfaceType] = interfaceInst;
         }
     }
 

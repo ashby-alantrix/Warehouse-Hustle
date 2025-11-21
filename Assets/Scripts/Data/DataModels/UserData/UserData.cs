@@ -26,4 +26,5 @@ public class LevelsInfo
     public int goodType;
     public int goodsToLoad;
     public bool unlocked;
+    public int coinsRewardToGive;
 }
