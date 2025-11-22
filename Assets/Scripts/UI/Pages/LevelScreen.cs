@@ -34,44 +34,35 @@ public class LevelScreen : UIBase
         this.levelManager = levelManager;
     }
 
-    private int GetLevelStartVal() => levelManager.CurrentLevelNumber - 1 < 1 ? levelManager.CurrentLevelNumber : levelManager.CurrentLevelNumber - 1;
+    private int GetLevelPageStartVal() => levelManager.CurrentLevelNumber - 1 < 1 ? levelManager.CurrentLevelNumber : levelManager.CurrentLevelNumber - 1;
 
     public void InitLevelObjects()
     {
-        int levelStartVal = GetLevelStartVal();
-        for (int indexI = 0; indexI < levelObjects.Length; indexI++)
-        {
-            levelObjects[indexI].SetLevelText(levelStartVal++);
-        }
+        if (levelManager.CurrentLevelNumber == 2)
+            Debug.Break();
+        // int levelStartVal = GetLevelPageStartVal();
+        // for (int indexI = 0; indexI < levelObjects.Length; indexI++)
+        // {
+        //     levelObjects[indexI].SetLevelText(levelStartVal++);
+        // }
+
+        if (levelManager.CurrentLevelNumber == 2)
+            Debug.Break();
 
         StartCoroutine(ShowLevelPageAnims());
-    }
-
-    private void InitLevelsQueue()
-    {
-        Debug.Log($"GetLevelStartVal(): {GetLevelStartVal()}");
-        var showBarricade = levelManager.CurrentLevelNumber >= levelManager.TotalLevelsCount - diff;
-        var endIndex = showBarricade ? levelManager.TotalLevelsCount - (GetLevelStartVal() - 1) + 1 : levelObjects.Length;
-
-        for (int indexI = 0; indexI < endIndex; indexI++)
-        {
-            levelsQueue.Enqueue(levelObjects[indexI]);
-        }
-        
-        if (showBarricade)
-        {
-            Debug.Log($"### levelManager.CurrentLevelNumber: {levelManager.CurrentLevelNumber}, {levelManager.TotalLevelsCount - diff}");
-            Level lvlObj = levelsQueue.Last();
-            lvlObj.gameObject.SetActive(true);
-            lvlObj.SetLevelEndBarricade();
-        }
     }
 
     private IEnumerator ShowLevelPageAnims()
     {
         yield return new WaitUntil(() => levelManager != null && levelManager.HasInitializedLevelsData);
         
+        if (levelManager.CurrentLevelNumber == 2)
+            Debug.Break();
+
         InitLevelsQueue();
+
+        if (levelManager.CurrentLevelNumber == 2)
+            Debug.Break();
         
         for (int indexI = 0; indexI < levelObjects.Length; indexI++)
         {
@@ -80,12 +71,12 @@ public class LevelScreen : UIBase
             levelObjects[indexI].ShowUnselectedLevelView();
         }
 
+        if (levelManager.CurrentLevelNumber == 2)
+            Debug.Break();
+
         if (levelManager.CurrentLevelNumber > 1)
         {
-            for (int indexI = 1; indexI < levelObjectPoints.Length; indexI++)
-            {
-                levelObjects[indexI - 1].transform.position = levelObjectPoints[indexI].position;
-            }
+            AlignLevelObjectPositions();
         }
         else // for first level
         {
@@ -100,6 +91,34 @@ public class LevelScreen : UIBase
         }
 
         StartCoroutine(StartLevelObjectAnims());
+    }
+
+    private void AlignLevelObjectPositions()
+    {
+        for (int indexI = 1; indexI < levelObjectPoints.Length; indexI++)
+        {
+            levelObjects[indexI - 1].transform.position = levelObjectPoints[indexI].position;
+        }
+    }
+
+    private void InitLevelsQueue()
+    {
+        Debug.Log($"GetLevelStartVal(): {GetLevelPageStartVal()}");
+        var showBarricade = levelManager.CurrentLevelNumber >= levelManager.TotalLevelsCount - diff;
+        var endIndex = showBarricade ? levelManager.TotalLevelsCount - (GetLevelPageStartVal() - 1) + 1 : levelObjects.Length;
+
+        for (int indexI = 0; indexI < endIndex; indexI++)
+        {
+            levelsQueue.Enqueue(levelObjects[indexI]);
+        }
+        
+        if (showBarricade)
+        {
+            Debug.Log($"### levelManager.CurrentLevelNumber: {levelManager.CurrentLevelNumber}, {levelManager.TotalLevelsCount - diff}");
+            Level lvlObj = levelsQueue.Last();
+            lvlObj.gameObject.SetActive(true);
+            lvlObj.SetLevelEndBarricade();
+        }
     }
 
     private IEnumerator StartLevelObjectAnims()
@@ -139,7 +158,7 @@ public class LevelScreen : UIBase
             Debug.Log($"newUnlockedLvl: {newUnlockedLvl.LevelNum}");
         }
         
-        newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber + 1);
+        newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber);
     }
 
     public void TriggerScrollingAnim()
@@ -173,8 +192,8 @@ public class LevelScreen : UIBase
                         }
                     }
 
-                    if (levelManager.CurrentLevelNumber < levelManager.TotalLevelsCount) 
-                        levelManager.SetCurrentLevelNumber(levelManager.CurrentLevelNumber + 1); 
+                    // if (levelManager.CurrentLevelNumber < levelManager.TotalLevelsCount) 
+                    //     levelManager.SetCurrentLevelNumber(levelManager.CurrentLevelNumber + 1); 
 
                     if (!newUnlockedLvl.HasBarricade)
                     {
@@ -208,7 +227,7 @@ public class LevelScreen : UIBase
     private void StartTween(out Tween tween, Vector3 additionalPos, float delay, bool useOffset = false)
     {
         tween = null;
-        Debug.Log($"CurrentLevelNumber: {levelManager.CurrentLevelNumber}");
+        Debug.Log($"StartTween CurrentLevelNumber: {levelManager.CurrentLevelNumber}");
         levelObjectPointStartIndex = levelManager.CurrentLevelNumber == 1 ? 1 : 0;
         Debug.Log($"levelObjectPointStartIndex: {levelObjectPointStartIndex}");
         var indexer = levelObjectPointStartIndex;

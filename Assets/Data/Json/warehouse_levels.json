@@ -1,44 +1,49 @@
 {
-  "levelDatas": [
-    {
-      "level": 1,
-      "levelsInfo": {
-        "goodType": 6,
-        "goodsToLoad": 120,
-        "coinsRewardToGive": 50
+  "gameCurrency": {
+    "initialCurrencyToProvide": 100
+  },
+  "levelConfigData": {
+    "levelDatas": [
+      {
+        "level": 1,
+        "levelsInfo": {
+          "availGoodTypes": 6,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 50
+        }
+      },
+      {
+        "level": 2,
+        "levelsInfo": {
+          "availGoodTypes": 3,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 60
+        }
+      },
+      {
+        "level": 3,
+        "levelsInfo": {
+          "availGoodTypes": 2,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 40
+        }
+      },
+      {
+        "level": 4,
+        "levelsInfo": {
+          "availGoodTypes": 4,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 50
+        }
+      },
+      {
+        "level": 5,
+        "levelsInfo": {
+          "availGoodTypes": 4,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
       }
-    },
-    {
-      "level": 2,
-      "levelsInfo": {
-        "goodType": 3,
-        "goodsToLoad": 120,
-        "coinsRewardToGive": 50
-      }
-    },
-    {
-      "level": 3,
-      "levelsInfo": {
-        "goodType": 2,
-        "goodsToLoad": 120,
-        "coinsRewardToGive": 50
-      }
-    },
-    {
-      "level": 4,
-      "levelsInfo": {
-        "goodType": 4,
-        "goodsToLoad": 120,
-        "coinsRewardToGive": 50
-      }
-    },
-    {
-      "level": 5,
-      "levelsInfo": {
-        "goodType": 4,
-        "goodsToLoad": 120,
-        "coinsRewardToGive": 50
-      }
-    }
-  ]
+    ]
+  }
 }

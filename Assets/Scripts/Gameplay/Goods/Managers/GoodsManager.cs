@@ -15,6 +15,6 @@ public class GoodsManager : MonoBehaviour, IBootLoader, IBase
         InterfaceManager.Instance?.RegisterInterface<GoodsManager>(this);
 
         levelManager = InterfaceManager.Instance.GetInterfaceInstance<LevelManager>();
-        m_GoodsHandler.InitGoodsInfo(levelManager.GetCurrentLevelsInfo().goodType);
+        m_GoodsHandler.InitGoodsInfo(levelManager.GetCurrentLevelsInfo().availGoodTypes);
     }
 }

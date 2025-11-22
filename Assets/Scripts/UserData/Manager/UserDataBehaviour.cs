@@ -1,36 +1,124 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader
+public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 {
     [SerializeField] private StoreDataBase dataStorer;
 
+    private GameData gameData;
     private UserData userData;
 
-    public UserData GetUserData() => userData;
+    public GameData GetGameData() => gameData;
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<UserDataBehaviour>(this);
+    }
 
-        userData = new UserData();
-        userData.levelConfigData = JsonConvert.DeserializeObject<LevelConfigData>(dataStorer.GetLevelsJson());
+    public void InitializeData()
+    {
+        InitGameData();
+        InitUserData();
+    }
+
+    private void InitGameData()
+    {
+        if (gameData == null)
+        {
+            gameData = new GameData();
+            gameData = JsonConvert.DeserializeObject<GameData>(dataStorer.GetLevelsJson());
+        }
+    }
+
+    private void InitUserData()
+    {
+        if (HasSavedUserData())
+        {
+            userData = JsonConvert.DeserializeObject<UserData>(PlayerPrefs.GetString(WarehouseHustle_Constants.SaveUserData));
+        }
+        else
+        {
+            userData = new UserData();
+            userData.userCurrencyData = new UserCurrencyData();
+            userData.userLevelData = new UserLevelData();
+            userData.userLevelData.lastUnlockedLevel = 1;
+            userData.userLevelData.userLevelDataInfo = new UserLevelDataInfo[gameData.levelConfigData.levelDatas.Length];
+
+            InitUserLevelDatas();
+            SaveUserData();
+        }
+        
+        SetFirstUserSessionState(!PlayerPrefs.HasKey(WarehouseHustle_Constants.IsFirstUserSession));
+    }
+
+    private void InitUserLevelDatas()
+    {
+        var length = gameData.levelConfigData.levelDatas.Length;
+        for (int indexI = 0; indexI < length; indexI++)
+        {
+            userData.userLevelData.userLevelDataInfo[indexI] = new UserLevelDataInfo();
+            userData.userLevelData.userLevelDataInfo[indexI].level = indexI + 1;
+            userData.userLevelData.userLevelDataInfo[indexI].userLevelsInfo = new UserLevelInfo();
+            userData.userLevelData.userLevelDataInfo[indexI].userLevelsInfo.unlocked = false;
+        }
+    }
+
+    public GameCurrencyData GetGameCurrencyData()
+    {
+        return gameData.gameCurrency;
+    }
+
+    public UserCurrencyData GetUserCurrencyData()
+    {
+        return userData.userCurrencyData;
     }
 
     public LevelConfigData GetLevelsDatas()
     {
-        return userData.levelConfigData;
+        return gameData.levelConfigData;
     }
+
+    public int GetLastUnlockedLevel()
+    {
+        return userData.userLevelData.lastUnlockedLevel;
+    }
+
+    public void SaveLastUnlockedLevel(int level)
+    {
+        userData.userLevelData.lastUnlockedLevel = level;
+        SaveUserData();
+    }
+
+    public void SaveUserCurrencyData(UserCurrencyData userCurrencyData)
+    {
+        userData.userCurrencyData = userCurrencyData;
+        SaveUserData();
+    }
+
+    #region PLAYER_PREFS_SAVING
 
     public bool IsFirstUserSession()
     {
-        return PlayerPrefs.GetInt(WarehouseHustle_Constants.IsFirstUserSession) == 1;
+        return PlayerPrefs.GetInt(WarehouseHustle_Constants.IsFirstUserSession) == WarehouseHustle_Constants.TRUE;
     }
 
     public void SetFirstUserSessionState(bool state)
     {
-        PlayerPrefs.SetInt(WarehouseHustle_Constants.IsFirstUserSession, state ? 1 : 0);
+        PlayerPrefs.SetInt(WarehouseHustle_Constants.IsFirstUserSession, state ? WarehouseHustle_Constants.TRUE : WarehouseHustle_Constants.FALSE);
     }
+
+    public bool HasSavedUserData()
+    {
+        return PlayerPrefs.HasKey(WarehouseHustle_Constants.SaveUserData);
+    }
+
+    public void SaveUserData()
+    {
+        PlayerPrefs.SetString(WarehouseHustle_Constants.SaveUserData, JsonConvert.SerializeObject(userData));
+    }
+
+    #endregion
 }
