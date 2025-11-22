@@ -19,17 +19,17 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
 
     public void RegisterScreen(UIBase uiBase)
     {
-        Debug.Log($"Register screen: {uiBase}, {uiBase.UIType}");
+        // Debug.Log($"Register screen: {uiBase}, {uiBase.UIType}");
 
         if (!screensDict.ContainsKey(uiBase.UIType))
             screensDict.Add(uiBase.UIType, uiBase);
         else
             screensDict[uiBase.UIType] = uiBase;
 
-        foreach (var screen in screensDict)
-        {
-            Debug.Log($"Screendict, key: {screen.Key}, value: {screen.Value}");
-        }
+        // foreach (var screen in screensDict)
+        // {
+        //     Debug.Log($"Screendict, key: {screen.Key}, value: {screen.Value}");
+        // }
     }
 
     public T GetScreen<T>(UIType uiType) where T : UIBase

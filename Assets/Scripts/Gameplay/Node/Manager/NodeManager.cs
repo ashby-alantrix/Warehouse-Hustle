@@ -13,10 +13,21 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private TrucksLoaderManager trucksLoaderManager;
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
+    private int totalNodesInGrid = 0;
+    private int totalOccupiedNodes = 0;
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
         SetLevelManager();
+
+        totalNodesInGrid = nodesData.Count;
+    }
+
+    public void UpdateOccupiedNodesCount(int counter)
+    {
+        totalOccupiedNodes += counter;
+        Debug.Log($"totalOccupiedNodes: {totalOccupiedNodes}");
     }
 
     private void SetLevelManager()
@@ -105,7 +116,8 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     public void CheckIfNodesAreLeft()
     {
-        if (nodesData.All(nodeData => nodeData.Value.isNodeOccupied))
+        Debug.Log($"totalOccupiedNodes: totalNodesInGrid: {totalNodesInGrid}, totalOccupiedNodes: {totalOccupiedNodes}");
+        if (totalNodesInGrid == totalOccupiedNodes)
             levelManager.OnLevelStateChange(LevelState.Lost);
     }
 }

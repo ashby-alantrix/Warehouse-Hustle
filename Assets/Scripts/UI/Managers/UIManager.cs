@@ -26,7 +26,9 @@ public class UIManager : MonoBehaviour, IBootLoader, IBase
 
     public void OnLevelLost()
     {
-        
+        popupManager.ShowScreen(UIType.GameOverPopup);
+        GameOverPopup gameOverPopup = popupManager.GetScreen<GameOverPopup>(UIType.GameOverPopup);   
+        // gameOverPopup.SetCoinsReward(coinsReward);
     }
 
     public void OnLevelWon(int coinsReward)

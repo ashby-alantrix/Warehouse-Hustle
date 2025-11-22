@@ -24,7 +24,6 @@ public class GridManager : MonoBehaviour
     public NodeManager NodeManager => m_NodeManager;
 
     private Dictionary<float, List<float>> blockedGridValDict = new Dictionary<float, List<float>>();
-    // private Dictionary
 
     void Start()
     {

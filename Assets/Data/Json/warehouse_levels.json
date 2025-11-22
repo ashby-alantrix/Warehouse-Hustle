@@ -3,8 +3,8 @@
     {
       "level": 1,
       "levelsInfo": {
-        "goodType": 2,
-        "goodsToLoad": 24,
+        "goodType": 6,
+        "goodsToLoad": 120,
         "coinsRewardToGive": 50
       }
     },
@@ -12,63 +12,32 @@
       "level": 2,
       "levelsInfo": {
         "goodType": 3,
-        "goodsToLoad": 120
+        "goodsToLoad": 120,
+        "coinsRewardToGive": 50
       }
     },
     {
       "level": 3,
       "levelsInfo": {
         "goodType": 2,
-        "goodsToLoad": 132
+        "goodsToLoad": 120,
+        "coinsRewardToGive": 50
       }
     },
     {
       "level": 4,
       "levelsInfo": {
         "goodType": 4,
-        "goodsToLoad": 144
+        "goodsToLoad": 120,
+        "coinsRewardToGive": 50
       }
     },
     {
       "level": 5,
       "levelsInfo": {
         "goodType": 4,
-        "goodsToLoad": 156
-      }
-    },
-    {
-      "level": 6,
-      "levelsInfo": {
-        "goodType": 5,
-        "goodsToLoad": 168
-      }
-    },
-    {
-      "level": 7,
-      "levelsInfo": {
-        "goodType": 5,
-        "goodsToLoad": 180
-      }
-    },
-    {
-      "level": 8,
-      "levelsInfo": {
-        "goodType": 4,
-        "goodsToLoad": 192
-      }
-    },
-    {
-      "level": 9,
-      "levelsInfo": {
-        "goodType": 5,
-        "goodsToLoad": 204
-      }
-    },
-    {
-      "level": 10,
-      "levelsInfo": {
-        "goodType": 6,
-        "goodsToLoad": 216
+        "goodsToLoad": 120,
+        "coinsRewardToGive": 50
       }
     }
   ]

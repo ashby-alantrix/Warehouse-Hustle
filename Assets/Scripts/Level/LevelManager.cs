@@ -100,6 +100,8 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
                 levelDataDictionary.Add(levelData.level, levelData.levelsInfo);
             }
         }
+
+        Debug.Log($"LevelsDataDict: {levelDataDictionary.Count}");
     }
 
     public void LoadLevelInGame()

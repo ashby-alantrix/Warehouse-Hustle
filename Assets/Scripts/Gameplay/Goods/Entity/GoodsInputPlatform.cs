@@ -71,7 +71,6 @@ public class GoodsInputPlatform : MonoBehaviour
 
         void SetBaseObjectProps()
         {
-            // baseObj.name = baseObj.name + " " + spawnPointIndex;
             baseObj.transform.position = spawnPoints[spawnPointIndex].position;
             baseObj.transform.parent = goodsParent;
             baseObj.transform.gameObject.SetActive(true);

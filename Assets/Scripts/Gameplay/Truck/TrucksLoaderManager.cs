@@ -68,9 +68,8 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
 
     public void LoadOrStoreNextGoods(List<ItemBase> itemBases, ItemType goodsTypeToFill)
     {
-        if (loadedGoods == targetGoodsToLoad) 
+        if (loadedGoods >= targetGoodsToLoad) 
         {
-            levelManager.OnLevelStateChange(LevelState.Won);
             return;
         }
 
@@ -136,6 +135,12 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         trucksMoverTween.OnComplete(() =>
         {
             isLoadingInProcess = false;
+            if (loadedGoods >= targetGoodsToLoad) 
+            {
+                levelManager.OnLevelStateChange(LevelState.Won);
+                return;
+            }
+            
             if (itemLoadDatas.Count > 0)
             {
                 currentLoadingItemBases = itemLoadDatas[0].itemBases;

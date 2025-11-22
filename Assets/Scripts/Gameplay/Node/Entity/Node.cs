@@ -461,9 +461,13 @@ public class Node : MonoBehaviour
 
     public void SetNodeOccupiedState(bool state)
     {
+        Debug.Log($"totalOccupiedNodesState({name}): isNodeOccupied: {isNodeOccupied}, state: {state}");
+        if (isNodeOccupied == state) return;
+        
         isNodeOccupied = state;
         meshRenderer.material = isNodeOccupied ? occupiedMat : unOccupiedMat;
-        Debug.Log($"SetNodeOccupiedState: {isNodeOccupied}");
+
+        nodeManager.UpdateOccupiedNodesCount(state ? 1 : -1);
     }
     
     private void Awake()

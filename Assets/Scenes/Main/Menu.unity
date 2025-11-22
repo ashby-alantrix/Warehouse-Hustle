@@ -396,6 +396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiType: 1
+  levelTransforms: []
   levelObjects:
   - {fileID: 8352726840875610907}
   - {fileID: 1849435813}
@@ -428,6 +429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 298040369}
+  - component: {fileID: 298040370}
   m_Layer: 5
   m_Name: LevelPoint (1)
   m_TagString: Untagged
@@ -455,6 +457,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -1222}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &298040370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298040368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &405523725
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,7 +499,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3b4bcba93cd4fbdb968096d5b9014c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelPage: {fileID: 215113350}
   HasInitializedLevelsData: 0
   CanPlayLevel: 1
 --- !u!4 &405523727
@@ -985,6 +999,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 995617072}
+  - component: {fileID: 995617073}
   m_Layer: 5
   m_Name: LevelPoint (2)
   m_TagString: Untagged
@@ -1012,6 +1027,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -709}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &995617073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995617071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &1032533161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1049,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1032533162}
+  - component: {fileID: 1032533163}
   m_Layer: 5
   m_Name: LevelPoint (3)
   m_TagString: Untagged
@@ -1048,6 +1077,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -96}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1032533163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032533161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &1037037531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1296,6 +1338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1208043295}
+  - component: {fileID: 1208043296}
   m_Layer: 5
   m_Name: LevelPoint (4)
   m_TagString: Untagged
@@ -1323,6 +1366,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 373}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1208043296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208043294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &1240140149
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,6 +2014,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1856811972}
+  - component: {fileID: 1856811973}
   m_Layer: 5
   m_Name: LevelPoint (6)
   m_TagString: Untagged
@@ -1985,6 +2042,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 1285}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1856811973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856811971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &2100158435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1994,6 +2064,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2100158436}
+  - component: {fileID: 2100158437}
   m_Layer: 5
   m_Name: LevelPoint (5)
   m_TagString: Untagged
@@ -2021,6 +2092,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 800}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2100158437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100158435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda9f89dc2a4440e2bf1f6c525582b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &2133012834
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class Level : MonoBehaviour
 {
+    [SerializeField] private Vector3 position;
     [SerializeField] private GameObject unselectedLevelObject;
     [SerializeField] private GameObject selectedLevelObject;
 
@@ -29,6 +30,11 @@ public class Level : MonoBehaviour
 
     private LevelManager levelManager;
     private bool isSelected = false;
+
+    void Awake()
+    {
+        position = transform.position;
+    }
 
     public void ShowUnselectedLevelView()
     {
@@ -71,7 +77,7 @@ public class Level : MonoBehaviour
         tween.OnComplete(() => tween.Kill());
     }
 
-    private void ScaleLevelButton()
+    public void ScaleLevelButton()
     {
         btnContent.localScale = Vector3.zero;
         btnContent.DOScale(Vector3.one, animScale);
@@ -90,8 +96,6 @@ public class Level : MonoBehaviour
     {
         Debug.Log($"LevelNum :: {levelNum}, {state}");
         playBtn.SetActive(state);
-        if (state)
-            ScaleLevelButton();
     }
 
     public void SetLevelEndBarricade()

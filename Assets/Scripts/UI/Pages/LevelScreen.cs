@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class LevelScreen : UIBase
 {
+    [SerializeField] private List<string> levelTransforms = new List<string>();
     [SerializeField] private Level[] levelObjects;
     [SerializeField] private Level currentFinishedLvl, newUnlockedLvl;
 
@@ -27,55 +28,78 @@ public class LevelScreen : UIBase
     private int levelObjectPointStartIndex = 0;
 
     private Queue<Level> levelsQueue = new Queue<Level>();
-    private Dictionary<string, Level> levelsDict = new Dictionary<string, Level>();
 
-    void Awake()
+    public void InitLevelManager(LevelManager levelManager)
     {
-        foreach (var levelObject in levelObjects)
-            levelsQueue.Enqueue(levelObject);
-
-        var posVal = Vector3.zero;
-        foreach (var level in levelsQueue)
-        {
-            posVal = level.transform.position + finalAdditionalSlideOffset;
-            if (!levelsDict.ContainsKey($"{posVal}"))
-                levelsDict[$"{posVal}"] = level;
-            else 
-                levelsDict.Add($"{posVal}", level);
-        }
-
+        this.levelManager = levelManager;
     }
 
-    void OnEnable()
-    {
-        StartCoroutine(ShowLevelPageAnims());
+    private int GetLevelStartVal() => levelManager.CurrentLevelNumber - 1 < 1 ? levelManager.CurrentLevelNumber : levelManager.CurrentLevelNumber - 1;
 
-        StartCoroutine(StartLevelObjectAnims());
+    public void InitLevelObjects()
+    {
+        int levelStartVal = GetLevelStartVal();
+        for (int indexI = 0; indexI < levelObjects.Length; indexI++)
+        {
+            levelObjects[indexI].SetLevelText(levelStartVal++);
+        }
+
+        StartCoroutine(ShowLevelPageAnims());
+    }
+
+    private void InitLevelsQueue()
+    {
+        Debug.Log($"GetLevelStartVal(): {GetLevelStartVal()}");
+        var showBarricade = levelManager.CurrentLevelNumber >= levelManager.TotalLevelsCount - diff;
+        var endIndex = showBarricade ? levelManager.TotalLevelsCount - (GetLevelStartVal() - 1) + 1 : levelObjects.Length;
+
+        for (int indexI = 0; indexI < endIndex; indexI++)
+        {
+            levelsQueue.Enqueue(levelObjects[indexI]);
+        }
+        
+        if (showBarricade)
+        {
+            Debug.Log($"### levelManager.CurrentLevelNumber: {levelManager.CurrentLevelNumber}, {levelManager.TotalLevelsCount - diff}");
+            Level lvlObj = levelsQueue.Last();
+            lvlObj.gameObject.SetActive(true);
+            lvlObj.SetLevelEndBarricade();
+        }
     }
 
     private IEnumerator ShowLevelPageAnims()
     {
         yield return new WaitUntil(() => levelManager != null && levelManager.HasInitializedLevelsData);
         
-        foreach (var lvlPair in levelsDict)
+        InitLevelsQueue();
+        
+        for (int indexI = 0; indexI < levelObjects.Length; indexI++)
         {
-            Debug.Log($"lvlPair.LevelNum: {lvlPair.Value.LevelNum}");
-            if (lvlPair.Value.LevelNum == levelManager.CurrentLevelNumber)
+            if (levelObjects[indexI].HasBarricade) continue;
+
+            levelObjects[indexI].ShowUnselectedLevelView();
+        }
+
+        if (levelManager.CurrentLevelNumber > 1)
+        {
+            for (int indexI = 1; indexI < levelObjectPoints.Length; indexI++)
             {
-                lvlPair.Value.ShowSelectedLevelView();
-                lvlPair.Value.SetLevelText(lvlPair.Value.LevelNum);
+                levelObjects[indexI - 1].transform.position = levelObjectPoints[indexI].position;
             }
-            else 
-            {    
-                lvlPair.Value.ShowUnselectedLevelView();
-                lvlPair.Value.SetLevelText(lvlPair.Value.LevelNum);
-            }
+        }
+        else // for first level
+        {
+            levelObjects[0].ShowSelectedLevelView();
+            levelObjects[0].TogglePlayBtnState(true);
         }
 
         if (!levelManager.CanPlayLevel)
         {
+            Debug.Log($"OnLevelComplete");
             OnLevelComplete();    
         }
+
+        StartCoroutine(StartLevelObjectAnims());
     }
 
     private IEnumerator StartLevelObjectAnims()
@@ -92,42 +116,27 @@ public class LevelScreen : UIBase
             TriggerScrollingAnim();
     }
 
-    public void InitLevelManager(LevelManager levelManager)
-    {
-        this.levelManager = levelManager;
-    }
-
-    public void InitLevelObjects()
-    {
-        int levelStartVal = levelManager.CurrentLevelNumber == 1 ? 1 : levelManager.CurrentLevelNumber;
-        for (int indexI = levelStartVal; indexI <= levelObjects.Length; indexI++)
-        {
-            levelObjects[indexI - 1].SetLevelText(indexI);
-        }
-    }
-
     private void OnLevelComplete()
     {
         if (levelManager.CurrentLevelNumber == 1)
         {
             currentFinishedLvl.ShowUnselectedLevelView();
             newUnlockedLvl.ShowSelectedLevelView();
+
+            Debug.Log($"currentFinishedLvl: {currentFinishedLvl.LevelNum}");
+            Debug.Log($"currentFinishedLvl: {newUnlockedLvl.LevelNum}");
         }
         else if (levelManager.CurrentLevelNumber <= levelManager.TotalLevelsCount)
         {
-            string lvlPos = $"{currentFinishedLvlTransform.position + finalAdditionalSlideOffset}";
-            if (levelsDict.ContainsKey(lvlPos))
-            {
-                currentFinishedLvl = levelsDict[lvlPos];
-                currentFinishedLvl.ShowUnselectedLevelView();
-            }
+            Debug.Log($"levelQueue first: {levelsQueue.First().LevelNum}");
+            var testList = levelsQueue.ToList();
+            currentFinishedLvl = testList[1];
+            currentFinishedLvl.ShowUnselectedLevelView();
+            Debug.Log($"currentFinishedLvl: {currentFinishedLvl.LevelNum}");
 
-            lvlPos = $"{newUnlockedLvlTransform.position + finalAdditionalSlideOffset}";
-            if (levelsDict.ContainsKey(lvlPos))
-            {
-                newUnlockedLvl = levelsDict[lvlPos];
-                newUnlockedLvl.ShowSelectedLevelView();
-            }
+            newUnlockedLvl = testList[2];
+            newUnlockedLvl.ShowSelectedLevelView();
+            Debug.Log($"newUnlockedLvl: {newUnlockedLvl.LevelNum}");
         }
         
         newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber + 1);
@@ -168,24 +177,29 @@ public class LevelScreen : UIBase
                         levelManager.SetCurrentLevelNumber(levelManager.CurrentLevelNumber + 1); 
 
                     if (!newUnlockedLvl.HasBarricade)
+                    {
                         newUnlockedLvl.TogglePlayBtnState(true);
+                        newUnlockedLvl.ScaleLevelButton();
+                    }
                     else 
                         newUnlockedLvl.ShowRestartButton();
                         
-                    if (newUnlockedLvl.LevelNum == levelManager.TotalLevelsCount - diff)
-                    {
-                        levelsQueue.Enqueue(dequeuedLevel);
-                        dequeuedLevel.gameObject.SetActive(true);
-                        dequeuedLevel.SetLevelEndBarricade();
-                    }
+                    // Debug.Log($"NewUnlockedLevel: {newUnlockedLvl.LevelNum}");
+                    // if (newUnlockedLvl.LevelNum == levelManager.TotalLevelsCount - diff)
+                    // {
+                    //     levelsQueue.Enqueue(dequeuedLevel);
+                    //     dequeuedLevel.gameObject.SetActive(true);
+                    //     dequeuedLevel.SetLevelEndBarricade();
+                    //     Debug.Log($"Setting barricade");
+                    // }
 
-                    foreach (var level in levelsQueue)
-                    {
-                        if (levelsDict.ContainsKey($"{level.transform.position}"))
-                            levelsDict[$"{level.transform.position}"] = level;
-                        else 
-                            levelsDict.Add($"{level.transform.position}", level);
-                    }
+                    // foreach (var level in levelsQueue)
+                    // {
+                    //     if (levelsDict.ContainsKey($"{level.transform.position}"))
+                    //         levelsDict[$"{level.transform.position}"] = level;
+                    //     else 
+                    //         levelsDict.Add($"{level.transform.position}", level);
+                    // }
                 });
             });
         });
