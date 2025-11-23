@@ -38,16 +38,11 @@ public class LevelScreen : UIBase
 
     public void InitLevelObjects()
     {
-        if (levelManager.CurrentLevelNumber == 2)
-            Debug.Break();
-        // int levelStartVal = GetLevelPageStartVal();
-        // for (int indexI = 0; indexI < levelObjects.Length; indexI++)
-        // {
-        //     levelObjects[indexI].SetLevelText(levelStartVal++);
-        // }
-
-        if (levelManager.CurrentLevelNumber == 2)
-            Debug.Break();
+        int levelStartVal = GetLevelPageStartVal();
+        for (int indexI = 0; indexI < levelObjects.Length; indexI++)
+        {
+            levelObjects[indexI].SetLevelText(levelStartVal++);
+        }
 
         StartCoroutine(ShowLevelPageAnims());
     }
@@ -56,14 +51,8 @@ public class LevelScreen : UIBase
     {
         yield return new WaitUntil(() => levelManager != null && levelManager.HasInitializedLevelsData);
         
-        if (levelManager.CurrentLevelNumber == 2)
-            Debug.Break();
-
         InitLevelsQueue();
 
-        if (levelManager.CurrentLevelNumber == 2)
-            Debug.Break();
-        
         for (int indexI = 0; indexI < levelObjects.Length; indexI++)
         {
             if (levelObjects[indexI].HasBarricade) continue;
