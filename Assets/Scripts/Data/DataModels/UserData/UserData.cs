@@ -1,10 +1,16 @@
 
-using System.Collections.Generic;
+/************************* GAME DATA *************************/
+[System.Serializable]
+public class GameData
+{
+    public GameCurrencyData gameCurrency;
+    public LevelConfigData levelConfigData;
+}
 
 [System.Serializable]
-public class UserData
+public class GameCurrencyData
 {
-    public LevelConfigData levelConfigData;
+    public int initialCurrencyToProvide;
 }
 
 [System.Serializable]
@@ -23,8 +29,42 @@ public class LevelDatas
 [System.Serializable]
 public class LevelsInfo
 {
-    public int goodType;
-    public int goodsToLoad;
+    public int availGoodTypes;
+    public int targetGoodsToLoad;
+    public int currencyToGive;
+}
+
+/************************* USER DATA *************************/
+
+[System.Serializable]
+public class UserData
+{
+    public UserCurrencyData userCurrencyData;
+    public UserLevelData userLevelData;
+}
+
+[System.Serializable]
+public class UserCurrencyData
+{
+    public int attainedCurrency;
+}
+
+[System.Serializable]
+public class UserLevelData
+{
+    public int lastUnlockedLevel = 1;
+    public UserLevelDataInfo[] userLevelDataInfo;
+}
+
+[System.Serializable]
+public class UserLevelDataInfo
+{
+    public int level;
+    public UserLevelInfo userLevelsInfo;
+}
+
+[System.Serializable]
+public class UserLevelInfo
+{
     public bool unlocked;
-    public int coinsRewardToGive;
 }

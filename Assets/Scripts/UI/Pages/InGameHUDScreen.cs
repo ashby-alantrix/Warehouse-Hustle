@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class InGameHUDScreen : UIBase
 {
+    [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI goodsGoalCountText;
     [SerializeField] private Button settingsButton;
@@ -13,14 +14,14 @@ public class InGameHUDScreen : UIBase
     private int goodsGoalCount = 0;
     private LevelManager levelManager;
 
-    void OnEnable()
+    public void Init()
     {
         levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
         var levelsInfo = levelManager.GetCurrentLevelsInfo();
-        InitLevelInfo(levelManager.CurrentLevelNumber, levelsInfo.goodsToLoad);
+        InitLevelInfo(levelManager.CurrentLevelNumber, levelsInfo.targetGoodsToLoad);
     }
 
-    public void InitLevelInfo(int levelNum, int goodsGoalCount)
+    private void InitLevelInfo(int levelNum, int goodsGoalCount)
     {
         levelText.text = $"LEVEL {levelNum}";
         this.goodsGoalCount = goodsGoalCount;
@@ -30,5 +31,11 @@ public class InGameHUDScreen : UIBase
     public void SetGoodsGoalText(int loadedGoods)
     {
         goodsGoalCountText.text = $"{loadedGoods}/{goodsGoalCount}";
+    }
+    
+    public void UpdateCurrencyText(string coins)
+    {
+        Debug.Log($"coinsText: {coins}");
+        coinsText.text = coins;
     }
 }

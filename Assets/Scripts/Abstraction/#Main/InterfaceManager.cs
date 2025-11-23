@@ -18,11 +18,11 @@ public class InterfaceManager
             // Debug.Log("Initialized interface manager");
         }
         // Debug.Log($"Initialized interface manager: {Instance}");
-        // Debug.Log($"Initialized interface manager: {interfacesDict.Count}");
-        // foreach (var pair in interfacesDict)
-        // {
-        //     Debug.Log($"Initialized interface manager: key: {pair.Key}, value: {pair.Value}");
-        // }
+        Debug.Log($"Initialized interface manager: {interfacesDict.Count}");
+        foreach (var pair in interfacesDict)
+        {
+            Debug.Log($"Initialized interface manager: key: {pair.Key}, value: {pair.Value}");
+        }
     }
 
     public InterfaceManager()

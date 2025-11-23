@@ -30,8 +30,8 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     private ItemType currentGoodsTypeToFill;
     private TruckBase currentActiveTruck;
     private ObjectPoolManager objectPoolManager;
-    private UIManager uiManager;
     private LevelManager levelManager;
+    private InGameUIManager inGameUIManager;
 
     private List<Vector3> spawnPoints = new List<Vector3>(); // static 
     private List<TruckBase> truckBases = new List<TruckBase>(); // dynamic
@@ -50,20 +50,22 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         InterfaceManager.Instance?.RegisterInterface<TrucksLoaderManager>(this);
 
         currentSpawnPos = spawnStartPoint.position;
-        SetObjectPoolManager();
-        SetLevelManager();
-        SetUIManager();
     }
 
     public void InitializeData()
     {
+        objectPoolManager = InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>();
+
+        levelManager = InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>();
+        targetGoodsToLoad = levelManager.GetCurrentLevelsInfo().targetGoodsToLoad;
+
+        inGameUIManager = InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>();
+
         SpawnTrucks();
     }
 
     private void SetLevelManager()
     {
-        levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
-        targetGoodsToLoad = levelManager.GetCurrentLevelsInfo().goodsToLoad;
     }
 
     public void LoadOrStoreNextGoods(List<ItemBase> itemBases, ItemType goodsTypeToFill)
@@ -113,7 +115,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     private void OnCurrentTruckLoadingComplete()
     {
         loadedGoods += currentLoadingItemBases.Count;
-        uiManager.UpdateLoadedGoods(loadedGoods);
+        inGameUIManager.InGameHUDScreen.SetGoodsGoalText(loadedGoods);
 
         currentActiveTruck.transform.DOMove(truckDestPoint.position, 1f).OnComplete(() =>
         {
@@ -158,16 +160,6 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
 
         newTruckBase.transform.DOMove(spawnPoints[spawnPoints.Count - 1], 1f);        
         truckBases.Add(newTruckBase);
-    }
-
-    private void SetUIManager()
-    {
-        uiManager = uiManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<UIManager>() : uiManager;
-    }
-
-    private void SetObjectPoolManager()
-    {
-        objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
     }
 
     private void SpawnTrucks()

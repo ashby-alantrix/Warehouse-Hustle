@@ -10,6 +10,7 @@ public class LevelCompletePopup : UIBase
     [SerializeField] private TextMeshProUGUI rewardText;
     [SerializeField] private Button nextButton;
 
+    private int currencyReward;
     private LevelManager levelManager;
 
     void Awake()
@@ -20,13 +21,14 @@ public class LevelCompletePopup : UIBase
 
     private void OnClick_NextButton()
     {
-        // levelManager.SetCurrentLevelNumber(levelManager.CurrentLevelNumber + 1);
+        InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>()?.UpdateCoinsData(currencyReward);
         MainSingleton.Instance.LoadLevelsScene();
     }
 
-    public void SetCoinsReward(int coinsReward)
+    public void SetCoinsReward(int rewardAmt)
     {
-        rewardText.text = $"{coinsReward}";
+        currencyReward = rewardAmt;
+        rewardText.text = $"{rewardAmt}";
     }
 
     void OnDestroy()

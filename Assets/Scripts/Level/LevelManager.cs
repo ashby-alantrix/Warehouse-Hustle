@@ -13,12 +13,11 @@ public enum LevelState
 
 public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
-
     private int currentLevelNumber = 1;
     private LevelState levelState = LevelState.Progress;
 
     private LevelScreen levelPage;
-    private UIManager uiManager;
+    private InGameUIManager inGameUIManager;
     private UserDataBehaviour userDataBehaviour;
     private PopupManager popupManager;
 
@@ -33,8 +32,9 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void OnLevelStateChange(LevelState state)
     {
-        SetUIManager();
         levelState = state;
+        inGameUIManager = inGameUIManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>() : inGameUIManager;
+
         switch (levelState)
         {
             case LevelState.Progress:
@@ -42,19 +42,17 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
             break;
             case LevelState.Won:
                 CanPlayLevel = false;
-                uiManager.OnLevelWon(GetCurrentLevelsInfo().coinsRewardToGive);
+                userDataBehaviour.SaveLastUnlockedLevel(currentLevelNumber + 1);
+                popupManager.ShowScreen(UIType.LevelCompletePopup);
+                inGameUIManager.LevelCompletePopup.SetCoinsReward(GetCurrentLevelsInfo().currencyToGive);
             break;
             case LevelState.Lost:
                 CanPlayLevel = false;
-                uiManager.OnLevelLost();
+                popupManager.ShowScreen(UIType.GameOverPopup);
+                inGameUIManager.GameOverPopup.InitData();
             break;
             default: break;
         }
-    }
-
-    private void SetUIManager()
-    {
-        uiManager = uiManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<UIManager>() : uiManager;
     }
 
     public void SetCurrentLevelNumber(int currentLevelNumber)
@@ -82,6 +80,8 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void InitializeData()
     {
+        currentLevelNumber = userDataBehaviour.GetLastUnlockedLevel();
+        Debug.Log($"### currentLevelNumber: {currentLevelNumber}");
         levelConfigData = userDataBehaviour.GetLevelsDatas();
         InitLevelsInfoToDict();
 
