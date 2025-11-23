@@ -60,9 +60,6 @@ public class LevelScreen : UIBase
             levelObjects[indexI].ShowUnselectedLevelView();
         }
 
-        if (levelManager.CurrentLevelNumber == 2)
-            Debug.Break();
-
         if (levelManager.CurrentLevelNumber > 1)
         {
             AlignLevelObjectPositions();
