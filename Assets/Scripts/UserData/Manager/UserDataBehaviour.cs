@@ -8,6 +8,7 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 {
     [SerializeField] private StoreDataBase dataStorer;
 
+
     private GameData gameData;
     private UserData userData;
 

@@ -42,9 +42,12 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
             break;
             case LevelState.Won:
                 CanPlayLevel = false;
-                userDataBehaviour.SaveLastUnlockedLevel(currentLevelNumber + 1);
+                var levelsInfo = GetCurrentLevelsInfo();
+                inGameUIManager?.LevelCompletePopup?.SetCoinsReward(levelsInfo.currencyToGive);
+                
+                currentLevelNumber++;
+                userDataBehaviour.SaveLastUnlockedLevel(currentLevelNumber);
                 popupManager.ShowScreen(UIType.LevelCompletePopup);
-                inGameUIManager.LevelCompletePopup.SetCoinsReward(GetCurrentLevelsInfo().currencyToGive);
             break;
             case LevelState.Lost:
                 CanPlayLevel = false;
