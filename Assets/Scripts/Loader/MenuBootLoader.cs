@@ -6,6 +6,7 @@ public class MenuBootLoader : BootLoader
 {
     private GameObject[] baseObjects;
 
+
     protected override void InitBootLoaders()
     {
         IBootLoader bootLoader = null;
@@ -17,12 +18,6 @@ public class MenuBootLoader : BootLoader
             }
         }
     }
-    
-    private bool GetLoader<T>(Transform loader, out T outLoader)
-    {
-        outLoader = loader.GetComponent<T>();
-        return outLoader != null;
-    }
 
     protected override void Start()
     {
@@ -30,7 +25,7 @@ public class MenuBootLoader : BootLoader
 
     }
 
-    protected override void InitializeDataLoaders()
+    protected override void InitializeData()
     {
         IDataLoader dataLoader = null;
         foreach (Transform loader in MainSingleton.Instance.transform)

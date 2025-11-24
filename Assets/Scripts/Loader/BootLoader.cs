@@ -17,9 +17,15 @@ public abstract class BootLoader : MonoBehaviour
             foreach (GameObject uiBase in uiBases)
                 uiBase.GetComponent<IUIBase>().Initialize();
             
-        InitializeDataLoaders();
+        InitializeData();
     }
 
     protected abstract void InitBootLoaders();
-    protected abstract void InitializeDataLoaders();
+    protected abstract void InitializeData();
+
+    protected bool GetLoader<T>(Transform loader, out T outLoader)
+    {
+        outLoader = loader.GetComponent<T>();
+        return outLoader != null;
+    }
 }

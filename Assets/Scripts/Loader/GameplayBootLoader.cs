@@ -3,28 +3,52 @@ using UnityEngine;
 public class GameplayBootLoader : BootLoader
 {
     [SerializeField] private GameObject[] baseObjects;
+    [SerializeField] private BaseSO[] scriptables;
+
+    private bool hasInitializedScriptables = false;
 
     protected override void InitBootLoaders()
     {
-        foreach (GameObject bootloader in baseObjects)
+        IBootLoader bootLoader = null;
+
+        foreach (GameObject loader in baseObjects)
         {
-            bootloader.GetComponent<IBootLoader>().Initialize();
+            if (GetLoader<IBootLoader>(loader.transform, out bootLoader))
+            {
+                bootLoader.Initialize();
+            }
         }
     }
 
-    protected override void InitializeDataLoaders()
+    protected override void InitializeData()
     {
+        InitializeScriptablesData();
+
         IDataLoader dataLoader = null;
-        foreach (GameObject bootloader in baseObjects)
+        foreach (GameObject loader in baseObjects)
         {
-            dataLoader = bootloader.GetComponent<IDataLoader>();
-            if (dataLoader != null)
+            if (GetLoader<IDataLoader>(loader.transform, out dataLoader))
+            {
                 dataLoader.InitializeData();
+            }
         }
     }
 
     protected override void Start()
     {
         base.Start();
+    }
+
+    private void InitializeScriptablesData()
+    {
+        if (!hasInitializedScriptables)
+        {
+            foreach (BaseSO scriptableObject in scriptables)
+            {
+                scriptableObject.InitData();
+            }
+
+            hasInitializedScriptables = true;
+        }
     }
 }

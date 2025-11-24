@@ -43,6 +43,166 @@
           "targetGoodsToLoad": 12,
           "currencyToGive": 70
         }
+      },
+      {
+        "level": 6,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 7,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 8,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 9,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 10,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 11,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 12,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 13,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 14,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 15,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 16,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 17,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 18,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 19,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 20,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 21,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 22,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 23,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 24,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
+      },
+      {
+        "level": 25,
+        "levelsInfo": {
+          "availGoodTypes": 1,
+          "targetGoodsToLoad": 12,
+          "currencyToGive": 70
+        }
       }
     ]
   }

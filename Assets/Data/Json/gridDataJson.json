@@ -15,32 +15,22 @@
       "gridValues": 
       {
         "row": 2,
-        "col": 5
+        "col": 7
       },
       "blockedGridValues": 
       [
-        {
-        "row": 2,
-        "col": 3
-        }
+
       ]
     },
     {
       "gridValues": 
       {
         "row": 3,
-        "col": 6
+        "col": 2
       },
       "blockedGridValues": 
       [
-        {
-        "row": 3,
-        "col": 1
-        },
-        {
-        "row": 3,
-        "col": 6
-        }
+
       ]
     },
     {
@@ -51,17 +41,14 @@
       },
       "blockedGridValues": 
       [
-        {
-        "row": 4,
-        "col": 3
-        }
+
       ]
     },
     {
       "gridValues": 
       {
         "row": 5,
-        "col": 4
+        "col": 6
       },
       "blockedGridValues": 
       [

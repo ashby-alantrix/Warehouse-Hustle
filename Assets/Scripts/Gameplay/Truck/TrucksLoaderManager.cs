@@ -48,8 +48,6 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<TrucksLoaderManager>(this);
-
-        currentSpawnPos = spawnStartPoint.position;
     }
 
     public void InitializeData()
@@ -60,6 +58,10 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         targetGoodsToLoad = levelManager.GetCurrentLevelsInfo().targetGoodsToLoad;
 
         inGameUIManager = InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>();
+
+        currentSpawnPos = spawnStartPoint.position;
+
+        Debug.Log($"GridCenterPoint currentSpawnPos: {currentSpawnPos}");
 
         SpawnTrucks();
     }

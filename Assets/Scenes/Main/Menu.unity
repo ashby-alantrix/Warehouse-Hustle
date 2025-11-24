@@ -1287,6 +1287,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiBases:
   - {fileID: 215113348}
+  scriptables:
+  - {fileID: 11400000, guid: 10b1afc027f5245ce9af6b45e5bbd522, type: 2}
 --- !u!1 &1208043294
 GameObject:
   m_ObjectHideFlags: 0

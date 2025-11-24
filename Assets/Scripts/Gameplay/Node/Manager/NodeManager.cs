@@ -43,7 +43,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public bool IsNodeAvailableInGrid(string pos, out Node node)
     {
         node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
-        return nodesData.ContainsKey(pos);
+        return nodesData.ContainsKey(pos) && nodesData[pos].gameObject.activeInHierarchy;
     }
 
     public void AddNodeInstance(GameObject instance, int row, int col)
@@ -52,6 +52,22 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         nodeInst.InitNodeManager(this);
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
+    }
+
+    public Vector3 IterateAndRetreiveNodeInstance(int startIndex, int endIndex)
+    {
+        var nodes = nodesData.Values.ToList();
+        for (int indexI = startIndex; indexI < endIndex; indexI++)
+        {
+            Debug.Log($"GetGridCenterPoint: {indexI}");
+            if (indexI == endIndex - 1)
+            {
+                Debug.Log($"nodes[indexI].transform.position: {nodes[indexI].transform.position}");
+                return nodes[indexI].transform.position;
+            }
+        }
+
+        return Vector3.zero;
     }
 
     public void InitNeighborsToNodes()
