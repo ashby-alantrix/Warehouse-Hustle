@@ -8,7 +8,6 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 {
     [SerializeField] private StoreDataBase dataStorer;
 
-
     private GameData gameData;
     private UserData userData;
 
@@ -45,6 +44,8 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
             userData = new UserData();
             userData.userCurrencyData = new UserCurrencyData();
             userData.userLevelData = new UserLevelData();
+            userData.userHealthData = new UserHealthData();
+            userData.timeData = new TimeData();
             userData.userLevelData.lastUnlockedLevel = 1;
             userData.userLevelData.userLevelDataInfo = new UserLevelDataInfo[gameData.levelConfigData.levelDatas.Length];
 
@@ -70,6 +71,16 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     public GameCurrencyData GetGameCurrencyData()
     {
         return gameData.gameCurrency;
+    }
+
+    public HealthData GetHealthData()
+    {
+        return gameData.healthData;
+    }
+
+    public UserHealthData GetUserHealthData()
+    {
+        return userData.userHealthData;
     }
 
     public UserCurrencyData GetUserCurrencyData()
@@ -109,6 +120,19 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     public void SetFirstUserSessionState(bool state)
     {
         PlayerPrefs.SetInt(WarehouseHustle_Constants.IsFirstUserSession, state ? WarehouseHustle_Constants.TRUE : WarehouseHustle_Constants.FALSE);
+        PlayerPrefs.Save();
+    }
+
+    public TimeData GetTimeData()
+    {
+        return userData.timeData;
+    }
+
+    public void SetLastProgressTime(string timeString, string elapsedSeconds)
+    {
+        userData.timeData.lastSavedProgressTime = timeString;
+        userData.timeData.lastElapsedSeconds = elapsedSeconds;
+        SaveUserData();
     }
 
     public bool HasSavedUserData()
@@ -119,6 +143,7 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     public void SaveUserData()
     {
         PlayerPrefs.SetString(WarehouseHustle_Constants.SaveUserData, JsonConvert.SerializeObject(userData));
+        PlayerPrefs.Save();
     }
 
     #endregion

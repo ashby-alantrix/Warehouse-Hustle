@@ -12,7 +12,8 @@ public enum UIType
     RestartPopup,
     LevelCompletePopup,
     GameOverPopup,
-    LevelFailPopup
+    LevelFailPopup,
+    GetMoreLivesPopup,
 }
 
 public class UIBase : MonoBehaviour, IUIBase

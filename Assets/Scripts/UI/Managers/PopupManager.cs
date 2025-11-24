@@ -56,6 +56,8 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
     {
         if (screensDict[uiType] != null)
         {
+            if (activeScreen.UIType == uiType) activeScreen = null;
+            
             screensDict[uiType].Hide();
         }
     }

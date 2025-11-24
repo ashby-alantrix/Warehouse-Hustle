@@ -34,6 +34,7 @@ public class Node : MonoBehaviour
     #region Managers
     private NodeManager nodeManager;
     private GoodsManager goodsManager;
+    private ObjectPoolManager objectPoolManager;
 
     #endregion
 
@@ -520,5 +521,27 @@ public class Node : MonoBehaviour
 
         for (int index = 0; index < totalSlotsInNode; index++)
             m_NodePlacementDatas[index].isOccupied = index < itemsCount;
+    }
+
+    public void ClearOrResetGoodsDataAndView()
+    {
+        objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
+        goodsSetDict.Clear();
+        cachedGoodsSet.Clear();
+
+        foreach (var pair in itemBasesCollection)
+        {
+            foreach (var itemBase in itemBasesCollection[pair.Key])
+            {
+                objectPoolManager.PassObjectToPool<ItemBase>($"{pair.Key}", PoolType.Item, itemBase);
+                itemBase.gameObject.SetActive(false);
+            }
+        }
+
+        itemBasesCollection.Clear();
+        cachedItemBases.Clear();
+
+        SetNodeOccupiedState(state: false);
+        UpdateOccupiedSlotsState();
     }
 }

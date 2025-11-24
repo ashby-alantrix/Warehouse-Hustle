@@ -4,6 +4,7 @@
 public class GameData
 {
     public GameCurrencyData gameCurrency;
+    public HealthData healthData;
     public LevelConfigData levelConfigData;
 }
 
@@ -27,6 +28,13 @@ public class LevelDatas
 }
 
 [System.Serializable]
+public class HealthData
+{
+    public int totalLifes;
+    public float timeInSecondsForOneLife;
+}
+
+[System.Serializable]
 public class LevelsInfo
 {
     public int availGoodTypes;
@@ -41,6 +49,16 @@ public class UserData
 {
     public UserCurrencyData userCurrencyData;
     public UserLevelData userLevelData;
+    public UserHealthData userHealthData;
+    public TimeData timeData;
+}
+
+[System.Serializable]
+public class TimeData
+{
+    public string lastSavedProgressTime;
+    public string lastElapsedSeconds;
+    
 }
 
 [System.Serializable]
@@ -54,6 +72,12 @@ public class UserLevelData
 {
     public int lastUnlockedLevel = 1;
     public UserLevelDataInfo[] userLevelDataInfo;
+}
+
+[System.Serializable]
+public class UserHealthData
+{
+    public int attainedLifes;
 }
 
 [System.Serializable]

@@ -17,4 +17,12 @@ public class GoodsManager : MonoBehaviour, IBootLoader, IBase
         levelManager = InterfaceManager.Instance.GetInterfaceInstance<LevelManager>();
         m_GoodsHandler.InitGoodsInfo(levelManager.GetCurrentLevelsInfo().availGoodTypes);
     }
+
+    public void ClearGoodsInNodes(int count)
+    {
+        for (int indexI = 0; indexI < count; indexI++)
+        {
+            
+        }
+    }
 }

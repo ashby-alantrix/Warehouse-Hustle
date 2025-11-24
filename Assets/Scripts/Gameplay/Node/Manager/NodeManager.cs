@@ -11,6 +11,9 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private GoodsManager m_GoodsManager;
     private LevelManager levelManager;
     private TrucksLoaderManager trucksLoaderManager;
+
+    private List<string> randomNodeKeys = new List<string>();
+    private List<string> availableNodeKeys = new List<string>();
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
     private int totalNodesInGrid = 0;
@@ -35,15 +38,34 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
     }
 
-    public void ClearNodesData()
-    {
-        nodesData.Clear();
-    }
-
     public bool IsNodeAvailableInGrid(string pos, out Node node)
     {
         node = nodesData.ContainsKey(pos) ? nodesData[pos] : null;
         return nodesData.ContainsKey(pos) && nodesData[pos].gameObject.activeInHierarchy;
+    }
+
+    public List<string> GetRandomNodeKeys(int count, int startIndex = 0)
+    {
+        if (startIndex == 0 && randomNodeKeys.Count > 0) randomNodeKeys.Clear();
+
+        if (randomNodeKeys.Count == count || startIndex == count) return randomNodeKeys;
+
+        for (int indexI = startIndex; indexI < count; indexI++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, availableNodeKeys.Count);
+            if (!randomNodeKeys.Contains(availableNodeKeys[randomIndex]) && nodesData[availableNodeKeys[randomIndex]].gameObject.activeInHierarchy)
+            {
+                randomNodeKeys.Add(availableNodeKeys[randomIndex]);
+                startIndex++;
+            }
+            else
+            {
+                Debug.Log($"Recursing for getting random node again");
+                GetRandomNodeKeys(count, startIndex);
+            }
+        }
+
+        return randomNodeKeys;
     }
 
     public void AddNodeInstance(GameObject instance, int row, int col)
@@ -51,6 +73,12 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         var nodeInst = instance.GetComponent<Node>();
 
         nodeInst.InitNodeManager(this);
+        nodesData.Add($"{instance.transform.position}", nodeInst);
+        if (instance.activeInHierarchy)
+            availableNodeKeys.Add($"{instance.transform.position}");
+
+        if (instance.gameObject.activeInHierarchy)
+            totalNodesInGrid++;
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
     }
 

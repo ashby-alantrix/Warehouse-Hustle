@@ -35,4 +35,10 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
         userDataBehaviour.SaveUserCurrencyData(userCurrencyData);
     }
+
+    public bool HasEnoughCurrency(int availCurrency)
+    {
+        return availCurrency <= userCurrencyData.attainedCurrency;
+            
+    }
 }

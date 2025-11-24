@@ -134,6 +134,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             {
                 foundNeighbor.SetNodeOccupiedState(true);
                 UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
+                CheckNeighbors(foundNeighbor);
             }
             else 
             {
@@ -237,6 +238,8 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     CheckIfCachedDataIsLeft(secondNode, key);
 
             connectedNodesDict[currentSetItemKey].Clear();
+            nodeManager.CheckIfNodesAreLeft();
+            
             Debug.Log($"::: clearing connectedNodesDict[currentSetItemKey] for {currentSetItemKey}");
             return;
         }
