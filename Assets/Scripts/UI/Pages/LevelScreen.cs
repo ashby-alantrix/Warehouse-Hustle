@@ -178,6 +178,8 @@ public class LevelScreen : UIBase
         else
         {
             newUnlockedLvl = levelsQueue.Last();
+            if (newUnlockedLvl.HasBarricade)
+                newUnlockedLvl.ShowRestartButton();
         }
     }
 
