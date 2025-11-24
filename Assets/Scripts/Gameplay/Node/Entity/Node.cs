@@ -503,10 +503,6 @@ public class Node : MonoBehaviour
             // itemBasesCollection.Clear();
             SetNodeOccupiedState(false);
         }
-        else
-        {
-            nodeManager.CheckIfNodesAreLeft();
-        }
     }
 
     private void OnNodeFull()

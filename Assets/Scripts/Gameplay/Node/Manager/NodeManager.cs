@@ -20,13 +20,12 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     {
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);
         SetLevelManager();
-
-        totalNodesInGrid = nodesData.Count;
     }
 
     public void UpdateOccupiedNodesCount(int counter)
     {
         totalOccupiedNodes += counter;
+        CheckIfNodesAreLeft();
         Debug.Log($"totalOccupiedNodes: {totalOccupiedNodes}");
     }
 
@@ -52,6 +51,8 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         nodeInst.InitNodeManager(this);
         nodesData.Add(instance.transform.position.ToString(), nodeInst);
+        if (instance.gameObject.activeInHierarchy)
+            totalNodesInGrid++;
     }
 
     public Vector3 IterateAndRetreiveNodeInstance(int startIndex, int endIndex)
@@ -130,10 +131,17 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
     }
 
-    public void CheckIfNodesAreLeft()
+    private void CheckIfNodesAreLeft()
     {
         Debug.Log($"totalOccupiedNodes: totalNodesInGrid: {totalNodesInGrid}, totalOccupiedNodes: {totalOccupiedNodes}");
         if (totalNodesInGrid == totalOccupiedNodes)
-            levelManager.OnLevelStateChange(LevelState.Lost);
+        {
+            Invoke(nameof(OnAllNodesOccupied), 2f);
+        }
+    }
+
+    private void OnAllNodesOccupied()
+    {
+        levelManager.OnLevelStateChange(LevelState.Lost);
     }
 }

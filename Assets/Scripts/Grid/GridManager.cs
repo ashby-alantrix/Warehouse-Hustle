@@ -160,16 +160,15 @@ public class GridManager : MonoBehaviour, IDataLoader, IBase, IBootLoader
         for (int j = 0; j < m_Cols; j++)
         {
             var instance = Instantiate(m_HexNode, new Vector3(j + startPointVal, 0, m_RowPosition), Quaternion.identity);
+            if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
+            {
+                instance.SetActive(false);
+            }
+
             tempCounter++;
             m_NodeManager.AddNodeInstance(instance, m_Rows, j + 1);
             instance.transform.name = $"{instance.transform.name} {tempCounter}";
             instance.transform.SetParent(m_NodesParent.transform);
-
-            if (blockedGridValDict.ContainsKey(m_Rows) && blockedGridValDict[m_Rows].Contains(j + 1))
-            {
-                instance.SetActive(false);
-                continue;
-            }
         }
     }
 

@@ -7,7 +7,7 @@
       {
         "level": 1,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 50
         }
@@ -15,7 +15,7 @@
       {
         "level": 2,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 60
         }
@@ -23,7 +23,7 @@
       {
         "level": 3,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 40
         }
@@ -31,7 +31,7 @@
       {
         "level": 4,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 50
         }
@@ -39,7 +39,7 @@
       {
         "level": 5,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 70
         }
@@ -47,7 +47,7 @@
       {
         "level": 6,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 70
         }
@@ -55,7 +55,7 @@
       {
         "level": 7,
         "levelsInfo": {
-          "availGoodTypes": 1,
+          "availGoodTypes": 10,
           "targetGoodsToLoad": 12,
           "currencyToGive": 70
         }
