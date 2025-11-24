@@ -35,7 +35,7 @@ public class LevelScreen : UIBase
     }
 
     private int GetLevelPageStartVal() => levelManager.CurrentLevelNumber == 1 || levelManager.CurrentLevelNumber == 2 ? 
-                                            1 : levelManager.CurrentLevelNumber - 2;
+                                            1 : (!levelManager.CanPlayLevel ? levelManager.CurrentLevelNumber - 2 : levelManager.CurrentLevelNumber - 1);
 
     public void InitLevelObjects()
     {
@@ -106,9 +106,22 @@ public class LevelScreen : UIBase
 
     private void AlignLevelObjectPositions()
     {
-        for (int indexI = 1; indexI < levelObjectPoints.Length; indexI++)
+        int levelObjPointIdx = 1;
+        int levelObjectsLen = levelObjects.Length;
+        if (!levelManager.CanPlayLevel && levelManager.CurrentLevelNumber >= levelManager.TotalLevelsCount)
         {
-            levelObjects[indexI - 1].transform.position = levelObjectPoints[indexI].position;
+            levelObjectsLen -= 1;
+        }
+        else if (levelManager.CurrentLevelNumber > (levelManager.TotalLevelsCount - diff))
+        {
+            var decreaseCounter = levelManager.CurrentLevelNumber - (levelManager.TotalLevelsCount - diff);
+            levelObjectsLen -= decreaseCounter;
+        }
+
+        for (int indexI = 0; indexI < levelObjectsLen; indexI++)
+        {
+            levelObjects[indexI].transform.position = levelObjectPoints[levelObjPointIdx].position;
+            levelObjPointIdx++;
         }
     }
 
@@ -148,11 +161,12 @@ public class LevelScreen : UIBase
         {
             Debug.Log($"levelQueue first: {levelsQueue.First().LevelNum}");
             var testList = levelsQueue.ToList();
-            newUnlockedLvl = testList[2]; // current centered object
+            var middleIndex = !levelManager.CanPlayLevel ? 2 : 1; // TODO :: use len/2 if possible
+            newUnlockedLvl = testList[middleIndex]; // current centered object
             newUnlockedLvl.ShowSelectedLevelView();
             if (levelManager.CanPlayLevel)
                 newUnlockedLvl.TogglePlayBtnState(true);
-
+            
             newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber);
 
             Debug.Log($"currentFinishedLvl: {currentFinishedLvl.LevelNum}");
