@@ -63,7 +63,7 @@ public class LevelScreen : UIBase
         if (addBarricade)
         {
             Debug.Log($"### levelManager.CurrentLevelNumber: {levelManager.CurrentLevelNumber}, {levelManager.TotalLevelsCount - diff}");
-            Level lvlObj = levelObjects[levelObjects.Length - 1];
+            Level lvlObj = levelObjects[endIndex];
             lvlObj.gameObject.SetActive(true);
             lvlObj.SetLevelEndBarricade();
             levelsQueue.Enqueue(lvlObj);

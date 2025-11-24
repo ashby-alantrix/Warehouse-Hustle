@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Warehouse-Hustle.sln"
+    "dotnet.defaultSolution": "Warehouse Hustle.sln"
 }
