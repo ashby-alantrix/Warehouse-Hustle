@@ -7,6 +7,7 @@ public enum UIType
     LoadingScreen,
     LevelsScreen,
     InGameHUDScreen,
+    MenuHUDScreen,
     FTUE_Popup,
     MenuSettingsPopup,
     RestartPopup,
@@ -14,6 +15,7 @@ public enum UIType
     GameOverPopup,
     LevelFailPopup,
     GetMoreLivesPopup,
+
 }
 
 public class UIBase : MonoBehaviour, IUIBase

@@ -34,6 +34,7 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
 
     public T GetScreen<T>(UIType uiType) where T : UIBase
     {
+        Debug.Log($"GetScreen for {uiType}");
         return screensDict.ContainsKey(uiType) ? (T)screensDict[uiType] : null;
     }
 

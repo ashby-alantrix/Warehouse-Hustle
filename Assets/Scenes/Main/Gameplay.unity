@@ -410,6 +410,10 @@ MonoBehaviour:
   - {fileID: 460542059}
   - {fileID: 1093605476}
   - {fileID: 1787210384}
+  - {fileID: 1984579424}
+  - {fileID: 700928573}
+  - {fileID: 1991612026}
+  - {fileID: 1582113768}
   truckPoolBases:
   - {fileID: 1746331491}
 --- !u!4 &23406267
@@ -2931,7 +2935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6288858c9bd409cbd7174b5f890589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 8
+  uiType: 9
   tryAgainBtn: {fileID: 178665892}
 --- !u!1 &489594731
 GameObject:
@@ -4250,7 +4254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eee56023aefc446a8aed1247ffbb140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 7
+  uiType: 8
   playUsingCurrencyBtn: {fileID: 1450887658}
   reviveBtn: {fileID: 901265757}
   closeBtn: {fileID: 644977254}
@@ -4607,7 +4611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf3dd84a2bd54299b6ced542562c82b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 6
+  uiType: 7
   rewardText: {fileID: 931573982}
   nextButton: {fileID: 1122551294}
 --- !u!1 &683443718
@@ -4690,7 +4694,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &700928572
 Transform:
   m_ObjectHideFlags: 0
@@ -9655,7 +9659,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1582113767
 Transform:
   m_ObjectHideFlags: 0
@@ -11230,7 +11234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1984579423
 Transform:
   m_ObjectHideFlags: 0
@@ -11278,7 +11282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1991612025
 Transform:
   m_ObjectHideFlags: 0

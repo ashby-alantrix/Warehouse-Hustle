@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
@@ -8,8 +6,8 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     [SerializeField] private int maxLifes = 5;
 
     private int availableLifes = 5;
-    private double totalSeconds;
-    private double totalTimeOffInSeconds, lastElapsedSeconds;
+    private double totalSecondsRem;
+    private double totalTimeOffInSeconds, prevTimeInSecondsRem;
     private bool startHealthTimer = false;
 
     private UserDataBehaviour userDataBehaviour;
@@ -19,7 +17,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private GetMoreLivesPopup getMoreLivesPopup;
     private TimeData timeData;
 
-    public bool IsFull => availableLifes == maxLifes;
+    public bool IsFull => availableLifes == gameHealthData.totalLifes;
 
     public int AvailableLifes => availableLifes;
 
@@ -37,31 +35,50 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         gameHealthData = userDataBehaviour.GetHealthData();
         userHealthData = userDataBehaviour.GetUserHealthData();
 
-        totalSeconds = gameHealthData.timeInSecondsForOneLife;
+        totalSecondsRem = gameHealthData.timeInSecondsForOneLife;
         availableLifes = userDataBehaviour.IsFirstUserSession() ? gameHealthData.totalLifes : userHealthData.attainedLifes;
+
+        getMoreLivesPopup.SetHealthContent(IsFull);
+
+        Debug.Log($"time :: availableLifes: {availableLifes}");
 
         if (!userDataBehaviour.IsFirstUserSession())
         {
             timeData = userDataBehaviour.GetTimeData();
-            DateTime savedTime = DateTime.Parse(timeData.lastSavedProgressTime);
+            DateTime savedTime = DateTime.Parse(timeData.lastPlayedProgressTime);
+            Debug.Log($"time :: timeData.lastPlayedProgressTime: {timeData.lastPlayedProgressTime}");
+            Debug.Log($"time :: savedTime: {savedTime}");
             DateTime currentTime = DateTime.UtcNow;
 
             TimeSpan timeDiff = currentTime - savedTime;
-            totalTimeOffInSeconds =  timeDiff.TotalSeconds;
-            lastElapsedSeconds = int.Parse(timeData.lastElapsedSeconds);
+            totalTimeOffInSeconds = timeDiff.TotalSeconds;
+            Debug.Log($"time :: totalTimeOffInSeconds: {totalTimeOffInSeconds}");
+            Debug.Log($"time :: timeData.lastElapsedSeconds: {timeData.lastElapsedSeconds}");
+            prevTimeInSecondsRem = Double.Parse(timeData.lastElapsedSeconds);
+            
+            Debug.Log($"time :: prevTimeInSecondsRem: {prevTimeInSecondsRem}");
 
-            if (totalTimeOffInSeconds > lastElapsedSeconds)
-            {
-                totalTimeOffInSeconds -= lastElapsedSeconds;
-                // do it until health is filled with the totalTimeOffInSeconds
-            }
-            else
-            {
-                lastElapsedSeconds -= totalTimeOffInSeconds;
-                totalSeconds = lastElapsedSeconds;
-                startHealthTimer = true;
-                // continue the timer logic
-            }
+            if (!IsFull)
+                UpdateBasedOnSavedTime();
+        }
+    }
+
+    private void UpdateBasedOnSavedTime()
+    {
+        var trackedSeconds = prevTimeInSecondsRem == 0 ? gameHealthData.timeInSecondsForOneLife : prevTimeInSecondsRem;
+        if (totalTimeOffInSeconds > trackedSeconds)
+        {
+            totalTimeOffInSeconds -= trackedSeconds;
+            prevTimeInSecondsRem = 0;
+            UpdateAvailableLives(1);
+            // do it until health is filled with the totalTimeOffInSeconds
+        }
+        else // if trackedSeconds >= totalTimeOffInSeconds
+        {
+            trackedSeconds -= totalTimeOffInSeconds;
+            totalTimeOffInSeconds = 0;
+            totalSecondsRem = trackedSeconds;
+            startHealthTimer = true;
         }
     }
 
@@ -72,51 +89,98 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
             return;
         }
 
-        if (totalSeconds > 0)
+        if (totalSecondsRem > 0)
         {
-            totalSeconds -= Time.deltaTime;
+            totalSecondsRem -= Time.deltaTime;
         }
         else
         {
             startHealthTimer = false;
-            UpdateAvailableLives(1); 
+            if (!IsFull)
+                UpdateAvailableLives(1); 
         }
     }
 
     public string GetFormattedTime()
     {
-        TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
+        TimeSpan time = TimeSpan.FromSeconds(totalSecondsRem);
+        Debug.Log($"time :: GetFormattedTime() :: {time.ToString(@"mm\:ss")}");
         return time.ToString(@"mm\:ss");
     }
 
     public void UpdateAvailableLives(int life)
     {
         availableLifes += life;
-        getMoreLivesPopup.UpdateAvailableLifes(availableLifes);
-
-        if (!IsFull)
-        {
-            totalSeconds = gameHealthData.timeInSecondsForOneLife;
-        }
-        else
+        if (IsFull)
         {
             startHealthTimer = false;
+            getMoreLivesPopup?.SetHealthContent(true);
+            return;
         }
+
+        // if (Mathf.Sign(life) < 0)
+        // {
+        //     totalSecondsRem = gameHealthData.timeInSecondsForOneLife - (gameHealthData.timeInSecondsForOneLife - totalSecondsRem);
+        // }
+
+        if (getMoreLivesPopup && !getMoreLivesPopup.IsLifeToFillContentActive)
+            getMoreLivesPopup.SetHealthContent(false);
+
+        if (getMoreLivesPopup != null && getMoreLivesPopup.gameObject.activeInHierarchy)
+            getMoreLivesPopup.UpdateAvailableLifes(availableLifes);
+
+        // if (!IsFull)
+        // {
+            if (totalTimeOffInSeconds > 0)
+                UpdateBasedOnSavedTime();
+            else 
+            {
+                totalSecondsRem = gameHealthData.timeInSecondsForOneLife;
+                startHealthTimer = true;
+            }
+        // }
     }
 
     private void SetLastProgressTime()
     {
-        string timeString = DateTime.UtcNow.ToString("o"); // ISO 8601
-        userDataBehaviour.SetLastProgressTime(timeString, $"{totalSeconds}");
+        if (gameHealthData != null && IsFull) return;
+        
+        if (userDataBehaviour)
+        {
+            userDataBehaviour.SetLastProgressTime($"{DateTime.UtcNow}", $"{totalSecondsRem}");
+        }
+    }
+
+    private void SetUserHealthData()
+    {
+        if (userDataBehaviour)
+        {
+            userHealthData.attainedLifes = availableLifes;
+            userDataBehaviour.SetUserHealthData(userHealthData);
+        }
+    }
+
+    private void SetDatasForSaving()
+    {
+        SetUserHealthData();
+        SetLastProgressTime();
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log($"ExitCallback {name} OnDestroy");
+        SetDatasForSaving();
     }
 
     private void OnApplicationFocus(bool focus)
     {
-        SetLastProgressTime();
+        Debug.Log($"ExitCallback OnApplicationFocus");
+        SetDatasForSaving();
     }
 
     private void OnApplicationQuit()
     {
-        SetLastProgressTime();
+        Debug.Log($"ExitCallback OnApplicationQuit");
+        SetDatasForSaving();
     }
 }

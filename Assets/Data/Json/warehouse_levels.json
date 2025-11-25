@@ -2,6 +2,10 @@
   "gameCurrency": {
     "initialCurrencyToProvide": 100
   },
+  "healthData": {
+    "totalLifes": 5,
+    "timeInSecondsForOneLife": 10
+  },
   "levelConfigData": {
     "levelDatas": [
       { "level": 1, "levelsInfo": { "availGoodTypes": 10, "targetGoodsToLoad": 108, "currencyToGive": 72 } },

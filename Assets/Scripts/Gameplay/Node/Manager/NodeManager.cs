@@ -79,7 +79,6 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         if (instance.gameObject.activeInHierarchy)
             totalNodesInGrid++;
-        nodesData.Add(instance.transform.position.ToString(), nodeInst);
     }
 
     public Vector3 IterateAndRetreiveNodeInstance(int startIndex, int endIndex)

@@ -128,9 +128,18 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
         return userData.timeData;
     }
 
+    public void SetUserHealthData(UserHealthData userHealthData)
+    {
+        userData.userHealthData = userHealthData;
+        SaveUserData();
+    }
+
     public void SetLastProgressTime(string timeString, string elapsedSeconds)
     {
-        userData.timeData.lastSavedProgressTime = timeString;
+        Debug.Log($"time :: userData.timeData.lastPlayedProgressTime: {timeString}");
+        Debug.Log($"time :: userData.timeData.lastElapsedSeconds: {elapsedSeconds}");
+
+        userData.timeData.lastPlayedProgressTime = timeString;
         userData.timeData.lastElapsedSeconds = elapsedSeconds;
         SaveUserData();
     }

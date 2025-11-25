@@ -56,7 +56,7 @@ public class UserData
 [System.Serializable]
 public class TimeData
 {
-    public string lastSavedProgressTime;
+    public string lastPlayedProgressTime;
     public string lastElapsedSeconds;
     
 }
