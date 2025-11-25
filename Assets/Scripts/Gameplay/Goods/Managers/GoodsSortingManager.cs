@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using Unity.VisualScripting;
+using System;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 {
     [SerializeField] private float sortingDelay = 0.75f;
+    [SerializeField] private float cooldownPeriod = 2f;
 
     private NodeManager nodeManager;
     private LevelManager levelManager;
@@ -21,6 +23,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private Node firstNode = null, secondNode = null;
     private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
 
+    public bool hasCompletedSorting = false;
+    public bool generalSortingState = false;
+    public bool hasCheckedCachedData = false;
 
     public void Initialize()
     {
@@ -212,6 +217,16 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         return false;
     }
 
+    public void CompleteSorting()
+    {
+        Debug.Log($"hasCheckedCachedData: {hasCheckedCachedData}, generalSortingState: {generalSortingState}");
+        if (hasCheckedCachedData && generalSortingState)
+        {
+            levelManager.OnLevelStateChange(LevelState.Lost);
+            hasCompletedSorting = true;
+        }
+    }
+
     private void CheckConnectedNodes(ItemType currentSetItemKey)
     {
         if (!levelManager.CanPlayLevel) return;
@@ -238,7 +253,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     CheckIfCachedDataIsLeft(secondNode, key);
 
             connectedNodesDict[currentSetItemKey].Clear();
-            nodeManager.CheckIfNodesAreLeft();
+            Debug.Log($"Checking if nodes are left");
+            hasCheckedCachedData = true;
+            if (!hasCompletedSorting)
+                Invoke(nameof(CompleteSorting), cooldownPeriod);
             
             Debug.Log($"::: clearing connectedNodesDict[currentSetItemKey] for {currentSetItemKey}");
             return;
@@ -639,5 +657,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private void SetGoodsPlacementManager()
     {
         goodsPlacementManager = goodsPlacementManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsPlacementManager>() : goodsPlacementManager;
+    }
+
+    internal void ClearConnectedNodes()
+    {
+        connectedNodesDict.Clear();
     }
 }

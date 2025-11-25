@@ -21,7 +21,7 @@ public class LevelCompletePopup : UIBase
 
     private void OnClick_NextButton()
     {
-        InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>()?.UpdateCoinsData(currencyReward);
+        InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>()?.AddCurrency(currencyReward);
         MainSingleton.Instance.LoadLevelsScene();
     }
 

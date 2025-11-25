@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
@@ -25,19 +26,31 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
 
         if (userDataBehaviour.IsFirstUserSession())
-            UpdateCoinsData(gameCurrencyData.initialCurrencyToProvide);
+            AddCurrency(gameCurrencyData.initialCurrencyToProvide);
     }
 
-    public void UpdateCoinsData(int coinsAmt)
+    public void AddCurrency(int addAmt)
     {
-        userCurrencyData.attainedCurrency += coinsAmt;
+        userCurrencyData.attainedCurrency += addAmt;
+        UpdateCurrencyData();
+    }
 
+    public void WithdrawCurrency(int withdrawAmt)
+    {
+        userCurrencyData.attainedCurrency -= withdrawAmt;
+        UpdateCurrencyData();
+    }
+
+    public void UpdateCurrencyData()
+    {
+        Debug.Log($"Updated currency data userCurrencyData.attainedCurrency: {userCurrencyData.attainedCurrency}");
         inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
         userDataBehaviour.SaveUserCurrencyData(userCurrencyData);
     }
 
     public bool HasEnoughCurrency(int availCurrency)
     {
+        Debug.Log($"HasEnoughCurrency: {availCurrency} <= {userCurrencyData.attainedCurrency}");
         return availCurrency <= userCurrencyData.attainedCurrency;
             
     }

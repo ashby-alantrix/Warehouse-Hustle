@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private LevelScreen levelPage;
     private InGameUIManager inGameUIManager;
     private UserDataBehaviour userDataBehaviour;
+    private TrucksLoaderManager trucksLoaderManager;
     private PopupManager popupManager;
 
     private LevelConfigData levelConfigData;
@@ -35,6 +36,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     {
         levelState = state;
         inGameUIManager = inGameUIManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>() : inGameUIManager;
+        trucksLoaderManager = trucksLoaderManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<TrucksLoaderManager>() : trucksLoaderManager;
 
         switch (levelState)
         {
@@ -53,7 +55,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
             case LevelState.Lost:
                 CanPlayLevel = false;
                 popupManager.ShowScreen(UIType.GameOverPopup);
-                inGameUIManager.GameOverPopup.InitData();
+                inGameUIManager.GameOverPopup.InitData(GetCurrentLevelsInfo().targetGoodsToLoad - trucksLoaderManager.GetLoadedGoods());
             break;
             default: break;
         }

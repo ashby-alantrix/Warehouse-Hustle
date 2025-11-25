@@ -45,6 +45,8 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     private int loadedGoods = 0;
     private bool isLoadingInProcess = false;
 
+    public int GetLoadedGoods() => loadedGoods;
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<TrucksLoaderManager>(this);

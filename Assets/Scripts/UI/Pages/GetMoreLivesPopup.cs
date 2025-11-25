@@ -23,6 +23,7 @@ public class GetMoreLivesPopup : UIBase
     private int purchaseCurrencyValue = 50;
     private HealthSystem healthSystem;
     private PopupManager popupManager;
+    private CurrencyManager currencyManager;
 
     private const string LIFES_FULL_TEXT = "LIVES";
     private const string LIFES_TO_FULL_TEXT = "GET MORE LIVES";
@@ -47,13 +48,22 @@ public class GetMoreLivesPopup : UIBase
         lifeToFillContent.SetActive(!isFull);
     }
 
-    private void OnEnable() 
+    public void OnClick_PurchaseCurrency()
+    {
+        Debug.Log($"OnClick_PurchaseCurrency: currencyManager.HasEnoughCurrency(purchaseCurrencyValue): {currencyManager.HasEnoughCurrency(purchaseCurrencyValue)}");
+        if (currencyManager.HasEnoughCurrency(purchaseCurrencyValue))
+        {
+            currencyManager.WithdrawCurrency(purchaseCurrencyValue);
+            healthSystem.UpdateAvailableLives(1);
+        }
+    }
+
+    private void OnEnable()
     {
         lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
         lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
 
-        healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
-        popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
+        InitManagers();
 
         purchaseCurrencyValue = healthSystem.GameHealthData.singleHealthCurrencyValue;
         purchaseCurrencyText.text = $"{purchaseCurrencyValue}";
@@ -66,6 +76,12 @@ public class GetMoreLivesPopup : UIBase
         }
     }
 
+    private void InitManagers()
+    {
+        healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
+        popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
+        currencyManager = currencyManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>() : currencyManager;
+    }
 
     private void OnDisable()
     {

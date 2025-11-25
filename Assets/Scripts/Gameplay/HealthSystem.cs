@@ -43,20 +43,27 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
         Debug.Log($"time :: availableLifes: {availableLifes}");
 
-        if (!userDataBehaviour.IsFirstUserSession())
+        timeData = userDataBehaviour.GetTimeData();
+        if (!userDataBehaviour.IsFirstUserSession() && timeData != null)
         {
-            timeData = userDataBehaviour.GetTimeData();
-            DateTime savedTime = DateTime.Parse(timeData.lastPlayedProgressTime);
-            Debug.Log($"time :: timeData.lastPlayedProgressTime: {timeData.lastPlayedProgressTime}");
-            Debug.Log($"time :: savedTime: {savedTime}");
-            DateTime currentTime = DateTime.UtcNow;
+            if (!string.IsNullOrWhiteSpace(timeData.lastPlayedProgressTime))
+            {
+                DateTime savedTime = DateTime.Parse(timeData.lastPlayedProgressTime);
+                Debug.Log($"time :: timeData.lastPlayedProgressTime: {timeData.lastPlayedProgressTime}");
+                Debug.Log($"time :: savedTime: {savedTime}");
+                DateTime currentTime = DateTime.UtcNow;
 
-            TimeSpan timeDiff = currentTime - savedTime;
-            totalTimeOffInSeconds = timeDiff.TotalSeconds;
-            Debug.Log($"time :: totalTimeOffInSeconds: {totalTimeOffInSeconds}");
-            Debug.Log($"time :: timeData.lastElapsedSeconds: {timeData.lastElapsedSeconds}");
-            prevTimeInSecondsRem = Double.Parse(timeData.lastElapsedSeconds);
-            
+                TimeSpan timeDiff = currentTime - savedTime;
+                totalTimeOffInSeconds = timeDiff.TotalSeconds;
+                Debug.Log($"time :: totalTimeOffInSeconds: {totalTimeOffInSeconds}");
+                Debug.Log($"time :: timeData.lastElapsedSeconds: {timeData.lastElapsedSeconds}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(timeData.lastElapsedSeconds))
+            {
+                prevTimeInSecondsRem = Double.Parse(timeData.lastElapsedSeconds);
+            }
+
             Debug.Log($"time :: prevTimeInSecondsRem: {prevTimeInSecondsRem}");
 
             if (!IsFull)

@@ -157,10 +157,19 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         m_GoodsManager = m_GoodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : m_GoodsManager;
     }
 
-    public void CheckIfNodesAreLeft()
+    public void CheckIfAllNodesAreOccupied()
     {
         Debug.Log($"totalOccupiedNodes: totalNodesInGrid: {totalNodesInGrid}, totalOccupiedNodes: {totalOccupiedNodes}");
-        if (totalNodesInGrid == totalOccupiedNodes)
+        // return totalNodesInGrid == totalOccupiedNodes;
+        // // )
+        if (AreAllNodesOccupied())
             levelManager.OnLevelStateChange(LevelState.Lost);
     }
+
+    public void LogNodeValue()
+    {
+        Debug.Log($"totalNodesInGrid {totalNodesInGrid} == totalOccupiedNodes {totalOccupiedNodes}");
+    }
+
+    public bool AreAllNodesOccupied() => totalNodesInGrid == totalOccupiedNodes;
 }

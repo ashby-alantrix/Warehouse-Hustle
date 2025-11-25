@@ -34,6 +34,7 @@ public class Node : MonoBehaviour
     #region Managers
     private NodeManager nodeManager;
     private GoodsManager goodsManager;
+    private GoodsSortingManager goodsSortingManager;
     private ObjectPoolManager objectPoolManager;
 
     #endregion
@@ -506,7 +507,9 @@ public class Node : MonoBehaviour
         }
         else
         {
-            nodeManager.CheckIfNodesAreLeft();
+            goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
+            goodsSortingManager.generalSortingState = nodeManager.AreAllNodesOccupied();
+            nodeManager.LogNodeValue();
         }
     }
 

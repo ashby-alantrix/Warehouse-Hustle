@@ -4256,6 +4256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiType: 8
   playUsingCurrencyBtn: {fileID: 1450887658}
+  remGoodsToSort: {fileID: 1183241200}
   reviveBtn: {fileID: 901265757}
   closeBtn: {fileID: 644977254}
 --- !u!1 &644977250
@@ -6866,7 +6867,7 @@ GameObject:
   - component: {fileID: 1183241201}
   - component: {fileID: 1183241200}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: RemGoodsToSortText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
