@@ -49,8 +49,8 @@ public class GetMoreLivesPopup : UIBase
 
     private void OnEnable() 
     {
-        // // lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
-        // // lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
+        lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
+        lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
 
         healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
@@ -69,8 +69,8 @@ public class GetMoreLivesPopup : UIBase
 
     private void OnDisable()
     {
-        // // lifeFullCloseBtn.onClick.RemoveAllListeners();
-        // // lifeToFillCloseBtn.onClick.RemoveAllListeners();
+        lifeFullCloseBtn.onClick.RemoveAllListeners();
+        lifeToFillCloseBtn.onClick.RemoveAllListeners();
     }
 
     private void Update()
