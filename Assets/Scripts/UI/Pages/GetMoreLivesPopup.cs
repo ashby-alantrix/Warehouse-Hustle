@@ -13,13 +13,14 @@ public class GetMoreLivesPopup : UIBase
     [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private Image[] lifeImages;
 
-    [SerializeField] private Button purchaseBtn;
-    [SerializeField] private int currencyValue = 50;
+    [SerializeField] private Button purchaseCurrencyBtn;
+    [SerializeField] private TextMeshProUGUI purchaseCurrencyText;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Button lifeFullCloseBtn;
     [SerializeField] private Button lifeToFillCloseBtn;
 
     private int currentEnabledLifeIcons;
+    private int purchaseCurrencyValue = 50;
     private HealthSystem healthSystem;
     private PopupManager popupManager;
 
@@ -48,34 +49,34 @@ public class GetMoreLivesPopup : UIBase
 
     private void OnEnable() 
     {
-        lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
-        lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
+        // // lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
+        // // lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
 
         healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
 
+        purchaseCurrencyValue = healthSystem.GameHealthData.singleHealthCurrencyValue;
+        purchaseCurrencyText.text = $"{purchaseCurrencyValue}";
+
         currentEnabledLifeIcons = healthSystem.AvailableLifes;
-        Debug.Log($"check3: currentEnabledLifeIcons: {currentEnabledLifeIcons}");
 
         for (int indexI = 0; indexI < lifeImages.Length; indexI++)
         {
             lifeImages[indexI].enabled = indexI <= currentEnabledLifeIcons - 1;
-            Debug.Log($"check3: {indexI <= currentEnabledLifeIcons - 1}");
-            Debug.Log($"check3: lifeImages[indexI].enabled: {lifeImages[indexI].enabled}");
         }
     }
 
 
     private void OnDisable()
     {
-        lifeFullCloseBtn.onClick.RemoveAllListeners();
-        lifeToFillCloseBtn.onClick.RemoveAllListeners();
+        // // lifeFullCloseBtn.onClick.RemoveAllListeners();
+        // // lifeToFillCloseBtn.onClick.RemoveAllListeners();
     }
 
     private void Update()
     {
         if (lifeFullContent.activeInHierarchy) return;
-        
+
         timerText.text = healthSystem.GetFormattedTime();
     }
 

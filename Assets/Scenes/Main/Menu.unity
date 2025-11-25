@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 227868061}
   - component: {fileID: 227868060}
   m_Layer: 5
-  m_Name: 'CoinsText (TMP) '
+  m_Name: 'PurchaseCurrencyText (TMP) '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4343,7 +4343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1303088818
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4398,8 +4398,8 @@ MonoBehaviour:
   - {fileID: 1531799188}
   - {fileID: 2097748366}
   - {fileID: 1740795107}
-  purchaseBtn: {fileID: 732772030}
-  currencyValue: 60
+  purchaseCurrencyBtn: {fileID: 732772030}
+  purchaseCurrencyText: {fileID: 227868060}
   timerText: {fileID: 1770669866}
   lifeFullCloseBtn: {fileID: 1697715331}
   lifeToFillCloseBtn: {fileID: 1178907349}
@@ -6124,7 +6124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1793375944
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6419,7 +6419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1808132188
 RectTransform:
   m_ObjectHideFlags: 0

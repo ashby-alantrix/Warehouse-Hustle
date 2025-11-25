@@ -4,7 +4,8 @@
   },
   "healthData": {
     "totalLifes": 5,
-    "timeInSecondsForOneLife": 10
+    "singleHealthCurrencyValue": 60,
+    "timeInSecondsForOneLife": 30
   },
   "levelConfigData": {
     "levelDatas": [

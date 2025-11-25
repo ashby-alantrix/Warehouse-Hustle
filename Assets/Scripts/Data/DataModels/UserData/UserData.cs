@@ -31,6 +31,7 @@ public class LevelDatas
 public class HealthData
 {
     public int totalLifes;
+    public int singleHealthCurrencyValue;
     public float timeInSecondsForOneLife;
 }
 

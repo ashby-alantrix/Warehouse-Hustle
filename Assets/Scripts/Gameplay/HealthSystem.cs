@@ -8,7 +8,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private int availableLifes = 5;
     private double totalSecondsRem;
     private double totalTimeOffInSeconds, prevTimeInSecondsRem;
-    private bool startHealthTimer = false;
+    private bool startHealthTimer = false, hasTimerFilled = false;
 
     private UserDataBehaviour userDataBehaviour;
     private PopupManager popupManager;
@@ -18,6 +18,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private TimeData timeData;
 
     public bool IsFull => availableLifes == gameHealthData.totalLifes;
+    public HealthData GameHealthData => gameHealthData;
 
     public int AvailableLifes => availableLifes;
 
@@ -97,7 +98,10 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         {
             startHealthTimer = false;
             if (!IsFull)
+            {
+                hasTimerFilled = true;
                 UpdateAvailableLives(1); 
+            }
         }
     }
 
@@ -110,6 +114,13 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void UpdateAvailableLives(int life)
     {
+        // on Replay clicked in Restart popup
+        // if (availableLifes == 1 && Mathf.Sign(life) < 0)
+        // {
+
+        //     return;
+        // }
+
         availableLifes += life;
         if (IsFull)
         {
@@ -118,27 +129,20 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
             return;
         }
 
-        // if (Mathf.Sign(life) < 0)
-        // {
-        //     totalSecondsRem = gameHealthData.timeInSecondsForOneLife - (gameHealthData.timeInSecondsForOneLife - totalSecondsRem);
-        // }
-
         if (getMoreLivesPopup && !getMoreLivesPopup.IsLifeToFillContentActive)
             getMoreLivesPopup.SetHealthContent(false);
 
         if (getMoreLivesPopup != null && getMoreLivesPopup.gameObject.activeInHierarchy)
             getMoreLivesPopup.UpdateAvailableLifes(availableLifes);
 
-        // if (!IsFull)
-        // {
-            if (totalTimeOffInSeconds > 0)
-                UpdateBasedOnSavedTime();
-            else 
-            {
-                totalSecondsRem = gameHealthData.timeInSecondsForOneLife;
-                startHealthTimer = true;
-            }
-        // }
+        if (totalTimeOffInSeconds > 0)
+            UpdateBasedOnSavedTime();
+        else 
+        {
+            totalSecondsRem = hasTimerFilled ? gameHealthData.timeInSecondsForOneLife : totalSecondsRem;
+            hasTimerFilled = false;
+            startHealthTimer = true;
+        }
     }
 
     private void SetLastProgressTime()
