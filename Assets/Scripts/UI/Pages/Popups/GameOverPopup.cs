@@ -57,6 +57,7 @@ public class GameOverPopup : PopupBase
 
         popupManager.HideActivePopup();
         nodeManager = nodeManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<NodeManager>() : nodeManager;
+        Debug.Log($"ClearRandomNodeKeys: {nodeManager.randomNodeKeys.Count}");
         var nodeKeys = nodeManager.GetRandomNodeKeys(count: nodesToClear, startIndex: 0);
         Node foundNode = null;
 

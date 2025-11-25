@@ -12,7 +12,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private LevelManager levelManager;
     private TrucksLoaderManager trucksLoaderManager;
 
-    private List<string> randomNodeKeys = new List<string>();
+    public List<string> randomNodeKeys = new List<string>();
     private List<string> availableNodeKeys = new List<string>();
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
@@ -48,24 +48,16 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     {
         if (startIndex == 0 && randomNodeKeys.Count > 0) randomNodeKeys.Clear();
 
-        if (randomNodeKeys.Count == count || startIndex == count) return randomNodeKeys;
-
-        for (int indexI = startIndex; indexI < count; indexI++)
+        for (int i = availableNodeKeys.Count - 1; i >= 0; i--)
         {
-            int randomIndex = UnityEngine.Random.Range(0, availableNodeKeys.Count);
-            if (!randomNodeKeys.Contains(availableNodeKeys[randomIndex]) && nodesData[availableNodeKeys[randomIndex]].gameObject.activeInHierarchy)
-            {
-                randomNodeKeys.Add(availableNodeKeys[randomIndex]);
-                startIndex++;
-            }
-            else
-            {
-                Debug.Log($"Recursing for getting random node again");
-                GetRandomNodeKeys(count, startIndex);
-            }
+            var randIndex = UnityEngine.Random.Range(0, i + 1);
+            
+            var temp = availableNodeKeys[i];
+            availableNodeKeys[i] = availableNodeKeys[randIndex];
+            availableNodeKeys[randIndex] = temp;
         }
 
-        return randomNodeKeys;
+        return availableNodeKeys.GetRange(0, count);
     }
 
     public void AddNodeInstance(GameObject instance, int row, int col)

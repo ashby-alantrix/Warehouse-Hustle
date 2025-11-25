@@ -11,6 +11,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
     private bool canPlaceGoods = true;
 
+    private NodeManager nodeManager;
     public bool CanPlaceGoods => canPlaceGoods;
 
     public void Initialize()
@@ -71,6 +72,8 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         // sorting is required if using goods set count instead of item base count as truth
         // or cache the item bases as well
 
+        goodsSortingManager.isSortingInProgress = true;
+
         Tweener tweener = null;
         ItemBase itemBase = null;
 
@@ -111,6 +114,9 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
             source.CheckIfNodeIsFullOrCleared();
             target.CheckIfNodeIsFullOrCleared();
 
+            if (!source.IsNodeFullOrCleared() && !target.IsNodeFullOrCleared())
+                CheckGameOver();
+
             KillTweener();
 
         });
@@ -118,6 +124,22 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         void KillTweener()
         {
             tweener.Kill();
+        }
+    }
+
+    private void CheckGameOver()
+    {
+        goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
+        nodeManager = nodeManager == null ? InterfaceManager.Instance.GetInterfaceInstance<NodeManager>() : nodeManager;
+
+        Debug.Log($"goodsSortingManager.generalSortingState: {goodsSortingManager.generalSortingState}");
+        nodeManager.LogNodeValue();
+
+        if (nodeManager.AreAllNodesOccupied())
+        {
+            goodsSortingManager.isSortingInProgress = false;
+            if (goodsSortingManager.hasCheckedCachedData)
+                goodsSortingManager.CheckGameOverCondition($"Node: {name}");
         }
     }
 

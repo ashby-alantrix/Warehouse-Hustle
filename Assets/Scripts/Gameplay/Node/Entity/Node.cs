@@ -485,6 +485,12 @@ public class Node : MonoBehaviour
         }
     }
 
+    public bool IsNodeFullOrCleared()
+    {
+        var itemBaseCount = GetItemBaseCount();
+        return (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount) || itemBaseCount == 0;
+    }
+
     public void CheckIfNodeIsFullOrCleared()
     {
         var itemBaseCount = GetItemBaseCount();
@@ -509,7 +515,18 @@ public class Node : MonoBehaviour
         {
             goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
             goodsSortingManager.generalSortingState = nodeManager.AreAllNodesOccupied();
+            Debug.Log($"goodsSortingManager.generalSortingState: {goodsSortingManager.generalSortingState}");
             nodeManager.LogNodeValue();
+
+            // if (nodeManager.AreAllNodesOccupied())
+            // {
+            //     goodsSortingManager.isSortingInProgress = false;
+            //     if (goodsSortingManager.hasCheckedCachedData)
+            //         goodsSortingManager.CheckGameOverCondition($"Node: {name}");
+            // }
+
+            // if (goodsSortingManager.hasCheckedCachedData)
+            //     nodeManager.CheckIfAllNodesAreOccupied();
         }
     }
 

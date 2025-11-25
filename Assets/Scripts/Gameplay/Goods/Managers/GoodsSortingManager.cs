@@ -4,6 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Unity.VisualScripting;
 using System;
+using System.Linq;
 
 public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 {
@@ -23,9 +24,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     private Node firstNode = null, secondNode = null;
     private int currentAvailSlots = 0, itemsToMove = 0, cacheCount = 0;
 
-    public bool hasCompletedSorting = false;
+    public bool isSortingInProgress = false;
     public bool generalSortingState = false;
     public bool hasCheckedCachedData = false;
+    public bool noNeighborsToCheck = false;
 
     public void Initialize()
     {
@@ -219,11 +221,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public void CompleteSorting()
     {
-        Debug.Log($"hasCheckedCachedData: {hasCheckedCachedData}, generalSortingState: {generalSortingState}");
-        if (hasCheckedCachedData && generalSortingState)
+        if (generalSortingState)
         {
             levelManager.OnLevelStateChange(LevelState.Lost);
-            hasCompletedSorting = true;
+            isSortingInProgress = true;
         }
     }
 
@@ -232,6 +233,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         if (!levelManager.CanPlayLevel) return;
         
         ItemType otherSetItemKey;
+        if (GetMatchingNeighborWithAvailSlots(currentSetItemKey, currentSelectedNode, out Node neighbor, out int slots))
+        {
+            isSortingInProgress = true;
+        }
 
         Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");
         if (!connectedNodesDict.ContainsKey(currentSetItemKey))
@@ -253,11 +258,11 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     CheckIfCachedDataIsLeft(secondNode, key);
 
             connectedNodesDict[currentSetItemKey].Clear();
-            Debug.Log($"Checking if nodes are left");
+
+            Debug.Log($"hasCompletedSorting: {isSortingInProgress}, generalSortingState: {generalSortingState}");
             hasCheckedCachedData = true;
-            if (!hasCompletedSorting)
-                Invoke(nameof(CompleteSorting), cooldownPeriod);
-            
+            CheckGameOverCondition("GoodsSortingManager");
+
             Debug.Log($"::: clearing connectedNodesDict[currentSetItemKey] for {currentSetItemKey}");
             return;
         }
@@ -356,6 +361,15 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
         UpdateConnectedNodeStates(currentSetItemKey);
         CheckConnectedNodes(currentSetItemKey);
+    }
+
+    public void CheckGameOverCondition(string name)
+    {
+        Debug.Log($"{name} ::: nodeManager.AreAllNodesOccupied(): {nodeManager.AreAllNodesOccupied()} && isSortingInProgress: {isSortingInProgress}");
+        if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress)
+        {
+            levelManager.OnLevelStateChange(LevelState.Lost);
+        }
     }
 
     private bool GetFirstOtherMatchingKeyBetweenNodes(ItemType currentSetItemKey, out ItemType otherItemKey)
@@ -514,133 +528,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
-    #region OLD FLOW FOR SORTING AND MERGING
-    public void CheckNeighbors(Node selectedNode, bool useDebug = false)
-    {
-        Debug.Log($"Test4 --------------------------------------");
-        Debug.Log($"Test4 CheckNeighbors of selectedNode.position: {selectedNode.transform.position}, {selectedNode.transform.name}");
-
-        currentSelectedNode = selectedNode;
-
-        SetNodeManager();
-        SetGoodsPlacementManager();
-
-        var setKeys = selectedNode.GetSetKeys();
-        Debug.Log($"setKeysCount: {setKeys.Count}");
-        foreach (var key in setKeys)
-            Debug.Log($"Keys Log :: key: {key}");
-
-        foreach (var key in setKeys)
-        {
-            Debug.Log($"setKey :: {key}");
-            ExploreNeighbors(key);
-        }
-    }
-
-    private void ExploreNeighbors(ItemType currentItemKey)
-    {
-        int neighborsCount = currentSelectedNode.GetNeighborsCount();
-        int itemsToMove, goodsCount = 0, availSlots = 0;
-
-        for (int index = 0; index < neighborsCount; index++)
-        {
-            if (!currentSelectedNode.HasGoodsSet(currentItemKey))
-                continue;
-
-            // Debug.Log($"### Test4: Neighbor index: " + index);
-            SetNodeManager();
-
-            Debug.Log($"currentSelectedNode.name: {currentSelectedNode.transform.name}");
-            Debug.Log($"NeighborsCount: {currentSelectedNode.GetNeighborsCount()}");
-            Debug.Log($"NeighborsIndex: {index}");
-            var isNeighborsNodeAvailable = nodeManager.IsNodeAvailableInGrid(currentSelectedNode.GetNeighborHexOffset(index).ToString(), out Node neighborNode);
-            Debug.Log($"IsNeighborNodeAvailable: {isNeighborsNodeAvailable}");
-            if (isNeighborsNodeAvailable)
-            {
-                Debug.Log($"IsNeighborNodeAvailable :: index: {index}, position: {neighborNode.transform.position}, name: {neighborNode.transform.name}");
-                var matchFound = neighborNode.CheckIfSetItemMatches(currentItemKey, out goodsCount);
-                Debug.Log($"CheckIfSetItemMatches :: currentItemKey: {currentItemKey}, goodsCount: {goodsCount}");
-                if (matchFound)
-                {
-                    UpdateSlotStates(neighborNode);
-                    if (goodsCount == neighborNode.GetTotalSlotsInNode())
-                        continue;
-
-                    Debug.Log($"CheckIfSetItemsMatchesWithNeighbor :: itemType: {currentItemKey}");
-                    foundDifferentKey = neighborNode.IsThereDifferentKey(currentItemKey);
-
-                    var goodsCountInSelectedNode = currentSelectedNode.GetGoodsSetCountForSpecificItem(currentItemKey);
-                    var goodsCountInNeighbor = neighborNode.GetGoodsSetCountForSpecificItem(currentItemKey);
-
-                    Debug.Log($"currentSelectedNode.GetSetKeysCount(): {currentSelectedNode.GetSetKeysCount()}, neighborNode.GetSetKeysCount(): {neighborNode.GetSetKeysCount()}");
-                    if (currentSelectedNode.GetSetKeysCount() <= neighborNode.GetSetKeysCount()) // || goodsCountInSelectedNode > goodsCountInNeighbor)
-                    {
-                        var slotsRemaining = currentSelectedNode.GetTotalSlotsInNode() - currentSelectedNode.GetGoodsSetCountForSpecificItem(currentItemKey);
-
-                        Debug.Log($"current selected node has less keys");
-                        if (currentSelectedNode.HasEmptySlots(out availSlots))// && slotsRemaining == availSlots)
-                        {
-                            Debug.Log($"current selected node has empty slots");
-                            itemsToMove = neighborNode.GetGoodsSetCountForSpecificItem(currentItemKey);
-                            itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
-                            MoveMatchedSetFromSourceToTarget(currentItemKey, sourceNode: neighborNode, targetNode: currentSelectedNode, itemsToMove);
-                        }
-                        else
-                        {
-                            // if there are still no slots available, try to free up the slots
-                            // use a caching system
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (neighborNode.HasEmptySlots(out availSlots))
-                        {
-                            itemsToMove = currentSelectedNode.GetGoodsSetCountForSpecificItem(currentItemKey);
-                            itemsToMove = itemsToMove > availSlots ? availSlots : itemsToMove;
-                            MoveMatchedSetFromSourceToTarget(currentItemKey, sourceNode: currentSelectedNode, targetNode: neighborNode, itemsToMove);
-                        }
-                        else
-                        {
-                            // if there are still no slots available, try to free up the slots
-                            // use a caching system
-                            break;
-                        }
-                    }
-                    
-
-                    currentSelectedNode.SortItemBases();
-                    neighborNode.SortItemBases();
-
-                    // goodsPlacementManager.RearrangeBasedOnSorting(currentSelectedNode); // do on tween completion if needed
-                    // goodsPlacementManager.RearrangeBasedOnSorting(neighborNode); // do on tween completion if needed
-                    //goodsPlacementManager.RearrangeBasedOnSorting(neighborNode); // do on tween completion
-
-                    Debug.Log($"IsLastKey: {foundDifferentKey}");
-                    UpdateSlotStates(neighborNode);
-                    if (foundDifferentKey) // TODO :: add a better check for recursive calls
-                    {
-                        Debug.Log("Recursion: calling recursive function");
-                        CheckNeighbors(neighborNode, true); // 1st call left here 
-                    }
-
-                    // checking due to recursion
-
-                    neighborsCount = currentSelectedNode.GetNeighborsCount();
-                    if (!currentSelectedNode.HasGoodsSet(currentItemKey))
-                        continue;
-
-                    Debug.Log($"CheckItemBases selectedNode.ItemBases: {currentSelectedNode.GetItemBaseCount()}");
-                    Debug.Log($"CheckItemBases neighborNode.ItemBases: {neighborNode.GetItemBaseCount()}");
-                    Debug.Log($"CheckItemBases selectedNode.ItemBases: {currentSelectedNode.GetTotalGoodsSetsCount()}");
-                    Debug.Log($"CheckItemBases neighborNode.ItemBases: {neighborNode.GetTotalGoodsSetsCount()}");
-
-                }
-            }
-        }
-    }
-    #endregion 
-
     private void UpdateSlotStates(Node neighborNode)
     {
         // currentSelectedNode.UpdateOccupiedSlotsState();
@@ -662,5 +549,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     internal void ClearConnectedNodes()
     {
         connectedNodesDict.Clear();
+        isSortingInProgress = false;
+        generalSortingState = false;
+        hasCheckedCachedData = false;
+        noNeighborsToCheck = false;
     }
 }
