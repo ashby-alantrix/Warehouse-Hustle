@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverPopup : UIBase
+public class GameOverPopup : PopupBase
 {
     [SerializeField] private Button playUsingCurrencyBtn;
     [SerializeField] private TextMeshProUGUI remGoodsToSort;
@@ -55,7 +55,7 @@ public class GameOverPopup : UIBase
         levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
         currencyManager.WithdrawCurrency(clearCurrency);
 
-        popupManager.HideActiveScreen();
+        popupManager.HideActivePopup();
         nodeManager = nodeManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<NodeManager>() : nodeManager;
         var nodeKeys = nodeManager.GetRandomNodeKeys(count: nodesToClear, startIndex: 0);
         Node foundNode = null;
@@ -78,10 +78,10 @@ public class GameOverPopup : UIBase
     protected void OnClick_CloseBtn()
     {
         SetPopupManager();
-        popupManager.HideScreen(uiType);
+        popupManager.HidePopup(popupType);
 
         // cut out one health
-        popupManager.ShowScreen(UIType.RestartPopup);
+        popupManager.ShowPopup(PopupType.RestartPopup);
     }
 
     private void SetPopupManager()

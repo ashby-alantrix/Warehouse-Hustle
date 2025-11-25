@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 16181336}
   - component: {fileID: 16181337}
   m_Layer: 5
-  m_Name: InGameHUDPage
+  m_Name: InGameHUDScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7628cffb896724f7ca824ff6c7c552b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 2
+  screenType: 2
   coinsText: {fileID: 1456562502}
   levelText: {fileID: 539829722}
   goodsGoalCountText: {fileID: 609833504}
@@ -2935,7 +2935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6288858c9bd409cbd7174b5f890589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 9
+  popupType: 5
   tryAgainBtn: {fileID: 178665892}
 --- !u!1 &489594731
 GameObject:
@@ -4254,7 +4254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eee56023aefc446a8aed1247ffbb140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 8
+  popupType: 4
   playUsingCurrencyBtn: {fileID: 1450887658}
   remGoodsToSort: {fileID: 1183241200}
   reviveBtn: {fileID: 901265757}
@@ -4612,7 +4612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf3dd84a2bd54299b6ced542562c82b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiType: 7
+  popupType: 3
   rewardText: {fileID: 931573982}
   nextButton: {fileID: 1122551294}
 --- !u!1 &683443718
@@ -5580,7 +5580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &901265756
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8683,9 +8683,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -186, y: 113}
+  m_AnchoredPosition: {x: 0, y: 45}
   m_SizeDelta: {x: 347.76086, y: 127.38}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1450887658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11726,7 +11726,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingDelay: 0.75
+  cooldownPeriod: 2
   isInitialized: 0
+  hasCompletedSorting: 0
+  generalSortingState: 0
+  hasCheckedCachedData: 0
 --- !u!1 &2097377745
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,64 +2,62 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// public class BaseUIManager<T> : MonoBehaviour, IBase, IBootLoader where T : UIBase
+// {
+//     public void Initialize()
+//     {
+//         throw new NotImplementedException();
+//     }
+// }
+
 public class PopupManager : MonoBehaviour, IBase, IBootLoader
 {
-    public List<UIBase> bases = new List<UIBase>();
+    private Dictionary<PopupType, PopupBase> popupsDict = new Dictionary<PopupType, PopupBase>();
 
-    private Dictionary<UIType, UIBase> screensDict = new Dictionary<UIType, UIBase>();
-
-    private UIBase activeScreen = null;
-    public UIBase GetActiveScreen() => activeScreen;
+    private PopupBase activePopup = null;
+    public PopupBase GetActiveScreen() => activePopup;
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<PopupManager>(this);
-        screensDict.Clear();
+        popupsDict.Clear();
     }
 
-    public void RegisterScreen(UIBase uiBase)
+    public void RegisterPopup(PopupBase popupBase)
     {
-        // Debug.Log($"Register screen: {uiBase}, {uiBase.UIType}");
-
-        if (!screensDict.ContainsKey(uiBase.UIType))
-            screensDict.Add(uiBase.UIType, uiBase);
+        if (!popupsDict.ContainsKey(popupBase.PopupType))
+            popupsDict.Add(popupBase.PopupType, popupBase);
         else
-            screensDict[uiBase.UIType] = uiBase;
-
-        // foreach (var screen in screensDict)
-        // {
-        //     Debug.Log($"Screendict, key: {screen.Key}, value: {screen.Value}");
-        // }
+            popupsDict[popupBase.PopupType] = popupBase;
     }
 
-    public T GetScreen<T>(UIType uiType) where T : UIBase
+    public T GetPopup<T>(PopupType uiType) where T : PopupBase
     {
-        Debug.Log($"GetScreen for {uiType}");
-        return screensDict.ContainsKey(uiType) ? (T)screensDict[uiType] : null;
+        return popupsDict.ContainsKey(uiType) ? (T)popupsDict[uiType] : null;
     }
 
-    public void ShowScreen(UIType uiType)
+    public void ShowPopup(PopupType uiType)
     {
-        activeScreen = screensDict[uiType];
-        if (activeScreen != null)
+        activePopup = popupsDict[uiType];
+        if (activePopup != null)
         {
-            activeScreen.Show();
+            activePopup.Show();
         }
     }
 
-    public void HideActiveScreen()
+    public void HideActivePopup()
     {
-        if (activeScreen != null)
-            activeScreen.Hide();
+        if (activePopup != null)
+            activePopup.Hide();
     }
 
-    public void HideScreen(UIType uiType)
+    public void HidePopup(PopupType popupType)
     {
-        if (screensDict[uiType] != null)
+        if (popupsDict[popupType] != null)
         {
-            if (activeScreen.UIType == uiType) activeScreen = null;
+            if (activePopup.PopupType == popupType) activePopup = null;
             
-            screensDict[uiType].Hide();
+            popupsDict[popupType].Hide();
         }
     }
 

@@ -6,7 +6,6 @@ public class MenuBootLoader : BootLoader
 {
     private GameObject[] baseObjects;
 
-
     protected override void InitBootLoaders()
     {
         IBootLoader bootLoader = null;
@@ -22,7 +21,6 @@ public class MenuBootLoader : BootLoader
     protected override void Start()
     {
         base.Start();
-
     }
 
     protected override void InitializeData()

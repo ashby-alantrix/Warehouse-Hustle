@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InGameUIManager : MonoBehaviour, IBootLoader,  IBase, IDataLoader
 {
+    private ScreenManager screenManager;
     private PopupManager popupManager;
     private InGameHUDScreen inGameHUDScreen;
     private GameOverPopup gameOverPopup;
@@ -20,10 +21,12 @@ public class InGameUIManager : MonoBehaviour, IBootLoader,  IBase, IDataLoader
 
     public void InitializeData()
     {
+        screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
-        inGameHUDScreen = popupManager.GetScreen<InGameHUDScreen>(UIType.InGameHUDScreen);
-        levelCompletePopup = popupManager.GetScreen<LevelCompletePopup>(UIType.LevelCompletePopup);
-        gameOverPopup = popupManager.GetScreen<GameOverPopup>(UIType.GameOverPopup);
+
+        inGameHUDScreen = screenManager.GetScreen<InGameHUDScreen>(ScreenType.InGameHUDScreen);
+        levelCompletePopup = popupManager.GetPopup<LevelCompletePopup>(PopupType.LevelCompletePopup);
+        gameOverPopup = popupManager.GetPopup<GameOverPopup>(PopupType.GameOverPopup);
 
         Debug.Log($"InGameUIManager: InGameHudScreen: {inGameHUDScreen}");
         Debug.Log($"InGameUIManager: levelCompletePopup: {levelCompletePopup}");

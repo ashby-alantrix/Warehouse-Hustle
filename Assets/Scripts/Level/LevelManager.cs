@@ -22,6 +22,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private UserDataBehaviour userDataBehaviour;
     private TrucksLoaderManager trucksLoaderManager;
     private PopupManager popupManager;
+    private ScreenManager screenManager;
 
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
@@ -50,11 +51,11 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
                 
                 currentLevelNumber++;
                 userDataBehaviour.SaveLastUnlockedLevel(currentLevelNumber);
-                popupManager.ShowScreen(UIType.LevelCompletePopup);
+                popupManager.ShowPopup(PopupType.LevelCompletePopup);
             break;
             case LevelState.Lost:
                 CanPlayLevel = false;
-                popupManager.ShowScreen(UIType.GameOverPopup);
+                popupManager.ShowPopup(PopupType.GameOverPopup);
                 inGameUIManager.GameOverPopup.InitData(GetCurrentLevelsInfo().targetGoodsToLoad - trucksLoaderManager.GetLoadedGoods());
             break;
             default: break;
@@ -82,6 +83,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
+        screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
     }
 
     public void InitializeData()
@@ -91,7 +93,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         levelConfigData = userDataBehaviour.GetLevelsDatas();
         InitLevelsInfoToDict();
 
-        levelPage = popupManager.GetScreen<LevelScreen>(UIType.LevelsScreen);
+        levelPage = screenManager.GetScreen<LevelScreen>(ScreenType.LevelsScreen);
         levelPage.InitLevelManager(this);
         levelPage.InitLevelObjects();
         HasInitializedLevelsData = true;

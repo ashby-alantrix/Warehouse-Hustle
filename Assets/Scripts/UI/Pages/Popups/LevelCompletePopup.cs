@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelCompletePopup : UIBase
+public class LevelCompletePopup : PopupBase
 {
     [SerializeField] private TextMeshProUGUI rewardText;
     [SerializeField] private Button nextButton;

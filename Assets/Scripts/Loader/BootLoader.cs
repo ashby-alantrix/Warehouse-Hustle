@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class BootLoader : MonoBehaviour
 {
-    [Tooltip("For keeping track of ui panels in the specific scene")]
+    [Tooltip("For keeping track of all ui related objects: screens and popups")]
     [SerializeField] private GameObject[] uiBases;
 
     protected virtual void Start()
@@ -12,12 +12,15 @@ public abstract class BootLoader : MonoBehaviour
         InterfaceManager.InitInstance();
 
         InitBootLoaders();
+        InitializeUIBases();
+        InitializeData();
+    }
 
+    private void InitializeUIBases()
+    {
         if (uiBases != null && uiBases.Length > 0)
             foreach (GameObject uiBase in uiBases)
                 uiBase.GetComponent<IUIBase>().Initialize();
-            
-        InitializeData();
     }
 
     protected abstract void InitBootLoaders();

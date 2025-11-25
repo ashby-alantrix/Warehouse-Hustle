@@ -31,7 +31,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     {
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
-        getMoreLivesPopup = popupManager.GetScreen<GetMoreLivesPopup>(UIType.GetMoreLivesPopup);
+        getMoreLivesPopup = popupManager.GetPopup<GetMoreLivesPopup>(PopupType.GetMoreLivesPopup);
 
         gameHealthData = userDataBehaviour.GetHealthData();
         userHealthData = userDataBehaviour.GetUserHealthData();

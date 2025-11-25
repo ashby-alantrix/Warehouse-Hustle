@@ -4,7 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-public class LevelScreen : UIBase
+public class LevelScreen : ScreenBase
 {
     [SerializeField] private List<string> levelTransforms = new List<string>();
     [SerializeField] private Level[] levelObjects;

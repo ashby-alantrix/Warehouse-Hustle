@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GetMoreLivesPopup : UIBase
+public class GetMoreLivesPopup : PopupBase
 {
     [SerializeField] private GameObject lifeFullContent;
     [SerializeField] private GameObject lifeToFillContent;
@@ -98,6 +98,6 @@ public class GetMoreLivesPopup : UIBase
 
     private void OnClosePopup()
     {
-        popupManager.HideScreen(UIType.GetMoreLivesPopup);
+        popupManager.HidePopup(PopupType.GetMoreLivesPopup);
     }
 }
