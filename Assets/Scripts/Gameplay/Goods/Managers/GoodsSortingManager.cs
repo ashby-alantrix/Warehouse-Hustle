@@ -80,7 +80,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         int neighborsCount = currentSelectedNode.GetNeighborsCount();
         bool isNeighborsNodeAvailable = false;
 
-        connectedNodesDict.Clear();
+        // connectedNodesDict.Clear();
         StoreConnectedNodesForEachType(setItemKey, currentSelectedNode.GetNodePos());
 
         for (int indexI = 0; indexI < neighborsCount; indexI++)
@@ -236,7 +236,10 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         ItemType otherSetItemKey;
         Debug.Log($"GameOverCheck :: GotMatchingNeighborWithAvailSlots");
         var hasMatchingNeighbor = GetMatchingNeighborWithAvailSlots(currentSetItemKey, currentSelectedNode, out Node neighbor, out int slots);
-        var isNotLastKey = currentSetItemKey != currentSelectedNode.GetSetKeys().Last();
+        bool isNotLastKey = false;
+        if (currentSelectedNode != null && currentSelectedNode.GetSetKeysCount() > 0)
+            isNotLastKey = currentSetItemKey != currentSelectedNode.GetSetKeys().Last();
+
         isSortingInProgress = hasMatchingNeighbor || isNotLastKey;
 
         Debug.Log($"GameOverCheck :: hasMatchingNeighbor: {hasMatchingNeighbor} in GoodsSortingManager");
@@ -263,7 +266,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
                     CheckIfCachedDataIsLeft(secondNode, key);
 
             connectedNodesDict[currentSetItemKey].Clear();
-
+            Debug.Log($"Clearing connected nodes for {currentSetItemKey}");
             
             hasCheckedCachedData = true;
             Debug.Log($"GameOverCheck :: CheckGameOverCondition from GoodsSortingManager, currentSetItemKey: {currentSetItemKey}");

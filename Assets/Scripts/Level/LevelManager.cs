@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public enum LevelState
 {
@@ -14,7 +15,7 @@ public enum LevelState
 
 public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
-    private int currentLevelNumber = 1;
+    private int prevLevelNumber = 1, currentLevelNumber = 1;
     private LevelState levelState = LevelState.Progress;
 
     private LevelScreen levelPage;
@@ -23,21 +24,36 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private TrucksLoaderManager trucksLoaderManager;
     private PopupManager popupManager;
     private ScreenManager screenManager;
+    private GoodsManager goodsManager;
 
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
 
     public int TotalLevelsCount => levelDataDictionary.Count;
+    public int PrevLevelNumber => prevLevelNumber;
     public int CurrentLevelNumber => currentLevelNumber;
     public LevelState LevelState => levelState;
     public bool HasInitializedLevelsData = false;
     public bool CanPlayLevel = true; // TODO :: Change the name of the variable according to logic
 
+    public void ExecuteRestartLevelActions()
+    {
+        goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;
+        goodsManager.ClearAllGoodsInNodes();
+        goodsManager.ClearGoodsInputPlatforms();
+        
+        SetTrucksLoaderManager();
+        trucksLoaderManager.ResetLoadedGoods();
+
+        goodsManager.InitGoodsInfos();
+        OnLevelStateChange(LevelState.Progress);
+    }
+
     public void OnLevelStateChange(LevelState state)
     {
         levelState = state;
         inGameUIManager = inGameUIManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>() : inGameUIManager;
-        trucksLoaderManager = trucksLoaderManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<TrucksLoaderManager>() : trucksLoaderManager;
+        SetTrucksLoaderManager();
 
         switch (levelState)
         {
@@ -48,7 +64,8 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
                 CanPlayLevel = false;
                 var levelsInfo = GetCurrentLevelsInfo();
                 inGameUIManager?.LevelCompletePopup?.SetCoinsReward(levelsInfo.currencyToGive);
-                
+
+                prevLevelNumber = currentLevelNumber;
                 currentLevelNumber++;
                 userDataBehaviour.SaveLastUnlockedLevel(currentLevelNumber);
                 popupManager.ShowPopup(PopupType.LevelCompletePopup);
@@ -88,7 +105,13 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void InitializeData()
     {
+        Debug.Log($"HasInitializedLevelsData: {HasInitializedLevelsData}");
         currentLevelNumber = userDataBehaviour.GetLastUnlockedLevel();
+        if (!HasInitializedLevelsData) // is first time or new session
+        {
+            prevLevelNumber = currentLevelNumber;
+        }
+
         Debug.Log($"### currentLevelNumber: {currentLevelNumber}");
         levelConfigData = userDataBehaviour.GetLevelsDatas();
         InitLevelsInfoToDict();
@@ -115,5 +138,10 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     public void LoadLevelInGame()
     {
         MainSingleton.Instance.LoadGameplayScene();
+    }
+
+    private void SetTrucksLoaderManager()
+    {
+        trucksLoaderManager = trucksLoaderManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<TrucksLoaderManager>() : trucksLoaderManager;
     }
 }

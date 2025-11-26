@@ -19,6 +19,8 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private int totalNodesInGrid = 0;
     private int totalOccupiedNodes = 0;
 
+    public List<string> AvailableNodeKeys => availableNodeKeys;
+
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<NodeManager>(this);

@@ -33,6 +33,19 @@ public class GoodsInputPlatform : MonoBehaviour
         this.baseObjects = baseObjects;
     }
 
+    public void ClearGoodsSetAndBaseObjects()
+    {
+        goodsDataSet.Clear();
+
+        foreach (var baseObj in baseObjects)
+        {
+            baseObj.gameObject.SetActive(false);
+            objectPoolManager.PassObjectToPool<ItemBase>($"{baseObj.ItemType}", PoolType.Item, baseObj);
+        }
+
+        baseObjects.Clear();
+    }
+
     public void PlaceGoods()
     {
         // get the goods object from the pool here and spawn based on the provided 

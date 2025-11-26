@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ScreenResultEvent
+{
+    None,
+    OnSettingsClicked
+}
+
 public class ScreenManager : MonoBehaviour, IBase, IBootLoader
 {
     private Dictionary<ScreenType, ScreenBase> screensDict = new Dictionary<ScreenType, ScreenBase>();
@@ -53,4 +59,15 @@ public class ScreenManager : MonoBehaviour, IBase, IBootLoader
         }
     }
 
+    // public void OnScreenEventExecute(ScreenResultEvent screenResultEvent)
+    // {
+    //     switch (screenResultEvent)
+    //     {
+    //         case ScreenResultEvent.None:
+
+    //         break;
+    //         case ScreenResultEvent.OnSettingsClicked:
+    //         break;
+    //     }
+    // }
 }

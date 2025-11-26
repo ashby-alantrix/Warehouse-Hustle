@@ -179,4 +179,13 @@ public class GoodsHandler : MonoBehaviour
     {
         return (byte)UnityEngine.Random.Range(minGoods, availCountInSet);
     }
+
+    public void ClearGoodsInputPlatforms()
+    {
+        goodsType = null;
+        lastUpdatedGoodsSet.Clear();
+
+        currentGoodsPlacer.ClearGoodsSetAndBaseObjects();
+        nextGoodsPlacer.ClearGoodsSetAndBaseObjects();
+    }
 }

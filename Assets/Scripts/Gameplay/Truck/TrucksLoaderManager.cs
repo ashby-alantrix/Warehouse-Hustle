@@ -183,4 +183,10 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
 
         newTruckSpawnPoint.position = currentSpawnPos;
     }
+
+    public void ResetLoadedGoods()
+    {
+        loadedGoods = 0;
+        inGameUIManager.InGameHUDScreen.SetGoodsGoalText(loadedGoods);
+    }
 }

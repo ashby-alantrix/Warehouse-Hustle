@@ -85,21 +85,13 @@ public class LevelScreen : ScreenBase
             levelObjects[indexI].ShowUnselectedLevelView();
         }
 
-        if ((levelManager.CurrentLevelNumber != 1 && levelManager.CanPlayLevel) || levelManager.CurrentLevelNumber > 2)
+        if ((levelManager.CurrentLevelNumber != 1 && (levelManager.CanPlayLevel || levelManager.LevelState == LevelState.Lost)) || levelManager.CurrentLevelNumber > 2)
         {
             AlignLevelObjectPositions();
         }
-        //else // for first level
-        //{
-        //    levelObjects[0].ShowSelectedLevelView();
-        //    levelObjects[0].TogglePlayBtnState(true);
-        //}
 
-        //if (!levelManager.CanPlayLevel)
-        //{
-            Debug.Log($"OnLevelComplete");
+        Debug.Log($"OnLevelComplete");
         UpdateLevelPageInfo();    
-        //}
 
         StartCoroutine(StartLevelObjectAnims());
     }
@@ -134,8 +126,9 @@ public class LevelScreen : ScreenBase
             yield return new WaitForSeconds(0.25f);
         }
 
-        // if (levelManager.CurrentLevelNumber > 1)
-        if (!levelManager.CanPlayLevel)
+        Debug.Log($"LEVELNUMBER: PrevLevelNumber: {levelManager.PrevLevelNumber}");
+        Debug.Log($"LEVELNUMBER: CurrentLevelNumber: {levelManager.CurrentLevelNumber}");
+        if (!levelManager.CanPlayLevel && levelManager.PrevLevelNumber != levelManager.CurrentLevelNumber && levelManager.LevelState != LevelState.Lost)
             TriggerScrollingAnim();
     }
 
@@ -152,8 +145,7 @@ public class LevelScreen : ScreenBase
             var testList = levelsQueue.ToList();
             newUnlockedLvl = testList[1]; // current centered object
             newUnlockedLvl.ShowSelectedLevelView();
-            if (levelManager.CanPlayLevel)
-                newUnlockedLvl.TogglePlayBtnState(true);
+            EnablePlayButton();
 
             newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber);
         }
@@ -164,8 +156,7 @@ public class LevelScreen : ScreenBase
             var middleIndex = !levelManager.CanPlayLevel ? 2 : 1; // TODO :: use len/2 if possible
             newUnlockedLvl = testList[middleIndex]; // current centered object
             newUnlockedLvl.ShowSelectedLevelView();
-            if (levelManager.CanPlayLevel)
-                newUnlockedLvl.TogglePlayBtnState(true);
+            EnablePlayButton();
             
             newUnlockedLvl.SetLevelText(levelManager.CurrentLevelNumber);
 
@@ -181,6 +172,12 @@ public class LevelScreen : ScreenBase
             if (newUnlockedLvl.HasBarricade)
                 newUnlockedLvl.ShowRestartButton();
         }
+    }
+
+    public void EnablePlayButton()
+    {
+        if (levelManager.CanPlayLevel || levelManager.LevelState == LevelState.Lost)
+            newUnlockedLvl.TogglePlayBtnState(true);
     }
 
     public void TriggerScrollingAnim()

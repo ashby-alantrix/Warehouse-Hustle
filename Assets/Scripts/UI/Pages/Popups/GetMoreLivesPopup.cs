@@ -20,7 +20,7 @@ public class GetMoreLivesPopup : PopupBase
     [SerializeField] private Button lifeToFillCloseBtn;
 
     private int currentEnabledLifeIcons;
-    private int purchaseCurrencyValue = 50;
+    private int purchaseCurrencyValue = 60;
     private HealthSystem healthSystem;
     private PopupManager popupManager;
     private CurrencyManager currencyManager;
@@ -33,8 +33,8 @@ public class GetMoreLivesPopup : PopupBase
     public void UpdateAvailableLifes(int availLifes)
     {
         currentEnabledLifeIcons = availLifes;
-        Debug.Log($"life: {availLifes}");
-        Debug.Log($"currentEnabledLifeIcons: {currentEnabledLifeIcons}");
+        Debug.Log($"GetMoreLivesPopup life: {availLifes}");
+        Debug.Log($"GetMoreLivesPopup currentEnabledLifeIcons: {currentEnabledLifeIcons}");
 
         if (Mathf.Sign(availLifes) > 0)
             lifeImages[currentEnabledLifeIcons - 1].enabled = true;
@@ -50,11 +50,12 @@ public class GetMoreLivesPopup : PopupBase
 
     public void OnClick_PurchaseCurrency()
     {
-        Debug.Log($"OnClick_PurchaseCurrency: currencyManager.HasEnoughCurrency(purchaseCurrencyValue): {currencyManager.HasEnoughCurrency(purchaseCurrencyValue)}");
+        Debug.Log($"GetMoreLivesPopup: {currencyManager.HasEnoughCurrency(purchaseCurrencyValue)}");
         if (currencyManager.HasEnoughCurrency(purchaseCurrencyValue))
         {
+            Debug.Log($"GetMoreLivesPopup: currencyManager.HasEnoughCurrency(purchaseCurrencyValue): {currencyManager.HasEnoughCurrency(purchaseCurrencyValue)}");
             currencyManager.WithdrawCurrency(purchaseCurrencyValue);
-            healthSystem.UpdateAvailableLives(1);
+            healthSystem.AddHealth(1);
         }
     }
 
@@ -62,9 +63,11 @@ public class GetMoreLivesPopup : PopupBase
     {
         lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
         lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
+        purchaseCurrencyBtn.onClick.AddListener(() => OnClick_PurchaseCurrency());
 
         InitManagers();
 
+        SetHealthContent(healthSystem.IsFull);
         purchaseCurrencyValue = healthSystem.GameHealthData.singleHealthCurrencyValue;
         purchaseCurrencyText.text = $"{purchaseCurrencyValue}";
 
@@ -87,6 +90,7 @@ public class GetMoreLivesPopup : PopupBase
     {
         lifeFullCloseBtn.onClick.RemoveAllListeners();
         lifeToFillCloseBtn.onClick.RemoveAllListeners();
+        purchaseCurrencyBtn.onClick.RemoveAllListeners();
     }
 
     private void Update()

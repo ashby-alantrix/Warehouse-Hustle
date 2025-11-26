@@ -25,6 +25,7 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
         inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
 
+        Debug.Log($"userDataBehaviour.IsFirstUserSession(): {userDataBehaviour.IsFirstUserSession()}");
         if (userDataBehaviour.IsFirstUserSession())
             AddCurrency(gameCurrencyData.initialCurrencyToProvide);
     }

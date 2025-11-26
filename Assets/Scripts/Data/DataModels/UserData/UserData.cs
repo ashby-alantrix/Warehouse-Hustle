@@ -78,6 +78,7 @@ public class UserLevelData
 [System.Serializable]
 public class UserHealthData
 {
+    public bool haveUsedFreeRefill;
     public int attainedLifes;
 }
 

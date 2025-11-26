@@ -10,6 +10,17 @@ using UnityEngine;
 //     }
 // }
 
+public enum PopupResultEvent
+{
+    None,
+    LifeLostInGameOver,
+    OnSpentCoinsForLevel,
+    OnFreeRefillHealth,
+    OnCancelRefillHealth,
+    FreeRefillUsed,
+    LivesFull
+}
+
 public class PopupManager : MonoBehaviour, IBase, IBootLoader
 {
     private Dictionary<PopupType, PopupBase> popupsDict = new Dictionary<PopupType, PopupBase>();
@@ -29,6 +40,8 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
             popupsDict.Add(popupBase.PopupType, popupBase);
         else
             popupsDict[popupBase.PopupType] = popupBase;
+
+        popupBase.InitNextActionEvent((resultType) => OnPopupClosedExceuteEvent(resultType));
     }
 
     public T GetPopup<T>(PopupType uiType) where T : PopupBase
@@ -55,10 +68,36 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
     {
         if (popupsDict[popupType] != null)
         {
-            if (activePopup.PopupType == popupType) activePopup = null;
+            if (activePopup != null && activePopup.PopupType == popupType) activePopup = null;
             
             popupsDict[popupType].Hide();
         }
     }
 
+    public void OnPopupClosedExceuteEvent(PopupResultEvent popupResultEvent)
+    {
+        switch (popupResultEvent)
+        {
+            case PopupResultEvent.None:
+
+            break;
+            case PopupResultEvent.LifeLostInGameOver:
+                ShowPopup(PopupType.LevelFailPopup);
+            break;
+            case PopupResultEvent.OnSpentCoinsForLevel:
+
+            break;
+
+            case PopupResultEvent.OnFreeRefillHealth:
+                ShowPopup(PopupType.FreeRefillPopup);
+            break;
+            case PopupResultEvent.LivesFull:
+            case PopupResultEvent.OnCancelRefillHealth:
+            case PopupResultEvent.FreeRefillUsed:
+                ShowPopup(PopupType.GetMoreLivesPopup);
+            break;
+            default:
+            break;
+        }
+    }
 }

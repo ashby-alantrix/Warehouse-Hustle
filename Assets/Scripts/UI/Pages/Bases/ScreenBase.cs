@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class ScreenBase : UIBase, IUIBase
     public ScreenType ScreenType => screenType;
 
     private ScreenManager screenManager;
-    
+
     public void Initialize()
     {
         screenManager = screenManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>() : screenManager;

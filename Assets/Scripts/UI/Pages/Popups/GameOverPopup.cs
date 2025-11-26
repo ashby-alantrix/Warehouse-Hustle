@@ -16,7 +16,9 @@ public class GameOverPopup : PopupBase
     private PopupManager popupManager;
     private LevelManager levelManager;
     private CurrencyManager currencyManager;
+    private GoodsManager goodsManager;
     private GoodsSortingManager goodsSortingManager;
+    private HealthSystem healthSystem;
 
     private int nodesToClear = 5;
     private int clearCurrency = 200;
@@ -52,27 +54,18 @@ public class GameOverPopup : PopupBase
             return;
         }
 
-        levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
         currencyManager.WithdrawCurrency(clearCurrency);
 
         popupManager.HideActivePopup();
-        nodeManager = nodeManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<NodeManager>() : nodeManager;
-        Debug.Log($"ClearRandomNodeKeys: {nodeManager.randomNodeKeys.Count}");
-        var nodeKeys = nodeManager.GetRandomNodeKeys(count: nodesToClear, startIndex: 0);
-        Node foundNode = null;
+        OnComplete(PopupResultEvent.None);
 
-        Debug.Log($"NodeKeysCount: {nodeKeys.Count}");
+        goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;
+        goodsManager.ClearGoodsInNodes(nodesToClear);
 
-        foreach (var nodekey in nodeKeys)
-        {
-            if (nodeManager.IsNodeAvailableInGrid(nodekey, out foundNode))
-            {
-                foundNode.ClearOrResetGoodsDataAndView();
-            }
-        }
         goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
         goodsSortingManager.ClearConnectedNodes();
 
+        levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
         levelManager.OnLevelStateChange(LevelState.Progress);
     }
 
@@ -81,8 +74,10 @@ public class GameOverPopup : PopupBase
         SetPopupManager();
         popupManager.HidePopup(popupType);
 
-        // cut out one health
-        popupManager.ShowPopup(PopupType.RestartPopup);
+        healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
+        healthSystem.RemoveHealth(1);
+
+        OnComplete(PopupResultEvent.LifeLostInGameOver);
     }
 
     private void SetPopupManager()

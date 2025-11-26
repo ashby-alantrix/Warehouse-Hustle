@@ -4,6 +4,7 @@ using UnityEngine;
 public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
     [SerializeField] private int maxLifes = 5;
+    [SerializeField] private bool enableTimer = true;
 
     private int availableLifes = 5;
     private double totalSecondsRem;
@@ -18,13 +19,21 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private TimeData timeData;
 
     public bool IsFull => availableLifes == gameHealthData.totalLifes;
+    public bool HaveHealthLeft => availableLifes > 0;
     public HealthData GameHealthData => gameHealthData;
+    public UserHealthData UserHealthData => userHealthData;
 
     public int AvailableLifes => availableLifes;
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<HealthSystem>(this);
+    }
+
+    public void SetFreeRefillState(bool isFreeRefill)
+    {
+        userHealthData.haveUsedFreeRefill = isFreeRefill;
+        SetUserHealthData();
     }
 
     public void InitializeData()
@@ -41,7 +50,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
         getMoreLivesPopup.SetHealthContent(IsFull);
 
-        Debug.Log($"time :: availableLifes: {availableLifes}");
+        Debug.Log($"hasenoughhealth :: availableLifes: {availableLifes}");
 
         timeData = userDataBehaviour.GetTimeData();
         if (!userDataBehaviour.IsFirstUserSession() && timeData != null)
@@ -78,7 +87,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         {
             totalTimeOffInSeconds -= trackedSeconds;
             prevTimeInSecondsRem = 0;
-            UpdateAvailableLives(1);
+            AddHealth(1);
             // do it until health is filled with the totalTimeOffInSeconds
         }
         else // if trackedSeconds >= totalTimeOffInSeconds
@@ -92,7 +101,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     private void Update()
     {
-        if (!startHealthTimer) 
+        if (!enableTimer || !startHealthTimer) 
         {
             return;
         }
@@ -107,7 +116,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
             if (!IsFull)
             {
                 hasTimerFilled = true;
-                UpdateAvailableLives(1); 
+                AddHealth(1); 
             }
         }
     }
@@ -115,11 +124,35 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     public string GetFormattedTime()
     {
         TimeSpan time = TimeSpan.FromSeconds(totalSecondsRem);
-        Debug.Log($"time :: GetFormattedTime() :: {time.ToString(@"mm\:ss")}");
         return time.ToString(@"mm\:ss");
     }
 
-    public void UpdateAvailableLives(int life)
+    public void RefillHealth()
+    {
+        availableLifes += gameHealthData.totalLifes - availableLifes;
+    }
+
+    public void AddHealth(int life)
+    {
+        #if UNITY_EDITOR
+        if (availableLifes == gameHealthData.totalLifes) return;
+        #endif
+
+        availableLifes += life;
+        UpdateAvailableLives();
+    }
+
+    public void RemoveHealth(int life)
+    {
+        #if UNITY_EDITOR
+        if (availableLifes == 0) return;
+        #endif
+
+        availableLifes -= life;
+        UpdateAvailableLives();
+    }
+
+    private void UpdateAvailableLives()
     {
         // on Replay clicked in Restart popup
         // if (availableLifes == 1 && Mathf.Sign(life) < 0)
@@ -128,7 +161,8 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         //     return;
         // }
 
-        availableLifes += life;
+        Debug.Log($"Available lives: {availableLifes}");
+
         if (IsFull)
         {
             startHealthTimer = false;
