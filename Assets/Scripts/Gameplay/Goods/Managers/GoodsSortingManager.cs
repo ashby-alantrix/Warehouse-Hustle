@@ -80,6 +80,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         int neighborsCount = currentSelectedNode.GetNeighborsCount();
         bool isNeighborsNodeAvailable = false;
 
+        connectedNodesDict.Clear();
         StoreConnectedNodesForEachType(setItemKey, currentSelectedNode.GetNodePos());
 
         for (int indexI = 0; indexI < neighborsCount; indexI++)
@@ -233,10 +234,14 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         if (!levelManager.CanPlayLevel) return;
         
         ItemType otherSetItemKey;
-        if (GetMatchingNeighborWithAvailSlots(currentSetItemKey, currentSelectedNode, out Node neighbor, out int slots))
-        {
-            isSortingInProgress = true;
-        }
+        Debug.Log($"GameOverCheck :: GotMatchingNeighborWithAvailSlots");
+        var hasMatchingNeighbor = GetMatchingNeighborWithAvailSlots(currentSetItemKey, currentSelectedNode, out Node neighbor, out int slots);
+        var isNotLastKey = currentSetItemKey != currentSelectedNode.GetSetKeys().Last();
+        isSortingInProgress = hasMatchingNeighbor || isNotLastKey;
+
+        Debug.Log($"GameOverCheck :: hasMatchingNeighbor: {hasMatchingNeighbor} in GoodsSortingManager");
+        Debug.Log($"GameOverCheck :: isNotLastKey: {isNotLastKey} in GoodsSortingManager");
+        Debug.Log($"GameOverCheck :: isSortingInProgress: {isSortingInProgress} in GoodsSortingManager");
 
         Debug.Log($"::: CheckConnectedNodes : {currentSetItemKey}");
         if (!connectedNodesDict.ContainsKey(currentSetItemKey))
@@ -259,8 +264,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
             connectedNodesDict[currentSetItemKey].Clear();
 
-            Debug.Log($"hasCompletedSorting: {isSortingInProgress}, generalSortingState: {generalSortingState}");
+            
             hasCheckedCachedData = true;
+            Debug.Log($"GameOverCheck :: CheckGameOverCondition from GoodsSortingManager, currentSetItemKey: {currentSetItemKey}");
             CheckGameOverCondition("GoodsSortingManager");
 
             Debug.Log($"::: clearing connectedNodesDict[currentSetItemKey] for {currentSetItemKey}");
@@ -365,11 +371,18 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
 
     public void CheckGameOverCondition(string name)
     {
-        Debug.Log($"{name} ::: nodeManager.AreAllNodesOccupied(): {nodeManager.AreAllNodesOccupied()} && isSortingInProgress: {isSortingInProgress}");
+        // Debug.Log($"{name} ::: nodeManager.AreAllNodesOccupied(): {nodeManager.AreAllNodesOccupied()} && isSortingInProgress: {isSortingInProgress}");
+        Debug.Log($"GameOverCheck :: CheckGameOverCondition :: isSortingInProgress: {isSortingInProgress}, nodeManager.AreAllNodeOccupied: {nodeManager.AreAllNodesOccupied()}");
         if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress)
         {
-            levelManager.OnLevelStateChange(LevelState.Lost);
+            Debug.Log($"GameOverCheck :: CheckGameOverCondition LevelState.Lost");
+            Invoke(nameof(Delay), 1f);
         }
+    }
+
+    private void Delay()
+    {
+        levelManager.OnLevelStateChange(LevelState.Lost);
     }
 
     private bool GetFirstOtherMatchingKeyBetweenNodes(ItemType currentSetItemKey, out ItemType otherItemKey)

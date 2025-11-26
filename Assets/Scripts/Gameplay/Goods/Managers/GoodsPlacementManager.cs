@@ -138,8 +138,12 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         if (nodeManager.AreAllNodesOccupied())
         {
             goodsSortingManager.isSortingInProgress = false;
+            Debug.Log($"GameOverCheck :: isSortingInProgress: {goodsSortingManager.isSortingInProgress} in GoodsPlacementManager");
             if (goodsSortingManager.hasCheckedCachedData)
+            {
+                Debug.Log($"GameOverCheck :: CheckGameOverCondition GoodsPlacementManager");
                 goodsSortingManager.CheckGameOverCondition($"Node: {name}");
+            }
         }
     }
 
