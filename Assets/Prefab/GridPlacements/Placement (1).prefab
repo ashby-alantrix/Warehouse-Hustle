@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 6207218240511307361}
   - component: {fileID: 5886721754164726120}
   m_Layer: 0
-  m_Name: Mesh
+  m_Name: HeshMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

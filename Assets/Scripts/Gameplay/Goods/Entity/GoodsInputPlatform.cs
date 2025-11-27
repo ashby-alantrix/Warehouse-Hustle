@@ -61,8 +61,8 @@ public class GoodsInputPlatform : MonoBehaviour
             {
                 for (int j = 0; j < goodsDataSet[i].setCount; j++)
                 {
+                    Debug.Log($"Object Pool :: {goodsDataSet[i].type.ToString()}");
                     baseObj = objectPoolManager.GetObjectFromPool<ItemBase>(goodsDataSet[i].type.ToString(), PoolType.Item);
-                    Debug.Log($"Object Pool: Found baseObj: {baseObj}");
                     
                     if (spawnPointIndex < spawnPoints.Length)
                     {
