@@ -417,7 +417,6 @@ MonoBehaviour:
   - {fileID: 1984579424}
   - {fileID: 700928573}
   - {fileID: 1991612026}
-  - {fileID: 1582113768}
   truckPoolBases:
   - {fileID: 1746331491}
 --- !u!4 &23406267
@@ -11694,7 +11693,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1582113767
 Transform:
   m_ObjectHideFlags: 0

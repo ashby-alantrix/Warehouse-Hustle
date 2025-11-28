@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42a05d08ec904cd5aa7b0c68238b94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 7
+  itemType: 8
   nodePlacementIndex: 0
 --- !u!1001 &2110534967350371728
 PrefabInstance:
