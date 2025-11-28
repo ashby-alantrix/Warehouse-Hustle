@@ -44,8 +44,15 @@ public class GetMoreLivesPopup : PopupBase
 
     public void SetHealthContent(bool isFull)
     {
+        SetLivesContentTransform(isFull);
+
         lifeFullContent.SetActive(isFull);
         lifeToFillContent.SetActive(!isFull);
+    }
+
+    private void SetLivesContentTransform(bool isFull)
+    {
+        popupScaleContent = isFull ? lifeFullContent.transform : lifeToFillContent.transform;
     }
 
     public void OnClick_PurchaseCurrency()
@@ -61,11 +68,11 @@ public class GetMoreLivesPopup : PopupBase
 
     private void OnEnable()
     {
+        InitManagers();
+
         lifeFullCloseBtn.onClick.AddListener(() => OnClosePopup());
         lifeToFillCloseBtn.onClick.AddListener(() => OnClosePopup());
         purchaseCurrencyBtn.onClick.AddListener(() => OnClick_PurchaseCurrency());
-
-        InitManagers();
 
         SetHealthContent(healthSystem.IsFull);
         purchaseCurrencyValue = healthSystem.GameHealthData.singleHealthCurrencyValue;
@@ -81,9 +88,9 @@ public class GetMoreLivesPopup : PopupBase
 
     private void InitManagers()
     {
+        currencyManager = currencyManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>() : currencyManager;
         healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
-        currencyManager = currencyManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>() : currencyManager;
     }
 
     private void OnDisable()

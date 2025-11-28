@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class InGameHUDScreen : ScreenBase
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private TextMeshProUGUI coinsText;
+    
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI goodsGoalCountText;
     [SerializeField] private Button hudButtonsCont;
@@ -40,12 +40,6 @@ public class InGameHUDScreen : ScreenBase
     public void SetGoodsGoalText(int loadedGoods)
     {
         goodsGoalCountText.text = $"{loadedGoods}/{goodsGoalCount}";
-    }
-
-    public void UpdateCurrencyText(string coins)
-    {
-        Debug.Log($"coinsText: {coins}");
-        coinsText.text = coins;
     }
 
     void OnEnable()

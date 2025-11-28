@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GlobalHUDScreen : ScreenBase
 {
     [SerializeField] private Button livesButton;
+    [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI remLivesText;
     [SerializeField] private GameObject livesButtonFilledCont;
     [SerializeField] private GameObject livesButtonNonFilledCont;
@@ -35,7 +36,11 @@ public class GlobalHUDScreen : ScreenBase
         }
     }
 
-
+    public void UpdateCurrencyText(string coins)
+    {
+        Debug.Log($"coinsText: {coins}");
+        coinsText.text = coins;
+    }
 
     private void OnEnable()
     {

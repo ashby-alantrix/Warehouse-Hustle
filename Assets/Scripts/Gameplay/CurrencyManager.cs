@@ -7,13 +7,14 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     public UserCurrencyData userCurrencyData;
     private InGameUIManager inGameUIManager;
     private UserDataBehaviour userDataBehaviour;
+    private ScreenManager screenManager;
+    private GlobalHUDScreen globalHUDScreen;
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<CurrencyManager>(this);
 
         userDataBehaviour  = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
-        inGameUIManager = InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>();
     }
 
     public void InitializeData()
@@ -23,7 +24,11 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         gameCurrencyData = userDataBehaviour.GetGameCurrencyData();
         userCurrencyData = userDataBehaviour.GetUserCurrencyData();
 
-        inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
+        screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
+        globalHUDScreen = screenManager.GetScreen<GlobalHUDScreen>(ScreenType.GlobalHUDScreen);
+
+        Debug.Log($"userCurrencyData.attainedCurrency: {userCurrencyData.attainedCurrency}");
+        globalHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
 
         Debug.Log($"userDataBehaviour.IsFirstUserSession(): {userDataBehaviour.IsFirstUserSession()}");
         if (userDataBehaviour.IsFirstUserSession())
@@ -45,7 +50,7 @@ public class CurrencyManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     public void UpdateCurrencyData()
     {
         Debug.Log($"Updated currency data userCurrencyData.attainedCurrency: {userCurrencyData.attainedCurrency}");
-        inGameUIManager.InGameHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
+        globalHUDScreen.UpdateCurrencyText($"{userCurrencyData.attainedCurrency}");
         userDataBehaviour.SaveUserCurrencyData(userCurrencyData);
     }
 
