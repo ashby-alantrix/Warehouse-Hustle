@@ -8,12 +8,13 @@ public class Swapper : MonoBehaviour
 
     private LevelManager levelManager;
 
-    public void SetLevelManager()
+    private void SetLevelManager()
     {
+        Debug.Log($"Swapper being called");
         levelManager = levelManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>() : levelManager;
     }
 
-    public void OnMouseDown()
+    public void OnClick_Swap()
     {
         SetLevelManager();
         if (!levelManager.CanPlayLevel) return;

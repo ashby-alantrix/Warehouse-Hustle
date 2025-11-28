@@ -13,9 +13,11 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     private UserDataBehaviour userDataBehaviour;
     private PopupManager popupManager;
+    private ScreenManager screenManager;
     private HealthData gameHealthData;
     private UserHealthData userHealthData;
     private GetMoreLivesPopup getMoreLivesPopup;
+    private GlobalHUDScreen globalHUDScreen;
     private TimeData timeData;
 
     public bool IsFull => availableLifes == gameHealthData.totalLifes;
@@ -28,6 +30,10 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<HealthSystem>(this);
+
+        #if !UNITY_EDITOR
+            enableTimer = true;
+        #endif
     }
 
     public void SetFreeRefillState(bool isFreeRefill)
@@ -40,7 +46,10 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     {
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
+        screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
+
         getMoreLivesPopup = popupManager.GetPopup<GetMoreLivesPopup>(PopupType.GetMoreLivesPopup);
+        globalHUDScreen = screenManager.GetScreen<GlobalHUDScreen>(ScreenType.GlobalHUDScreen);
 
         gameHealthData = userDataBehaviour.GetHealthData();
         userHealthData = userDataBehaviour.GetUserHealthData();
@@ -134,26 +143,41 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void AddHealth(int life)
     {
+        if (life == 0)
+        {
+            Debug.Log($"Adding availableLifes: {0}");
+        }
+
         #if UNITY_EDITOR
         if (availableLifes == gameHealthData.totalLifes) return;
         #endif
 
+        Debug.Log($"Before adding lives: availableLifes: {availableLifes}");
         availableLifes += life;
+        Debug.Log($"After adding lives: availableLifes: {availableLifes}");
         UpdateAvailableLives();
     }
 
     public void RemoveHealth(int life)
     {
+        if (life == 0)
+        {
+            Debug.Log($"Removing availableLifes: {0}");
+        }
+
         #if UNITY_EDITOR
         if (availableLifes == 0) return;
         #endif
 
+        Debug.Log($"Before removing lives: availableLifes: {availableLifes}");
         availableLifes -= life;
+        Debug.Log($"After removing lives: availableLifes: {availableLifes}");
         UpdateAvailableLives();
     }
 
     private void UpdateAvailableLives()
     {
+        globalHUDScreen.UpdateLivesButtonContainer(IsFull);
         // on Replay clicked in Restart popup
         // if (availableLifes == 1 && Mathf.Sign(life) < 0)
         // {

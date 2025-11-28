@@ -8,7 +8,8 @@ public enum ScreenType
     LoadingScreen,
     LevelsScreen,
     InGameHUDScreen,
-    MenuHUDScreen
+    MenuHUDScreen,
+    GlobalHUDScreen,
 }
 
 public class ScreenBase : UIBase, IUIBase

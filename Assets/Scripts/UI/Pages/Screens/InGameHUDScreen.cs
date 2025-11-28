@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class InGameHUDScreen : ScreenBase
 {
+    [SerializeField] private Animator animator;
     [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI goodsGoalCountText;
@@ -19,6 +20,8 @@ public class InGameHUDScreen : ScreenBase
     private int goodsGoalCount = 0;
     private LevelManager levelManager;
     private PopupManager popupManager;
+
+    private bool showSettingDropDown = false;
 
     public void Init()
     {
@@ -50,7 +53,7 @@ public class InGameHUDScreen : ScreenBase
         restartBtn.onClick.AddListener(() => OnClick_RestartButton());
         hudButtonsCont.onClick.AddListener(() =>
         {
-            ShowSettingDropdown(true);
+            ShowSettingDropdown();
         });
         homeBtn.onClick.AddListener(() => OnClick_HomeButton());
     }
@@ -72,9 +75,30 @@ public class InGameHUDScreen : ScreenBase
         popupManager.ShowPopup(PopupType.SettingsPopup);
     }
 
-    private void ShowSettingDropdown(bool state)
+    private void ShowSettingDropdown()
     {
-        settingsDropdown.SetActive(state);
+        showSettingDropDown = !showSettingDropDown;
+        if (showSettingDropDown)
+        {
+            if (settingsDropdown.activeInHierarchy)
+            {
+                animator.Play("Open");
+                return;
+            }
+
+            settingsDropdown.SetActive(true);
+        }
+        else 
+        {
+            animator.Play("Close");
+            // Invoke(nameof(DisableSettingDropdown), 1f);
+        }
+    }
+
+    public void DisableSettingDropdown()
+    {
+        Debug.Log($"Disable Setting Dropdown");
+        settingsDropdown.SetActive(false);
     }
 
     void OnDisable()
