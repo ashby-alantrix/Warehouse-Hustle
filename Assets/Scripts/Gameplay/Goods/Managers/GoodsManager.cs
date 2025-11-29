@@ -38,6 +38,7 @@ public class GoodsManager : MonoBehaviour, IBootLoader, IBase
             if (nodeManager.IsNodeAvailableInGrid(nodekey, out foundNode))
             {
                 foundNode.ClearOrResetGoodsDataAndView();
+                nodeManager.UpdateOccupiedNodes(toAdd: false, nodekey);
             }
         }
     }
@@ -55,6 +56,8 @@ public class GoodsManager : MonoBehaviour, IBootLoader, IBase
                 foundNode.ClearOrResetGoodsDataAndView();
             }
         }
+
+        nodeManager.ResetOccupiedNodesList();
     }
 
     public void ClearGoodsInputPlatforms()

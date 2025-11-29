@@ -22,22 +22,20 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
     public void PlaceGoodsInsideNode(Node selectedNode)
     {
         selectedNode.InitItemsData();
-        Tween nodesMoverTween = null;
         var totalItems = selectedNode.GetItemBaseCount();
 
         canPlaceGoods = false;
-        IterateAndMoveNodesUsingDictionary(selectedNode, totalItems, ref nodesMoverTween);
-
-        nodesMoverTween.OnComplete(() =>
+        IterateAndMoveNodesUsingDictionary(selectedNode, totalItems, onComplete: () =>
         {
             canPlaceGoods = true;
-            // goodsSortingManager.CheckNeighbors(selectedNode);
             goodsSortingManager.CheckNeighbors(selectedNode);
         });
     }
 
-    private void IterateAndMoveNodesUsingDictionary(Node selectedNode, int totalItems, ref Tween nodesMoverTween)
+    private void IterateAndMoveNodesUsingDictionary(Node selectedNode, int totalItems, Action onComplete = null)
     {
+        Tween nodesMoverTween = null;
+
         var keys = selectedNode.GetKeysForItems();
         NodePlacementData nodePlacementData = null;
         int counter = 0, customIndexer = -1;
@@ -62,9 +60,17 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
 
         nodesMoverTween.OnComplete(() =>
         {
+            Debug.Log($"NodesMoverTween complete");
+            onComplete?.Invoke();
             selectedNode.UpdateOccupiedSlotsState();
-            // KillTween();
+            selectedNode.UpdateOccupiedNodes();
+            KillTween();
         });
+
+        void KillTween()
+        {
+            nodesMoverTween.Kill();
+        }
     }
 
     public void RearrangeGoodsBetweenSelectedNodeAndNeighbor(ItemType itemType, Node target, Node source, bool hasCachedKey = false)
@@ -118,7 +124,6 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
                 CheckGameOver();
 
             KillTweener();
-
         });
         
         void KillTweener()
@@ -139,11 +144,8 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         {
             goodsSortingManager.isSortingInProgress = false;
             Debug.Log($"GameOverCheck :: isSortingInProgress: {goodsSortingManager.isSortingInProgress} in GoodsPlacementManager");
-            if (goodsSortingManager.hasCheckedCachedData)
-            {
-                Debug.Log($"GameOverCheck :: CheckGameOverCondition GoodsPlacementManager");
-                goodsSortingManager.CheckGameOverCondition($"Node: {name}");
-            }
+            Debug.Log($"GameOverCheck :: CheckGameOverCondition GoodsPlacementManager");
+            goodsSortingManager.CheckGameOverCondition($"Node: {name}");
         }
     }
 
@@ -151,8 +153,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
     {
         var itemBaseCount = currentNode.GetItemBaseCount();
         Debug.Log($"Sorting :: itemBaseCount: {itemBaseCount}");
-        Tween nodesMoverTween = null;
 
-        IterateAndMoveNodesUsingDictionary(currentNode, itemBaseCount, ref nodesMoverTween);
+        IterateAndMoveNodesUsingDictionary(currentNode, itemBaseCount, null);
     }
 }

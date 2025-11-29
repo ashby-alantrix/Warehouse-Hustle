@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class NodeManager : MonoBehaviour, IBase, IBootLoader
@@ -17,7 +18,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private Dictionary<string, Node> nodesData = new Dictionary<string, Node>();
 
     private int totalNodesInGrid = 0;
-    private int totalOccupiedNodes = 0;
+    private HashSet<string> occupiedNodes = new HashSet<string>();
 
     public List<string> AvailableNodeKeys => availableNodeKeys;
 
@@ -29,10 +30,83 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         totalNodesInGrid = nodesData.Count;
     }
 
-    public void UpdateOccupiedNodesCount(int counter)
+    private HashSet<string> lastOccupiedNodes = new HashSet<string>();
+
+    public void UpdateOccupiedNodes(bool toAdd, string nodePos = "")
     {
-        totalOccupiedNodes += counter;
-        Debug.Log($"totalOccupiedNodes: {totalOccupiedNodes}");
+        // Debug.Log($"NodeData :: before occupiedNodes.Length: {occupiedNodes.Count}");
+        // Debug.Log($"NodeData :: before Occupied nodes: {JsonConvert.SerializeObject(occupiedNodes)}");
+        // Debug.Log($"NodeData :: before nodePos: {nodePos}");
+
+        if (toAdd)
+        {
+            Debug.Log($"nodeData :: adding nodePos");
+            occupiedNodes.Add(nodePos);
+        }
+        else if (occupiedNodes.Contains(nodePos))
+        {
+            Debug.Log($"nodeData :: Removing nodePos");
+            occupiedNodes.Remove(nodePos);
+        }
+
+        // Debug.Log($"NodeData :: after Occupied nodes: {JsonConvert.SerializeObject(occupiedNodes)}");
+        // Debug.Log($"NodeData :: after nodePos: {nodePos}, {nodesData[nodePos].GetItemBaseCount()}, {nodesData[nodePos].name}");
+        // Debug.Log($"NodeData :: after occupiedNodes.Length: {occupiedNodes.Count}");
+
+        // Debug.Log($"NodeData :: after GetItemBaseCount: {nodesData[nodePos].GetItemBaseCount()}");
+        // Debug.Log($"NodeData :: after GetTotalSlotsInNode: {nodesData[nodePos].GetTotalSlotsInNode()}");
+
+        // Debug.Log($"NodeData :: after equality check: {nodesData[nodePos].GetItemBaseCount() == nodesData[nodePos].GetTotalSlotsInNode()}");
+        // Debug.Log($"NodeData :: after GetSetKeysCount: {nodesData[nodePos].GetSetKeysCount()}");
+
+        GoodsSortingManager goodsSortingManager = InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>();
+        Debug.Log($"NodeDatas0 equality check: {occupiedNodes.Count == totalNodesInGrid}");
+        Debug.Log($"NodeDatas0 occupiedCount: {occupiedNodes.Count}");
+        Debug.Log($"NodeDatas0 occupiedCount: {lastOccupiedNodes.Count}");
+        Debug.Log($"NodeDatas0 totalNodesInGrid: {totalNodesInGrid}");
+
+        if (occupiedNodes.Count == totalNodesInGrid)
+        {
+            lastOccupiedNodes.Add(nodePos);
+            Invoke(nameof(SearchLastOccupiedNodes), 1.5f);
+        }
+    }
+
+    private void SearchLastOccupiedNodes()
+    {
+        Debug.Log($"NodeDatas1 :: lastOccupiedNodes.Count: {lastOccupiedNodes.Count}");
+        foreach (var pos in lastOccupiedNodes)
+        {
+            Debug.Log($"NodeDatas1 :: Node name: {nodesData[pos].name}");
+            Debug.Log($"NodeDatas1 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
+            Debug.Log($"NodeDatas1 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
+            Debug.Log($"NodeDatas1 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
+        }
+
+        if (lastOccupiedNodes.Any(pos => nodesData[pos].GetItemBaseCount() == 0 || 
+                                        nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1))
+        {
+            lastOccupiedNodes.Clear();
+            return;
+        }
+
+        foreach (var pos in lastOccupiedNodes)
+        {
+            Debug.Log($"NodeDatas2 :: Node name: {nodesData[pos].name}");
+            Debug.Log($"NodeDatas2 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
+            Debug.Log($"NodeDatas2 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
+            Debug.Log($"NodeDatas2 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
+        }
+
+        GoodsSortingManager goodsSortingManager = InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>();
+        goodsSortingManager.CheckGameOverCondition("NodeManager");
+
+        lastOccupiedNodes.Clear();
+    }
+
+    public void ResetOccupiedNodesList()
+    {
+        occupiedNodes.Clear();
     }
 
     private void SetLevelManager()
@@ -153,7 +227,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     public void CheckIfAllNodesAreOccupied()
     {
-        Debug.Log($"totalOccupiedNodes: totalNodesInGrid: {totalNodesInGrid}, totalOccupiedNodes: {totalOccupiedNodes}");
+        Debug.Log($"totalOccupiedNodes: totalNodesInGrid: {totalNodesInGrid}, totalOccupiedNodes: {occupiedNodes.Count}");
         // return totalNodesInGrid == totalOccupiedNodes;
         // // )
         if (AreAllNodesOccupied())
@@ -162,8 +236,8 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     public void LogNodeValue()
     {
-        Debug.Log($"totalNodesInGrid {totalNodesInGrid} == totalOccupiedNodes {totalOccupiedNodes}");
+        Debug.Log($"totalNodesInGrid {totalNodesInGrid} == totalOccupiedNodes {occupiedNodes.Count}");
     }
 
-    public bool AreAllNodesOccupied() => totalNodesInGrid == totalOccupiedNodes;
+    public bool AreAllNodesOccupied() => totalNodesInGrid == occupiedNodes.Count;
 }
