@@ -469,7 +469,7 @@ public class Node : MonoBehaviour
         isNodeOccupied = state;
         meshRenderer.material = isNodeOccupied ? occupiedMat : unOccupiedMat;
 
-        nodeManager.UpdateOccupiedNodesCount(state ? 1 : -1);
+        // nodeManager.UpdateOccupiedNodesCount(state ? 1 : -1);
     }
     
     private void Awake()
@@ -495,7 +495,7 @@ public class Node : MonoBehaviour
     {
         var itemBaseCount = GetItemBaseCount();
 
-        Debug.Log($"Nodename: {this.name}, itemBaseCount: {itemBaseCount}");
+        Debug.Log($"GameOverCheck :: CheckIfNodeIsFullOrCleared() :: Nodename: {this.name}, itemBaseCount: {itemBaseCount}");
 
         if (itemBasesCollection.Count == 1 && totalSlotsInNode == itemBaseCount)
         {
@@ -515,7 +515,8 @@ public class Node : MonoBehaviour
         {
             goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
             goodsSortingManager.generalSortingState = nodeManager.AreAllNodesOccupied();
-            Debug.Log($"goodsSortingManager.generalSortingState: {goodsSortingManager.generalSortingState}");
+            // Debug.Log($"goodsSortingManager.generalSortingState: {goodsSortingManager.generalSortingState}");
+            Debug.Log($"GameOverCheck :: CheckIfNodeIsFullOrCleared() :: Nodename: {this.name}, itemBaseCount: {itemBaseCount}");
             nodeManager.LogNodeValue();
 
             // if (nodeManager.AreAllNodesOccupied())
@@ -540,7 +541,26 @@ public class Node : MonoBehaviour
         var itemsCount = GetItemBaseCount();
 
         for (int index = 0; index < totalSlotsInNode; index++)
+        {
             m_NodePlacementDatas[index].isOccupied = index < itemsCount;
+        }
+    }
+
+    public void UpdateOccupiedNodes()
+    {
+        var itemsCount = GetItemBaseCount();
+
+        Debug.Log($"NodeData :: {name} :: itemsCount: {itemsCount}");
+        if (itemsCount == 0 || itemsCount == totalSlotsInNode)
+        {
+            Debug.Log($"NodeData :: remove from occupied nodes list for {name}");
+            nodeManager.UpdateOccupiedNodes(toAdd: false, GetNodePos());
+        }
+        else
+        {
+            Debug.Log($"NodeData :: Updating occupied nodes list for {name}");
+            nodeManager.UpdateOccupiedNodes(toAdd: true, GetNodePos());
+        }
     }
 
     public void ClearOrResetGoodsDataAndView()
@@ -563,5 +583,6 @@ public class Node : MonoBehaviour
 
         SetNodeOccupiedState(state: false);
         UpdateOccupiedSlotsState();
+        UpdateOccupiedNodes();
     }
 }
