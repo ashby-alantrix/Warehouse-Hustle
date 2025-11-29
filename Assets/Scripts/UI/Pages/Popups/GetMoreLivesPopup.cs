@@ -22,7 +22,6 @@ public class GetMoreLivesPopup : PopupBase
     private int currentEnabledLifeIcons;
     private int purchaseCurrencyValue = 60;
     private HealthSystem healthSystem;
-    private PopupManager popupManager;
     private CurrencyManager currencyManager;
 
     private const string LIFES_FULL_TEXT = "LIVES";

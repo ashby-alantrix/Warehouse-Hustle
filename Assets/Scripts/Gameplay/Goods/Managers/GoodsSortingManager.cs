@@ -375,8 +375,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
     public void CheckGameOverCondition(string name)
     {
         // Debug.Log($"{name} ::: nodeManager.AreAllNodesOccupied(): {nodeManager.AreAllNodesOccupied()} && isSortingInProgress: {isSortingInProgress}");
-        Debug.Log($"GameOverCheck :: CheckGameOverCondition :: isSortingInProgress: {isSortingInProgress}, nodeManager.AreAllNodeOccupied: {nodeManager.AreAllNodesOccupied()}");
-        if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress)
+        Debug.Log($"GameOverCheck :: CheckGameOverCondition :: isSortingInProgress: {isSortingInProgress}, trucksLoadingState: {trucksLoaderManager.IsLoadingInProcess}, nodeManager.AreAllNodeOccupied: {nodeManager.AreAllNodesOccupied()}");
+        // if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress && levelManager.LevelState != LevelState.Lost)
+        if (levelManager.LevelState != LevelState.Lost)
         {
             Debug.Log($"GameOverCheck :: CheckGameOverCondition LevelState.Lost");
             Invoke(nameof(Delay), 1f);
