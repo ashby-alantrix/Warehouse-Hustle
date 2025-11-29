@@ -170,8 +170,8 @@ MonoBehaviour:
   m_HexNode: {fileID: 9206597145249496062, guid: 60479e4eda010482488707fbf11c123b, type: 3}
   m_NodesParent: {fileID: 1824380750}
   levelsSO: {fileID: 11400000, guid: 10b1afc027f5245ce9af6b45e5bbd522, type: 2}
-  useCustom: 1
-  customLevelJson: {fileID: 4900000, guid: 93b2547994276417790ea9a221c3e2fe, type: 3}
+  useCustom: 0
+  customLevelJson: {fileID: 4900000, guid: 2c0ae330206794cf8bc72070b498ea59, type: 3}
 --- !u!1 &16181333
 GameObject:
   m_ObjectHideFlags: 0
