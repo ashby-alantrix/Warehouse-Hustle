@@ -9,8 +9,6 @@ public class LevelsSO : BaseSO
     
     private Dictionary<int, string> levelGridJsonDatasDict = new Dictionary<int, string>();
 
-    public bool HasInitializedData = false;
-
     public override void InitData()
     {
         if (levelGridJsonDatasDict.Count > 0) return;
