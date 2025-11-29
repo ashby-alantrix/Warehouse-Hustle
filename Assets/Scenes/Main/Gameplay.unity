@@ -97,7 +97,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 8bba3906b6db2479d9cf9d77b1e144c3, type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: b77bb79dee39d421f9924cdc7c978b31, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: cbf106f8fe07242a59b8f741e4516efb, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -11445,7 +11445,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1542065433}
-  - component: {fileID: 1542065432}
+  - component: {fileID: 1542065434}
   m_Layer: 0
   m_Name: TriangleCounter
   m_TagString: Untagged
@@ -11453,19 +11453,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1542065432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1542065431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72905932dacd84534bf610bacfac0e6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triangleTransform: {fileID: 0}
 --- !u!4 &1542065433
 Transform:
   m_ObjectHideFlags: 0
@@ -11481,6 +11468,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1542065434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542065431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8540bedcb5a48fba7b5dc9d1a013b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triangleTransform: {fileID: 0}
 --- !u!1 &1545408655
 GameObject:
   m_ObjectHideFlags: 0
