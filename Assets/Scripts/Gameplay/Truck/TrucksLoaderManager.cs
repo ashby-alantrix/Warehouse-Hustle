@@ -15,6 +15,9 @@ public class ItemLoadData
 
 public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
+    [SerializeField] private float truckDestDelay = 6f;
+    [SerializeField] private float truckNextPointDelay = 4f;
+
     [SerializeField] private GoodsWaitingQueuer goodsWaitingQueuer;
     [SerializeField] private GameObject truckPrefab;
     [SerializeField] private Transform spawnStartPoint;
@@ -30,6 +33,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     private ItemType currentGoodsTypeToFill;
     private TruckBase currentActiveTruck;
     private ObjectPoolManager objectPoolManager;
+    private SoundManager soundManager;
     private LevelManager levelManager;
     private InGameUIManager inGameUIManager;
 
@@ -55,6 +59,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     public void InitializeData()
     {
         objectPoolManager = InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>();
+        soundManager = InterfaceManager.Instance?.GetInterfaceInstance<SoundManager>();
 
         levelManager = InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>();
         targetGoodsToLoad = levelManager.GetCurrentLevelsInfo().targetGoodsToLoad;
@@ -66,10 +71,6 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         Debug.Log($"GridCenterPoint currentSpawnPos: {currentSpawnPos}");
 
         SpawnTrucks();
-    }
-
-    private void SetLevelManager()
-    {
     }
 
     public void LoadOrStoreNextGoods(List<ItemBase> itemBases, ItemType goodsTypeToFill)
@@ -104,13 +105,15 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
     {
         isLoadingInProcess = true;
         Tween truckLoadingTween = null;
-        currentActiveTruck = truckBases[0];
-        truckBases.RemoveAt(0); // 5
+        // currentActiveTruck = truckBases[0];
+        // truckBases.RemoveAt(0); // 5
+
+        soundManager.RegisterAudioSource(SoundType.Truck_Dest_Point, truckBases[0].TruckMover.TruckAudioSource); // each time the current active truck's audio source would be registered
 
         for (int indexI = 0; indexI < currentLoadingItemBases.Count; indexI++)
         {
-            truckLoadingTween = currentLoadingItemBases[indexI].transform.DOMove(currentActiveTruck.TruckGoodsLoader.SlotsPlacer.GetPosDataBasedOnIndex(indexI), goodsMoverInterval);
-            currentLoadingItemBases[indexI].transform.parent = currentActiveTruck.transform;
+            truckLoadingTween = currentLoadingItemBases[indexI].transform.DOMove(truckBases[0].TruckGoodsLoader.SlotsPlacer.GetPosDataBasedOnIndex(indexI), goodsMoverInterval);
+            currentLoadingItemBases[indexI].transform.parent = truckBases[0].transform;
         }
 
         truckLoadingTween.OnComplete(() => OnCurrentTruckLoadingComplete());
@@ -118,29 +121,49 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
 
     private void OnCurrentTruckLoadingComplete()
     {
+        var currentActiveTruck = truckBases[0];
+        truckBases.RemoveAt(0);
+        
         loadedGoods += currentLoadingItemBases.Count;
         inGameUIManager.InGameHUDScreen.SetGoodsGoalText(loadedGoods);
 
-        currentActiveTruck.transform.DOMove(truckDestPoint.position, 1f).OnComplete(() =>
+        soundManager.PlaySecondarySoundClip(SoundType.Truck_Dest_Point);
+        var cachedLoadingItemBases = new List<ItemBase>(currentLoadingItemBases);
+
+        currentActiveTruck.transform.DOMove(truckDestPoint.position, truckDestDelay).OnComplete(() =>
         {
-            foreach (var itemBase in currentLoadingItemBases)
+            foreach (var itemBase in cachedLoadingItemBases)
             {
-                objectPoolManager.PassObjectToPool($"{currentGoodsTypeToFill}", PoolType.Item, itemBase);
+                // objectPoolManager.PassObjectToPool($"{currentGoodsTypeToFill}", PoolType.Item, itemBase);
                 itemBase.gameObject.SetActive(false);
             }
 
+            Debug.Log($"Reached dest point");
+
+            currentActiveTruck.gameObject.SetActive(false);
             objectPoolManager.PassObjectToPool($"{currentActiveTruck.TruckType}", PoolType.Truck, currentActiveTruck);
+
+            TruckBase newTruckBase = objectPoolManager.GetObjectFromPool<TruckBase>($"{currentActiveTruck.TruckType}", PoolType.Truck);
+            newTruckBase.transform.position = newTruckSpawnPoint.position;
+            newTruckBase.gameObject.SetActive(true);
+
+            newTruckBase.transform.DOMove(spawnPoints[spawnPoints.Count - 1], truckNextPointDelay);        
+            truckBases.Add(newTruckBase);
         });
 
         Tweener trucksMoverTween = null;
+        soundManager.PlayPrimarySoundClip(SoundType.Truck_Next_Point);
+
         for (int indexI = 0; indexI < truckBases.Count; indexI++)
         {
-            trucksMoverTween = truckBases[indexI].transform.DOMove(spawnPoints[indexI], 1f);
+            trucksMoverTween = truckBases[indexI].transform.DOMove(spawnPoints[indexI], truckNextPointDelay);
         }
 
         trucksMoverTween.OnComplete(() =>
         {
             isLoadingInProcess = false;
+
+
             if (loadedGoods >= targetGoodsToLoad) 
             {
                 levelManager.OnLevelStateChange(LevelState.Won);
@@ -158,12 +181,12 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
             }
         });
 
-        TruckBase newTruckBase = objectPoolManager.GetObjectFromPool<TruckBase>($"{currentActiveTruck.TruckType}", PoolType.Truck);
-        newTruckBase.transform.position = newTruckSpawnPoint.position;
-        newTruckBase.gameObject.SetActive(true);
+        // TruckBase newTruckBase = objectPoolManager.GetObjectFromPool<TruckBase>($"{currentActiveTruck.TruckType}", PoolType.Truck);
+        // newTruckBase.transform.position = newTruckSpawnPoint.position;
+        // newTruckBase.gameObject.SetActive(true);
 
-        newTruckBase.transform.DOMove(spawnPoints[spawnPoints.Count - 1], 1f);        
-        truckBases.Add(newTruckBase);
+        // newTruckBase.transform.DOMove(spawnPoints[spawnPoints.Count - 1], truckNextPointDelay);        
+        // truckBases.Add(newTruckBase);
     }
 
     private void SpawnTrucks()

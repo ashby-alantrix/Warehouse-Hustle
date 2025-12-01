@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class TruckMover : MonoBehaviour
 {
+    [SerializeField] private AudioSource audioSource;
+
+    public AudioSource TruckAudioSource => audioSource;
+
     public void MoveToDestination(Vector3 truckDestPoint)
     {
         transform.DOMove(truckDestPoint, 1f);
