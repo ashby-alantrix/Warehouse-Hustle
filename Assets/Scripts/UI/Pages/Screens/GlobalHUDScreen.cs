@@ -13,6 +13,7 @@ public class GlobalHUDScreen : ScreenBase
     [SerializeField] private GameObject livesButtonNonFilledCont;
 
     private PopupManager popupManager;
+    private SoundManager soundManager;
     private HealthSystem healthSystem;
 
     public void OnClick_Lives()

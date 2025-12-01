@@ -11,7 +11,9 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     private GoodsManager m_GoodsManager;
     private LevelManager levelManager;
+    private InputManager inputManager;
     private TrucksLoaderManager trucksLoaderManager;
+    private SoundManager soundManager;
 
     public List<string> randomNodeKeys = new List<string>();
     private List<string> availableNodeKeys = new List<string>();
@@ -193,10 +195,14 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     public void OnNodeClickedOrFound(Node selectedNode)
     {
         SetGoodsPlacementManager();
-        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel) return;
+        inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
+
+        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel || !inputManager.IsInputEnabled) return;
 
         selectedNode.SetNodeOccupiedState(true);
-        
+        soundManager = soundManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<SoundManager>() : soundManager;
+        soundManager.PlayPrimaryGameSoundClip(SoundType.Node_Click);
+
         goodsPlacementManager.PlaceGoodsInsideNode(selectedNode);
 
         SetGoodsManager();
@@ -207,6 +213,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     {
         SetTrucksLoaderManager();
 
+        soundManager.PlayPrimaryGameSoundClip(SoundType.Node_Filled);
         trucksLoaderManager.LoadOrStoreNextGoods(filledNode.GetSpecificItems(filledKey), filledKey);
     }
 

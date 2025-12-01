@@ -64,7 +64,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         timeData = userDataBehaviour.GetTimeData();
         if (!userDataBehaviour.IsFirstUserSession() && timeData != null)
         {
-            if (!string.IsNullOrWhiteSpace(timeData.lastPlayedProgressTime))
+            if (!string.IsNullOrWhiteSpace(timeData.lastPlayedProgressTime) && !IsFull)
             {
                 DateTime savedTime = DateTime.Parse(timeData.lastPlayedProgressTime);
                 Debug.Log($"time :: timeData.lastPlayedProgressTime: {timeData.lastPlayedProgressTime}");
@@ -185,14 +185,21 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         //     return;
         // }
 
-        Debug.Log($"Available lives: {availableLifes}");
+        Debug.Log($"Available lives: {availableLifes}, getMoreLivesPopup: {getMoreLivesPopup}");
 
         if (IsFull)
         {
+            Debug.Log($"IsFull: ");
             startHealthTimer = false;
             getMoreLivesPopup?.SetHealthContent(true);
+            if (getMoreLivesPopup != null && getMoreLivesPopup.gameObject.activeInHierarchy)
+            {
+                getMoreLivesPopup.ResetContentScale();
+            }       
             return;
         }
+
+        Debug.Log($"!IsFull: ");
 
         if (getMoreLivesPopup && !getMoreLivesPopup.IsLifeToFillContentActive)
             getMoreLivesPopup.SetHealthContent(false);

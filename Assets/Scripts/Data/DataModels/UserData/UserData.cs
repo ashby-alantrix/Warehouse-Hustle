@@ -52,6 +52,7 @@ public class UserData
     public UserLevelData userLevelData;
     public UserHealthData userHealthData;
     public TimeData timeData;
+    public InGameSoundData soundData;
 }
 
 [System.Serializable]
@@ -59,7 +60,6 @@ public class TimeData
 {
     public string lastPlayedProgressTime;
     public string lastElapsedSeconds;
-    
 }
 
 [System.Serializable]
@@ -93,4 +93,10 @@ public class UserLevelDataInfo
 public class UserLevelInfo
 {
     public bool unlocked;
+}
+
+[System.Serializable]
+public class InGameSoundData
+{
+    public bool gameSoundToggle;
 }

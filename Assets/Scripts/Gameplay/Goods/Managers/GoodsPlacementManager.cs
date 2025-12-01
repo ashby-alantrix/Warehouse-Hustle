@@ -4,7 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
+public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoader
 {
     [SerializeField] private GoodsSortingManager goodsSortingManager;
     [SerializeField] private float tweenDelay = 1f;
@@ -12,11 +12,17 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
     private bool canPlaceGoods = true;
 
     private NodeManager nodeManager;
+    private SoundManager soundManager;
     public bool CanPlaceGoods => canPlaceGoods;
 
     public void Initialize()
     {
         InterfaceManager.Instance?.RegisterInterface<GoodsPlacementManager>(this);
+    }
+
+    public void InitializeData()
+    {
+        soundManager = InterfaceManager.Instance?.GetInterfaceInstance<SoundManager>();
     }
 
     public void PlaceGoodsInsideNode(Node selectedNode)
@@ -79,6 +85,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader
         // or cache the item bases as well
 
         goodsSortingManager.isSortingInProgress = true;
+        soundManager.PlayPrimaryGameSoundClip(SoundType.Swap);
 
         Tweener tweener = null;
         ItemBase itemBase = null;

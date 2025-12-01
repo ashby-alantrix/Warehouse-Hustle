@@ -127,7 +127,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         loadedGoods += currentLoadingItemBases.Count;
         inGameUIManager.InGameHUDScreen.SetGoodsGoalText(loadedGoods);
 
-        soundManager.PlaySecondarySoundClip(SoundType.Truck_Dest_Point);
+        soundManager.PlaySecondaryGameSoundClip(SoundType.Truck_Dest_Point);
         var cachedLoadingItemBases = new List<ItemBase>(currentLoadingItemBases);
 
         currentActiveTruck.transform.DOMove(truckDestPoint.position, truckDestDelay).OnComplete(() =>
@@ -152,7 +152,7 @@ public class TrucksLoaderManager : MonoBehaviour, IBootLoader, IBase, IDataLoade
         });
 
         Tweener trucksMoverTween = null;
-        soundManager.PlayPrimarySoundClip(SoundType.Truck_Next_Point);
+        soundManager.PlayPrimaryGameSoundClip(SoundType.Truck_Next_Point);
 
         for (int indexI = 0; indexI < truckBases.Count; indexI++)
         {

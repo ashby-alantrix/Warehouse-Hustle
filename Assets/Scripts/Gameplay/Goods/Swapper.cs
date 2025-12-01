@@ -7,6 +7,7 @@ public class Swapper : MonoBehaviour
     [SerializeField] private GoodsHandler goodsHandler;
 
     private LevelManager levelManager;
+    private InputManager inputManager;
 
     private void SetLevelManager()
     {
@@ -17,7 +18,9 @@ public class Swapper : MonoBehaviour
     public void OnClick_Swap()
     {
         SetLevelManager();
-        if (!levelManager.CanPlayLevel) return;
+        inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
+
+        if (!levelManager.CanPlayLevel || !inputManager.IsInputEnabled) return;
 
         goodsHandler.SwapInputPlatformsData();
     }

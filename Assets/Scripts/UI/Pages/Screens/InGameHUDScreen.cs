@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,13 +15,16 @@ public class InGameHUDScreen : ScreenBase
     [SerializeField] private Button hudButtonsCont;
     [SerializeField] private Button restartBtn;
     [SerializeField] private Button homeBtn;
-    [SerializeField] private Button settingsBtn;
+    [SerializeField] private Button soundBtn;
+    [SerializeField] private Image soundSprite;
+    [SerializeField] private Sprite soundOnSprite;
+    [SerializeField] private Sprite soundOffSprite;
     [SerializeField] private GameObject settingsDropdown;
 
     private int goodsGoalCount = 0;
     private LevelManager levelManager;
     private PopupManager popupManager;
-
+    private SoundManager soundManager;
     private bool showSettingDropDown = false;
 
     public void Init()
@@ -49,12 +53,15 @@ public class InGameHUDScreen : ScreenBase
         {
             ShowSettingDropdown();
         });
+
         homeBtn.onClick.AddListener(() => OnClick_HomeButton());
+        soundBtn.onClick.AddListener(() => OnClick_SoundButton());
     }
 
     private void OnClick_RestartButton()
     {
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
+
         popupManager.ShowPopup(PopupType.RestartPopup);
     }
 
@@ -63,14 +70,28 @@ public class InGameHUDScreen : ScreenBase
         MainSingleton.Instance.LoadLevelsScene();
     }
 
-    private void OnClick_SettingsButton()
+    private void OnClick_SoundButton()
     {
-        popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
-        popupManager.ShowPopup(PopupType.SettingsPopup);
+        SetSoundManager();
+        soundManager.SetGameSound(!soundManager.IsGameSoundOn);
+        SetSoundSprite();
     }
 
-    private void ShowSettingDropdown()
+    private void SetSoundManager()
     {
+        soundManager = soundManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<SoundManager>() : soundManager;
+    }
+
+    private void SetSoundSprite()
+    {
+        SetSoundManager();
+        soundSprite.sprite = soundManager.IsGameSoundOn ? soundOnSprite : soundOffSprite;
+    }
+
+    public void ShowSettingDropdown()
+    {
+        SetSoundSprite();
+
         showSettingDropDown = !showSettingDropDown;
         if (showSettingDropDown)
         {

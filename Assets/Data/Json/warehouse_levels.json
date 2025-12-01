@@ -1,13 +1,13 @@
 {
   "gameCurrency": {
 
-    "initialCurrencyToProvide": 100
+    "initialCurrencyToProvide": 10000
 
   },
   "healthData": {
     "totalLifes": 5,
     "singleHealthCurrencyValue": 60,
-    "timeInSecondsForOneLife": 30
+    "timeInSecondsForOneLife": 60
   },
   "levelConfigData": {
 

@@ -49,12 +49,12 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
         {
             if (poolToUse.IsEmpty())
             {
-                Debug.Log($"Object Pool: CreateNewPooledItem");
+                // Debug.Log($"Object Pool: CreateNewPooledItem");
                 objectBase = (T)poolToUse.CreateNewPooledItem();
             }
             else
             {
-                Debug.Log($"Object Pool: Use existing item");
+                // Debug.Log($"Object Pool: Use existing item");
                 objectBase = (T)poolToUse.Dequeue();
             }
         }
@@ -66,7 +66,7 @@ public class ObjectPoolManager : MonoBehaviour, IBase, IBootLoader
     {
         ObjectPoolBase poolToUse = GetUsedPool(GetPoolInfoBasedOnType(poolItemTypeInfo, poolType), poolType);
 
-        Debug.Log($"Object Pool: PassObjectToPool: PoolToUse {poolToUse != null}");
+        // Debug.Log($"Object Pool: PassObjectToPool: PoolToUse {poolToUse != null}");
         if (poolToUse != null)
         {
             poolToUse.Enqueue(objectBase);

@@ -34,7 +34,7 @@ public class GoodsHandler : MonoBehaviour
 
     private void InitGoodsTypes(int goodTypeCount)
     {
-        Debug.Log($"Goods type count: {goodTypeCount}");
+        // Debug.Log($"Goods type count: {goodTypeCount}");
         // // int maxElements = (int)ItemType.MAX;
         goodsType = new ItemType[goodTypeCount];
 

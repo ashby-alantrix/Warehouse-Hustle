@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 35075938}
   - component: {fileID: 35075937}
   - component: {fileID: 35075936}
+  - component: {fileID: 35075939}
   m_Layer: 5
   m_Name: LivesFullCloseIcon
   m_TagString: Untagged
@@ -319,6 +320,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 35075934}
   m_CullTransparentMesh: 1
+--- !u!114 &35075939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35075934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4fa4234b03041d0a05e127ebcb21c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &60993353
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,7 +984,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &193257022
 MonoBehaviour:
@@ -1039,7 +1052,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenType: 1
-  levelTransforms: []
   levelObjects:
   - {fileID: 8352726840875610907}
   - {fileID: 1849435813}
@@ -1696,7 +1708,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &416835498
 GameObject:
@@ -3152,6 +3164,50 @@ MonoBehaviour:
   coinsButton: {fileID: 1796275335}
   livesButton: {fileID: 2017966463}
   settingsButton: {fileID: 1148663574}
+--- !u!1 &853187493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 853187494}
+  - component: {fileID: 853187495}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &853187494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853187493}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1462002192}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &853187495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853187493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65fc56bd12ad747bf989f140be8bc855, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &863937458
 GameObject:
   m_ObjectHideFlags: 0
@@ -3535,6 +3591,7 @@ GameObject:
   - component: {fileID: 873722139}
   - component: {fileID: 873722138}
   - component: {fileID: 873722137}
+  - component: {fileID: 873722140}
   m_Layer: 5
   m_Name: LivesToFillCloseIcon
   m_TagString: Untagged
@@ -3644,6 +3701,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873722135}
   m_CullTransparentMesh: 1
+--- !u!114 &873722140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873722135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4fa4234b03041d0a05e127ebcb21c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &899313686
 GameObject:
   m_ObjectHideFlags: 0
@@ -4815,7 +4884,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1133949826
 MonoBehaviour:
@@ -4829,14 +4898,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a53207dc02f8437aa5a2f0964a1aa42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  primaryAudioSource: {fileID: 1917362219}
+  audioSource: {fileID: 1917362219}
   soundDatas:
   - soundType: 0
     priority: 1
-    soundClip: {fileID: 8300000, guid: 8e0365d2cf39d4699890daef77c81ecc, type: 3}
+    soundClip: {fileID: 8300000, guid: d1ecbc26244284aaa8e2c7d645d605ed, type: 3}
   - soundType: 1
     priority: 0
-    soundClip: {fileID: 8300000, guid: bc5938c67978041ce8e00edb896b2d23, type: 3}
+    soundClip: {fileID: 8300000, guid: d1ecbc26244284aaa8e2c7d645d605ed, type: 3}
+  - soundType: 2
+    priority: 0
+    soundClip: {fileID: 8300000, guid: c5fcaeb43c1ce48e4aed90db01c66755, type: 3}
+  - soundType: 3
+    priority: 0
+    soundClip: {fileID: 8300000, guid: 18617d67aa3624a05922d23c8d34f2a2, type: 3}
+  - soundType: 4
+    priority: 0
+    soundClip: {fileID: 8300000, guid: 6a9066923d0864d2fbece6b1971fe9a5, type: 3}
+  - soundType: 5
+    priority: 0
+    soundClip: {fileID: 8300000, guid: 80ec2290be2704b3bb0c583acd4839d0, type: 3}
+  - soundType: 6
+    priority: 0
+    soundClip: {fileID: 8300000, guid: 2cf1f5c90751a483ca287f62fd1cd495, type: 3}
+  - soundType: 7
+    priority: 0
+    soundClip: {fileID: 8300000, guid: 2cf1f5c90751a483ca287f62fd1cd495, type: 3}
 --- !u!1001 &1137221377
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5490,7 +5577,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1240140151
 MonoBehaviour:
@@ -5688,7 +5775,7 @@ Transform:
   - {fileID: 1736342007}
   - {fileID: 1917362218}
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1402825230
 GameObject:
@@ -5932,7 +6019,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1409116795
 MonoBehaviour:
@@ -6129,6 +6216,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 853187494}
   - {fileID: 1497206112}
   - {fileID: 193257021}
   - {fileID: 405523727}
@@ -6381,7 +6469,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1497206113
 MonoBehaviour:
@@ -6484,6 +6572,7 @@ GameObject:
   - component: {fileID: 1548423229}
   - component: {fileID: 1548423228}
   - component: {fileID: 1548423227}
+  - component: {fileID: 1548423230}
   m_Layer: 5
   m_Name: Lives (1)
   m_TagString: Untagged
@@ -6557,19 +6646,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1548423228}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 938148974}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1548423228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6608,6 +6685,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548423225}
   m_CullTransparentMesh: 1
+--- !u!114 &1548423230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548423225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4fa4234b03041d0a05e127ebcb21c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1559946451
 GameObject:
   m_ObjectHideFlags: 0
@@ -6620,6 +6709,7 @@ GameObject:
   - component: {fileID: 1559946455}
   - component: {fileID: 1559946454}
   - component: {fileID: 1559946453}
+  - component: {fileID: 1559946456}
   m_Layer: 5
   m_Name: PurchaseCurrencyBtn
   m_TagString: Untagged
@@ -6733,6 +6823,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1559946451}
   m_CullTransparentMesh: 1
+--- !u!114 &1559946456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559946451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4fa4234b03041d0a05e127ebcb21c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1648184047
 GameObject:
   m_ObjectHideFlags: 0
@@ -8962,7 +9064,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1462002192}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2113283252
 MonoBehaviour:

@@ -23,6 +23,7 @@ public class GetMoreLivesPopup : PopupBase
     private int purchaseCurrencyValue = 60;
     private HealthSystem healthSystem;
     private CurrencyManager currencyManager;
+    private InputManager inputManager;
 
     private const string LIFES_FULL_TEXT = "LIVES";
     private const string LIFES_TO_FULL_TEXT = "GET MORE LIVES";
@@ -47,6 +48,11 @@ public class GetMoreLivesPopup : PopupBase
 
         lifeFullContent.SetActive(isFull);
         lifeToFillContent.SetActive(!isFull);
+    }
+
+    public void ResetContentScale()
+    {
+        popupScaleContent.localScale = Vector3.one;
     }
 
     private void SetLivesContentTransform(bool isFull)
@@ -83,6 +89,9 @@ public class GetMoreLivesPopup : PopupBase
         {
             lifeImages[indexI].enabled = indexI <= currentEnabledLifeIcons - 1;
         }
+
+        inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
+        inputManager?.SetInputState(false);
     }
 
     private void InitManagers()
@@ -97,6 +106,14 @@ public class GetMoreLivesPopup : PopupBase
         lifeFullCloseBtn.onClick.RemoveAllListeners();
         lifeToFillCloseBtn.onClick.RemoveAllListeners();
         purchaseCurrencyBtn.onClick.RemoveAllListeners();
+
+        Invoke(nameof(OnPopupClosed), 0.5f);
+    }
+
+    private void OnPopupClosed()
+    {
+        inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
+        inputManager?.SetInputState(true);
     }
 
     private void Update()

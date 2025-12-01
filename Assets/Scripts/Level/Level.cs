@@ -112,7 +112,13 @@ public class Level : MonoBehaviour
     public void OnClick_PlayButton()
     {
         levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
+
         levelManager.LoadLevelInGame();
         levelManager.OnLevelStateChange(LevelState.Progress);
+    }
+
+    public void OnClick_RestartButton()
+    {
+        
     }
 }

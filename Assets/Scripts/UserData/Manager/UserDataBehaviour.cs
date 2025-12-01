@@ -43,9 +43,13 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
         {
             userData = new UserData();
             userData.userCurrencyData = new UserCurrencyData();
-            userData.userLevelData = new UserLevelData();
             userData.userHealthData = new UserHealthData();
             userData.timeData = new TimeData();
+
+            userData.soundData = new InGameSoundData();
+            userData.soundData.gameSoundToggle = true;
+
+            userData.userLevelData = new UserLevelData();
             userData.userLevelData.lastUnlockedLevel = 1;
             userData.userLevelData.userLevelDataInfo = new UserLevelDataInfo[gameData.levelConfigData.levelDatas.Length];
 
@@ -98,6 +102,11 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
         return userData.userLevelData.lastUnlockedLevel;
     }
 
+    public InGameSoundData GetSoundData()
+    {
+        return userData.soundData;
+    }
+
     public void SaveLastUnlockedLevel(int level)
     {
         userData.userLevelData.lastUnlockedLevel = level;
@@ -107,6 +116,12 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     public void SaveUserCurrencyData(UserCurrencyData userCurrencyData)
     {
         userData.userCurrencyData = userCurrencyData;
+        SaveUserData();
+    }
+
+    public void SaveSoundData(InGameSoundData soundData)
+    {
+        userData.soundData = soundData;
         SaveUserData();
     }
 

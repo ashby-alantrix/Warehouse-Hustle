@@ -4,7 +4,13 @@ using UnityEngine;
 public enum SoundType
 {
     Truck_Next_Point,
-    Truck_Dest_Point
+    Truck_Dest_Point,
+    Level_Lost,
+    Level_Win,
+    Node_Click,
+    Node_Filled,
+    Swap,
+    Button_Click
 }
 
 [System.Serializable]
@@ -17,16 +23,24 @@ public class SoundData
 
 public class SoundManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 {
-    [SerializeField] AudioSource primaryAudioSource;
+    [SerializeField] AudioSource audioSource;
     [SerializeField] private SoundData[] soundDatas;
 
     private float volTimer = 0, cachedSecVolTimer = 0;
     private bool startVolTimer = false;
+    public bool IsGameSoundOn
+    {
+        get;
+        private set;
+    }
 
     private Dictionary<SoundType, SoundData> soundDataDict = new Dictionary<SoundType, SoundData>();
     private Dictionary<SoundType, AudioSource> secondaryAudioSourcesDict = new Dictionary<SoundType, AudioSource>();
 
     private AudioSource secondaryAudioSource;
+
+    private UserDataBehaviour userDataBehaviour;
+    private InGameSoundData soundData;
 
     public void Initialize()
     {
@@ -35,7 +49,9 @@ public class SoundManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void InitializeData()
     {
-        primaryAudioSource.priority = 0;
+        userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
+
+        audioSource.priority = 0;
         for (int idx = 0; idx < soundDatas.Length; idx++)
         {
             if (soundDataDict.ContainsKey(soundDatas[idx].soundType))
@@ -43,6 +59,16 @@ public class SoundManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
             else 
                 soundDataDict.Add(soundDatas[idx].soundType, soundDatas[idx]);
         }
+
+        soundData = userDataBehaviour.GetSoundData();
+        IsGameSoundOn = soundData.gameSoundToggle;
+    }
+
+    public void SetGameSound(bool state)
+    {
+        IsGameSoundOn = state;
+        soundData.gameSoundToggle = state;
+        userDataBehaviour.SaveSoundData(soundData);
     }
 
     public void RegisterAudioSource(SoundType soundType, AudioSource audioSource)
@@ -55,20 +81,27 @@ public class SoundManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         }
     }
 
-    public void PlayPrimarySoundClip(SoundType soundType)
+    public void PlayPrimaryGameSoundClip(SoundType soundType)
     {
-        return;
-        if (!enabled) return;
+        if (!enabled || !IsGameSoundOn) return;
 
         SoundData soundData = soundDataDict[soundType];
 
-        primaryAudioSource.priority = soundData.priority;
-        primaryAudioSource.PlayOneShot(soundData.soundClip);
+        audioSource.priority = soundData.priority;
+        audioSource.PlayOneShot(soundData.soundClip);
     }
 
-    public void PlaySecondarySoundClip(SoundType soundType)
+    public void PlayButtonSoundClip(SoundType soundType)
     {
-        if (!enabled) return;
+        SoundData soundData = soundDataDict[soundType];
+
+        audioSource.priority = soundData.priority;
+        audioSource.PlayOneShot(soundData.soundClip);
+    }
+
+    public void PlaySecondaryGameSoundClip(SoundType soundType)
+    {
+        if (!enabled || !IsGameSoundOn) return;
 
         SoundData soundData = soundDataDict[soundType];
         

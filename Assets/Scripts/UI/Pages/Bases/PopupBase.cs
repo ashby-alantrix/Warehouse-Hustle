@@ -5,13 +5,13 @@ using UnityEngine;
 
 public enum PopupType
 {
-    FTUE_Popup,
-    SettingsPopup,
-    RestartPopup,
-    LevelCompletePopup,
-    GameOverPopup,
+    FTUE_Popup, //
+    SettingsPopup, 
+    RestartPopup, //
+    LevelCompletePopup, 
+    GameOverPopup, 
     LevelFailPopup,
-    GetMoreLivesPopup,
+    GetMoreLivesPopup, //
     FreeRefillPopup
 }
 
