@@ -35,7 +35,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         totalNodesInGrid = nodesData.Count;
     }
 
-    private IEnumerable<string> lastOccupiedNodes = new HashSet<string>();
+    private HashSet<string> lastOccupiedNodes = new HashSet<string>();
 
     public void UpdateOccupiedNodes(bool toAdd, string nodePos = "")
     {
@@ -74,33 +74,33 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         if (occupiedNodes.Count == totalNodesInGrid)
         {
-            lastOccupiedNodes.Append(nodePos);
+            lastOccupiedNodes.Add(nodePos);
             var addDelay = 1.5f;
             Debug.Log($"LastOccupiedNodes: occupiedCount: {occupiedNodes.Count}");
             Debug.Log($"LastOccupiedNodes: {JsonConvert.SerializeObject(lastOccupiedNodes)}");
 
-            // Invoke(nameof(SearchLastOccupiedNodes), addDelay);
+            Invoke(nameof(SearchLastOccupiedNodes), addDelay);
             // StartCoroutine(SearchLastOccupiedNodes());
         }
     }
 
-/*
-    private IEnumerator SearchLastOccupiedNodes()
-    {
-        bool hasBreak = false;
-        while (occupiedNodes.Count() == totalNodesInGrid)
-        {
-            foreach (var pos in lastOccupiedNodes)
-            {
-                if (nodesData[pos].GetItemBaseCount() == 0 || nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1)
-                {
-                    hasBreak = true;
-                    break;
-                }
-            }
-        }
 
-        yield return new WaitForEndOfFrame();
+    private void SearchLastOccupiedNodes()
+    {
+        //bool hasBreak = false;
+        //while (occupiedNodes.Count() == totalNodesInGrid)
+        //{
+        //    foreach (var pos in lastOccupiedNodes)
+        //    {
+        //        if (nodesData[pos].GetItemBaseCount() == 0 || nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1)
+        //        {
+        //            hasBreak = true;
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //yield return new WaitForEndOfFrame();
         lastOccupiedNodes.ToList().Clear();
 
         Debug.Log($"NodeDatas1 :: lastOccupiedNodes.Count: {lastOccupiedNodes.Count}");
@@ -134,7 +134,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
         lastOccupiedNodes.Clear();
     }
-    */
+    
 
     public void ResetOccupiedNodesList()
     {

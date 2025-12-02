@@ -123,6 +123,8 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
             Debug.Log($"MoveMatchedSetToTarget OnComplete: source :: name: {source.transform.name}, pos: {source.transform.position}");
             Debug.Log($"MoveMatchedSetToTarget OnComplete: target :: name: {target.transform.name}, pos: {target.transform.position}");
 
+            source.UpdateOccupiedNodes();
+            target.UpdateOccupiedNodes();
 
             source.CheckIfNodeIsFullOrCleared();
             target.CheckIfNodeIsFullOrCleared();
