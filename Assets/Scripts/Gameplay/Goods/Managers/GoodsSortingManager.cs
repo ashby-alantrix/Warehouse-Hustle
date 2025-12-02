@@ -145,6 +145,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         {
             if (FindEmptyNeighbor(source, out foundNeighbor))
             {
+                Debug.LogError($"Find empty neighbor {foundNeighbor.name}");
                 foundNeighbor.SetNodeOccupiedState(true);
                 UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
                 CheckNeighbors(foundNeighbor);
@@ -153,6 +154,7 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
             {
                 if (FindNewNeighborWithEmptySlots(source,  neighbor: out foundNeighbor, out availSlots))
                 {
+                    Debug.LogError($"Find new neighbor with empty slots");
                     Debug.LogError($"Found new neighbor: {foundNeighbor.name}");
                     UpdateNodeWithCachedData(cachedKey, source: source, target: foundNeighbor);
                     foundNeighbor.SetNodeOccupiedState(true);
@@ -223,15 +225,6 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         }
 
         return false;
-    }
-
-    public void CompleteSorting()
-    {
-        if (generalSortingState)
-        {
-            levelManager.OnLevelStateChange(LevelState.Lost);
-            isSortingInProgress = true;
-        }
     }
 
     public IEnumerator CheckSortProgress()
@@ -396,7 +389,9 @@ public class GoodsSortingManager : MonoBehaviour, IBase, IBootLoader
         // if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress && levelManager.LevelState != LevelState.Lost)
         if (nodeManager.AreAllNodesOccupied() && !isSortingInProgress && levelManager.LevelState != LevelState.Lost)
         {
+            levelManager.SetLevelState(LevelState.Lost);
             Debug.Log($"GameOverCheck :: CheckGameOverCondition LevelState.Lost");
+            nodeManager.ShowGameOverEmojis();
             Invoke(nameof(Delay), 1f);
         }
     }

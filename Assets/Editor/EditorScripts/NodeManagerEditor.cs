@@ -1,11 +1,10 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NodeManagerEditor : MonoBehaviour
 {
-#if UNITY_EDITOR
     [SerializeField] private GridEditorManager gridEditorManager;
-#endif
 
     private Dictionary<string, NodeEditor> nodesData = new Dictionary<string, NodeEditor>();
     private Dictionary<string, NodeEditor> nodesData1 = new Dictionary<string, NodeEditor>();
@@ -37,3 +36,4 @@ public class NodeManagerEditor : MonoBehaviour
         return $"{row},{col}";
     }
 }
+#endif

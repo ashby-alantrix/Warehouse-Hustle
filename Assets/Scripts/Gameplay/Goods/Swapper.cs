@@ -8,6 +8,7 @@ public class Swapper : MonoBehaviour
 
     private LevelManager levelManager;
     private InputManager inputManager;
+    private PopupManager popupManager;
 
     private void SetLevelManager()
     {
@@ -19,8 +20,9 @@ public class Swapper : MonoBehaviour
     {
         SetLevelManager();
         inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
+        popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
 
-        if (!levelManager.CanPlayLevel || !inputManager.IsInputEnabled) return;
+        if (!levelManager.CanPlayLevel || popupManager.GetActivePU() != null) return;
 
         goodsHandler.SwapInputPlatformsData();
     }

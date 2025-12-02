@@ -9,7 +9,6 @@ public class GameOverPopup : PopupBase
 {
     [SerializeField] private Button playUsingCurrencyBtn;
     [SerializeField] private TextMeshProUGUI remGoodsToSort;
-    [SerializeField] private Button reviveBtn;
     [SerializeField] private Button closeBtn;
 
     private NodeManager nodeManager;
@@ -34,7 +33,6 @@ public class GameOverPopup : PopupBase
     {
         // base.OnDisable();
         playUsingCurrencyBtn.onClick.RemoveAllListeners();
-        reviveBtn.onClick.RemoveAllListeners();
         closeBtn.onClick.RemoveAllListeners();
     }
 
@@ -56,7 +54,7 @@ public class GameOverPopup : PopupBase
 
         currencyManager.WithdrawCurrency(clearCurrency);
 
-        popupManager.HideActivePopup();
+        popupManager.HidePopup(popupType);
         OnComplete(PopupResultEvent.None);
 
         goodsManager = goodsManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<GoodsManager>() : goodsManager;

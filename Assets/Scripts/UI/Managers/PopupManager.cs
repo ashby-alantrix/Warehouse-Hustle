@@ -26,7 +26,9 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
     private Dictionary<PopupType, PopupBase> popupsDict = new Dictionary<PopupType, PopupBase>();
 
     private PopupBase activePopup = null;
-    public PopupBase GetActiveScreen() => activePopup;
+    public PopupBase GetActivePU() => activePopup;
+
+    private Stack<PopupBase> popupBasesStack = new Stack<PopupBase>();
 
     public void Initialize()
     {
@@ -54,23 +56,24 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
         activePopup = popupsDict[uiType];
         if (activePopup != null)
         {
+            Debug.Log($"Stack check :: activePopup added to stack: {activePopup.PopupType}");
+            popupBasesStack.Push(activePopup);
             activePopup.Show();
         }
-    }
-
-    public void HideActivePopup()
-    {
-        if (activePopup != null)
-            activePopup.Hide();
     }
 
     public void HidePopup(PopupType popupType)
     {
         if (popupsDict[popupType] != null)
         {
-            if (activePopup != null && activePopup.PopupType == popupType) activePopup = null;
-            
+            Debug.Log($"Stack check :: before popupBasesStack: {popupBasesStack?.Count}");
+            var poppedElement = popupBasesStack.Pop();
+            Debug.Log($"Stack check :: popped element: {poppedElement.PopupType}");
+            activePopup = popupBasesStack.Count > 0 ? popupBasesStack.Peek() : null;
             popupsDict[popupType].Hide();
+
+            Debug.Log($"Stack check :: peeked element type: {activePopup?.PopupType}, hidden element from dict: {popupType}");
+            Debug.Log($"Stack check :: after popupBasesStack: {popupBasesStack?.Count}");
         }
     }
 
@@ -94,6 +97,7 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
             case PopupResultEvent.LivesFull:
             case PopupResultEvent.OnCancelRefillHealth:
             case PopupResultEvent.FreeRefillUsed:
+                Debug.Log($"GetMoreLivesPopup");
                 ShowPopup(PopupType.GetMoreLivesPopup);
             break;
             default:

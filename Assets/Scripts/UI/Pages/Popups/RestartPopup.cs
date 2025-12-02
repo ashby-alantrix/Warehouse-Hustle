@@ -36,9 +36,6 @@ public class RestartPopup : PopupBase
 
     public void OnClick_CloseBtn()
     {
-        inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
-
-        inputManager?.SetInputState(true);
         popupManager.HidePopup(popupType);
     }
 

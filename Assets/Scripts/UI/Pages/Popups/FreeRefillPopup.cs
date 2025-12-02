@@ -34,6 +34,7 @@ public class FreeRefillPopup : PopupBase
 
     private void OnClick_CloseBtn()
     {
+        Debug.Log($"OnClick -> CLOSE BUTTON");
         popupManager.HidePopup(popupType);
         OnComplete(PopupResultEvent.OnCancelRefillHealth);
     }

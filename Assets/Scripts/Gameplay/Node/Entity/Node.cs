@@ -15,6 +15,7 @@ public class Node : MonoBehaviour
 
     [SerializeField] private Transform[] m_NodePlacements;
     [SerializeField] private int totalSlotsInNode = 12;
+    [SerializeField] private GameObject gameOverEmoji;
 
     private int m_NodePlacementLength = 0;
     public bool isNodeOccupied = false;
@@ -584,5 +585,10 @@ public class Node : MonoBehaviour
         SetNodeOccupiedState(state: false);
         UpdateOccupiedSlotsState();
         UpdateOccupiedNodes();
+    }
+
+    public void SetGameOverEmoji(bool state)
+    {
+        gameOverEmoji.SetActive(state);
     }
 }
