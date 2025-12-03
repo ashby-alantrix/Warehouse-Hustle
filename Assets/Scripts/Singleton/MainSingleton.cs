@@ -27,6 +27,6 @@ public class MainSingleton : MonoBehaviour
 
     public void LoadGameplayScene()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

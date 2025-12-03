@@ -111,6 +111,7 @@ public class Level : MonoBehaviour
 
     public void OnClick_PlayButton()
     {
+        Debug.Log($"On click Play button");
         levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
 
         levelManager.LoadLevelInGame();

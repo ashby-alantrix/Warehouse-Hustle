@@ -49,6 +49,8 @@ public class GameOverPopup : PopupBase
         if (!currencyManager.HasEnoughCurrency(clearCurrency))
         {
             // show feedback message -> not enough coins
+            popupManager.GetPopup<FeedbackPopup>(PopupType.FeedbackPopup).SetFeedbackText($"NOT ENOUGH COINS");
+            popupManager.ShowPopup(PopupType.FeedbackPopup);
             return;
         }
 

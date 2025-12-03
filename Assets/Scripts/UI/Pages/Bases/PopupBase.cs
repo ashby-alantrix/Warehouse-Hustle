@@ -12,13 +12,15 @@ public enum PopupType
     GameOverPopup, 
     LevelFailPopup,
     GetMoreLivesPopup, //
-    FreeRefillPopup
+    FreeRefillPopup,
+    FeedbackPopup
 }
 
 public class PopupBase : UIBase, IUIBase
 {
     [Header("Popup Scaling")]
     [SerializeField] protected Transform popupScaleContent;
+    [SerializeField] protected bool shouldScale = true;
     [SerializeField] protected float scaleDelay = 0.5f;
     [SerializeField] protected PopupType popupType;
 
@@ -29,15 +31,23 @@ public class PopupBase : UIBase, IUIBase
 
     public override void Show()
     {
-        popupScaleContent.localScale = UnityEngine.Vector3.zero;
-        base.Show();
+        if (shouldScale)
+        {
+            popupScaleContent.localScale = UnityEngine.Vector3.zero;
+            base.Show();
 
-        popupScaleContent.DOScale(UnityEngine.Vector3.one, scaleDelay);
+            popupScaleContent.DOScale(UnityEngine.Vector3.one, scaleDelay);
+        }
+        else 
+            base.Show();
     }
 
     public override void Hide()
     {
-        popupScaleContent.DOScale(UnityEngine.Vector3.zero, scaleDelay).OnComplete(() => base.Hide());
+        if (shouldScale)
+            popupScaleContent.DOScale(UnityEngine.Vector3.zero, scaleDelay).OnComplete(() => base.Hide());
+        else 
+            base.Hide();
     }
 
     public void Initialize()

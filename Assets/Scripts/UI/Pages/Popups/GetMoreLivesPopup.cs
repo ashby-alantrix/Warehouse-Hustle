@@ -69,6 +69,11 @@ public class GetMoreLivesPopup : PopupBase
             currencyManager.WithdrawCurrency(purchaseCurrencyValue);
             healthSystem.AddHealth(1);
         }
+        else
+        {
+            popupManager.GetPopup<FeedbackPopup>(PopupType.FeedbackPopup).SetFeedbackText($"NOT ENOUGH COINS");
+            popupManager.ShowPopup(PopupType.FeedbackPopup);
+        }
     }
 
     private void OnEnable()
