@@ -1,7 +1,7 @@
 {
   "gameCurrency": {
 
-    "initialCurrencyToProvide": 1
+    "initialCurrencyToProvide": 10000
 
   },
   "healthData": {
@@ -13,11 +13,11 @@
 
     "levelDatas": [
 
-      { "level": 1, "levelsInfo": { "availGoodTypes": 6, "targetGoodsToLoad": 108, "currencyToGive": 72 } },
-      { "level": 2, "levelsInfo": { "availGoodTypes": 6, "targetGoodsToLoad": 120, "currencyToGive": 40 } },
-      { "level": 3, "levelsInfo": { "availGoodTypes": 6, "targetGoodsToLoad": 132, "currencyToGive": 56 } },
-      { "level": 4, "levelsInfo": { "availGoodTypes": 6, "targetGoodsToLoad": 144, "currencyToGive": 80 } },
-      { "level": 5, "levelsInfo": { "availGoodTypes": 6, "targetGoodsToLoad": 156, "currencyToGive": 44 } }
+      { "level": 1, "levelsInfo": { "availGoodTypes": 1, "targetGoodsToLoad": 12, "currencyToGive": 72 } },
+      { "level": 2, "levelsInfo": { "availGoodTypes": 1, "targetGoodsToLoad": 12, "currencyToGive": 40 } },
+      { "level": 3, "levelsInfo": { "availGoodTypes": 1, "targetGoodsToLoad": 12, "currencyToGive": 56 } },
+      { "level": 4, "levelsInfo": { "availGoodTypes": 1, "targetGoodsToLoad": 12, "currencyToGive": 80 } },
+      { "level": 5, "levelsInfo": { "availGoodTypes": 1, "targetGoodsToLoad": 12, "currencyToGive": 44 } }
     ]
   }
 

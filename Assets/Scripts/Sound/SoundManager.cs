@@ -121,7 +121,6 @@ public class SoundManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         if (volTimer > 0)
         {
             volTimer -= Time.deltaTime/4;
-            Debug.Log($"secondaryAudioSource. Reducing timer vol");
             secondaryAudioSource.volume = volTimer;
         }
         else

@@ -44,6 +44,8 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void InitializeData()
     {
+        Debug.Log($"HealthSystem: InitializeData");
+
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
         screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
@@ -58,6 +60,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         availableLifes = userDataBehaviour.IsFirstUserSession() ? gameHealthData.totalLifes : userHealthData.attainedLifes;
 
         getMoreLivesPopup.SetHealthContent(IsFull);
+        globalHUDScreen.UpdateLivesButtonContainer(IsFull);
 
         Debug.Log($"hasenoughhealth :: availableLifes: {availableLifes}");
 
@@ -86,6 +89,10 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
             if (!IsFull)
                 UpdateBasedOnSavedTime();
+        }
+        else
+        {
+            userHealthData.attainedLifes = availableLifes;
         }
     }
 
@@ -177,6 +184,7 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     private void UpdateAvailableLives()
     {
+        SetUserHealthData();
         globalHUDScreen.UpdateLivesButtonContainer(IsFull);
         // on Replay clicked in Restart popup
         // if (availableLifes == 1 && Mathf.Sign(life) < 0)
@@ -217,13 +225,13 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         }
     }
 
-    private void SetLastProgressTime()
+    public void SetLastProgressTime(string utcNow = "")
     {
         if (gameHealthData != null && IsFull) return;
         
         if (userDataBehaviour)
         {
-            userDataBehaviour.SetLastProgressTime($"{DateTime.UtcNow}", $"{totalSecondsRem}");
+            userDataBehaviour.SetLastProgressTime(utcNow, $"{totalSecondsRem}");
         }
     }
 
@@ -236,27 +244,15 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         }
     }
 
-    private void SetDatasForSaving()
-    {
-        SetUserHealthData();
-        SetLastProgressTime();
-    }
-
-    private void OnDestroy()
-    {
-        Debug.Log($"ExitCallback {name} OnDestroy");
-        SetDatasForSaving();
-    }
-
     private void OnApplicationFocus(bool focus)
     {
         Debug.Log($"ExitCallback OnApplicationFocus");
-        SetDatasForSaving();
+        SetLastProgressTime();
     }
 
     private void OnApplicationQuit()
     {
         Debug.Log($"ExitCallback OnApplicationQuit");
-        SetDatasForSaving();
+        SetLastProgressTime($"{DateTime.UtcNow}");
     }
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7643ec2b0ed944bc8bffb583880c48ee
+guid: 86e340a62e8984421b2ded71d072514c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loading-bar-transparent 1_4
+      name: road-block 1 (2)_7
       rect:
         serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
+        x: 388
+        y: 1838
+        width: 375
+        height: 375
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e022e8d2458334a7c8d1fb6b3c64d767
-      internalID: 875177917
+      spriteID: 5f47823a340334d64a51e999124a5bdd
+      internalID: -1091869705
       vertices: []
       indices: 
       edges: []
@@ -140,7 +140,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: cf329e7b12c354a50a53f2ccadca7f2f
     internalID: 0
     vertices: []
     indices: 
@@ -148,12 +148,23 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      loading-bar-transparent 1_0: 321713997
-      loading-bar-transparent 1_1: 1287478163
-      loading-bar-transparent 1_2: 1253560483
-      loading-bar-transparent 1_3: 2030067713
-      loading-bar-transparent 1_4: 875177917
-      loading-bar-transparent 1_5: 328924364
+      road-block 1 (2)_0: 828583726
+      road-block 1 (2)_1: -243228834
+      road-block 1 (2)_10: 80414622
+      road-block 1 (2)_11: 824809242
+      road-block 1 (2)_12: -1559837592
+      road-block 1 (2)_13: 1543963312
+      road-block 1 (2)_14: 757228850
+      road-block 1 (2)_15: -1894503803
+      road-block 1 (2)_16: -1647010491
+      road-block 1 (2)_2: -1689233896
+      road-block 1 (2)_3: -452339598
+      road-block 1 (2)_4: 518560687
+      road-block 1 (2)_5: -1364052257
+      road-block 1 (2)_6: -285260811
+      road-block 1 (2)_7: -1091869705
+      road-block 1 (2)_8: 520373973
+      road-block 1 (2)_9: -1101472368
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

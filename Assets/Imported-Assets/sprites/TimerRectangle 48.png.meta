@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7643ec2b0ed944bc8bffb583880c48ee
+guid: 4ba65139e864142d98c15e29080c3c2b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -42,7 +42,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -115,28 +115,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: loading-bar-transparent 1_4
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e022e8d2458334a7c8d1fb6b3c64d767
-      internalID: 875177917
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -147,13 +126,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      loading-bar-transparent 1_0: 321713997
-      loading-bar-transparent 1_1: 1287478163
-      loading-bar-transparent 1_2: 1253560483
-      loading-bar-transparent 1_3: 2030067713
-      loading-bar-transparent 1_4: 875177917
-      loading-bar-transparent 1_5: 328924364
+    nameFileIdTable: {}
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

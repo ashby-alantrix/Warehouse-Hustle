@@ -32,7 +32,7 @@ public class GlobalHUDScreen : ScreenBase
 
         if (!isFull)
         {
-            Debug.Log($"healthSystem.AvailableLifes: {healthSystem.AvailableLifes}");
+            Debug.Log($"remLives in health container :: healthSystem.AvailableLifes: {healthSystem.AvailableLifes}");
             remLivesText.text = $"{healthSystem.AvailableLifes}";
         }
     }

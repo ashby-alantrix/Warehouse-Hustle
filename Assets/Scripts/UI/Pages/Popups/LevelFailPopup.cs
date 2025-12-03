@@ -50,7 +50,8 @@ public class LevelFailPopup : PopupBase
 
     public void OnClick_CloseBtn()
     {
-        MainSingleton.Instance.LoadLevelsScene();
+        InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>().SetLastProgressTime();
+        MainSingleton.Instance.LoadMenuLoadingScene();
     }
 
     public void SetLevelManager()

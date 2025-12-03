@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7643ec2b0ed944bc8bffb583880c48ee
+guid: 4b577e73f710c437a9068c58e7ad03e5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loading-bar-transparent 1_4
+      name: Group 118_0
       rect:
         serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
+        x: 38
+        y: 149
+        width: 572
+        height: 147
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e022e8d2458334a7c8d1fb6b3c64d767
-      internalID: 875177917
+      spriteID: 47f35300280134c11a99eedf3518e5b6
+      internalID: -1857871984
       vertices: []
       indices: 
       edges: []
@@ -148,12 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      loading-bar-transparent 1_0: 321713997
-      loading-bar-transparent 1_1: 1287478163
-      loading-bar-transparent 1_2: 1253560483
-      loading-bar-transparent 1_3: 2030067713
-      loading-bar-transparent 1_4: 875177917
-      loading-bar-transparent 1_5: 328924364
+      Group 118_0: -1857871984
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

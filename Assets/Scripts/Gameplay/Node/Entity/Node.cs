@@ -8,6 +8,8 @@ using System.Collections.Generic;
 public class Node : MonoBehaviour
 {
     #region Variables or objects
+    [SerializeField] private GameObject nodeOccupiedView;
+    [SerializeField] private GameObject nodeUnoccupiedView;
     [SerializeField] private Material occupiedMat;
     [SerializeField] private Material unOccupiedMat;
 
@@ -471,6 +473,8 @@ public class Node : MonoBehaviour
         meshRenderer.material = isNodeOccupied ? occupiedMat : unOccupiedMat;
 
         // nodeManager.UpdateOccupiedNodesCount(state ? 1 : -1);
+        nodeOccupiedView.SetActive(isNodeOccupied);        
+        nodeUnoccupiedView.SetActive(!isNodeOccupied);        
     }
     
     private void Awake()
@@ -511,24 +515,6 @@ public class Node : MonoBehaviour
             // goodsSetDict.Clear();
             // itemBasesCollection.Clear();
             SetNodeOccupiedState(false);
-        }
-        else
-        {
-            goodsSortingManager = goodsSortingManager == null ? InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>() : goodsSortingManager;
-            goodsSortingManager.generalSortingState = nodeManager.AreAllNodesOccupied();
-            // Debug.Log($"goodsSortingManager.generalSortingState: {goodsSortingManager.generalSortingState}");
-            Debug.Log($"GameOverCheck :: CheckIfNodeIsFullOrCleared() :: Nodename: {this.name}, itemBaseCount: {itemBaseCount}");
-            nodeManager.LogNodeValue();
-
-            // if (nodeManager.AreAllNodesOccupied())
-            // {
-            //     goodsSortingManager.isSortingInProgress = false;
-            //     if (goodsSortingManager.hasCheckedCachedData)
-            //         goodsSortingManager.CheckGameOverCondition($"Node: {name}");
-            // }
-
-            // if (goodsSortingManager.hasCheckedCachedData)
-            //     nodeManager.CheckIfAllNodesAreOccupied();
         }
     }
 

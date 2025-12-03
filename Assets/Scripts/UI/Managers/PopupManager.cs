@@ -66,11 +66,14 @@ public class PopupManager : MonoBehaviour, IBase, IBootLoader
     {
         if (popupsDict[popupType] != null)
         {
-            Debug.Log($"Stack check :: before popupBasesStack: {popupBasesStack?.Count}");
             var poppedElement = popupBasesStack.Pop();
+            Debug.Log($"Stack check :: before popupBasesStack: {popupBasesStack?.Count}");
             Debug.Log($"Stack check :: popped element: {poppedElement.PopupType}");
+
             activePopup = popupBasesStack.Count > 0 ? popupBasesStack.Peek() : null;
             popupsDict[popupType].Hide();
+
+            Debug.Log($"Stack check :: activePopup: {activePopup}");
 
             Debug.Log($"Stack check :: peeked element type: {activePopup?.PopupType}, hidden element from dict: {popupType}");
             Debug.Log($"Stack check :: after popupBasesStack: {popupBasesStack?.Count}");

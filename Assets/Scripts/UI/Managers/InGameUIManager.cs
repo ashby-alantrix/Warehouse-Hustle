@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class InGameUIManager : MonoBehaviour, IBootLoader,  IBase, IDataLoader
 {
+    private LevelManager levelManager;
     private ScreenManager screenManager;
     private PopupManager popupManager;
     private InGameHUDScreen inGameHUDScreen;
+    private TargetGoalScreen targetGoalScreen;
     private GameOverPopup gameOverPopup;
     private LevelCompletePopup levelCompletePopup;
 
@@ -21,10 +23,13 @@ public class InGameUIManager : MonoBehaviour, IBootLoader,  IBase, IDataLoader
 
     public void InitializeData()
     {
+        levelManager = InterfaceManager.Instance?.GetInterfaceInstance<LevelManager>();
         screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
 
         inGameHUDScreen = screenManager.GetScreen<InGameHUDScreen>(ScreenType.InGameHUDScreen);
+        targetGoalScreen = screenManager.GetScreen<TargetGoalScreen>(ScreenType.TargetGoalScreen); ;
+
         levelCompletePopup = popupManager.GetPopup<LevelCompletePopup>(PopupType.LevelCompletePopup);
         gameOverPopup = popupManager.GetPopup<GameOverPopup>(PopupType.GameOverPopup);
 
@@ -32,5 +37,12 @@ public class InGameUIManager : MonoBehaviour, IBootLoader,  IBase, IDataLoader
         Debug.Log($"InGameUIManager: levelCompletePopup: {levelCompletePopup}");
 
         inGameHUDScreen.Init();
+        ShowTargetGoalScreen();
+    }
+
+    public void ShowTargetGoalScreen()
+    {
+        screenManager.ShowScreen(ScreenType.TargetGoalScreen);
+        targetGoalScreen.SetTargetGoalText($"{levelManager.GetCurrentLevelsInfo().targetGoodsToLoad}");
     }
 }

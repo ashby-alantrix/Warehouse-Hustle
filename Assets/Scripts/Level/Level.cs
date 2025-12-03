@@ -24,6 +24,8 @@ public class Level : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selLevelText;
     [SerializeField] private TextMeshProUGUI unselLevelText;
 
+    private Button restartBtnRef, playBtnRef;
+
     public int LevelNum => levelNum;
 
     public bool HasBarricade { get; internal set; }
@@ -34,6 +36,20 @@ public class Level : MonoBehaviour
     void Awake()
     {
         position = transform.position;
+        restartBtnRef = restartBtn.GetComponent<Button>();
+        playBtnRef = playBtn.GetComponent<Button>();
+    }
+
+    void OnEnable()
+    {
+        restartBtnRef.onClick.AddListener(OnClick_RestartButton);
+        playBtnRef.onClick.AddListener(OnClick_PlayButton);
+    }
+
+    void OnDisable()
+    {
+        playBtnRef.onClick.RemoveAllListeners();
+        restartBtnRef.onClick.RemoveAllListeners();
     }
 
     public void ShowUnselectedLevelView()
@@ -109,17 +125,23 @@ public class Level : MonoBehaviour
         restartBtn.SetActive(true);
     }
 
+    private void SetLevelManager()
+    {
+        levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
+    }
+
     public void OnClick_PlayButton()
     {
         Debug.Log($"On click Play button");
-        levelManager = levelManager == null ? InterfaceManager.Instance.GetInterfaceInstance<LevelManager>() : levelManager;
+
+        SetLevelManager();
 
         levelManager.LoadLevelInGame();
-        levelManager.OnLevelStateChange(LevelState.Progress);
     }
 
     public void OnClick_RestartButton()
     {
-        
+        SetLevelManager();
+        levelManager.OnRestartWholeLevels();
     }
 }

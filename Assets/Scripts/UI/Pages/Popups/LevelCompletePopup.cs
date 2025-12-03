@@ -22,7 +22,8 @@ public class LevelCompletePopup : PopupBase
     private void OnClick_NextButton()
     {
         InterfaceManager.Instance?.GetInterfaceInstance<CurrencyManager>()?.AddCurrency(currencyReward);
-        MainSingleton.Instance.LoadLevelsScene();
+        InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>().SetLastProgressTime();
+        MainSingleton.Instance.LoadMenuLoadingScene();
     }
 
     public void SetCoinsReward(int rewardAmt)

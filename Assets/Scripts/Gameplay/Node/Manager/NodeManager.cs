@@ -15,6 +15,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     private LevelManager levelManager;
     private InputManager inputManager;
     private PopupManager popupManager;
+    private ScreenManager screenManager;
     private TrucksLoaderManager trucksLoaderManager;
     private SoundManager soundManager;
 
@@ -227,8 +228,13 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         SetGoodsPlacementManager();
         inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
+        screenManager = screenManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>() : screenManager;
 
-        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel || popupManager.GetActivePU()) return;
+        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel 
+            || popupManager.GetActivePU() || screenManager.GetActiveScreen()) 
+        {
+            return;
+        }
 
         selectedNode.SetNodeOccupiedState(true);
         soundManager = soundManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<SoundManager>() : soundManager;

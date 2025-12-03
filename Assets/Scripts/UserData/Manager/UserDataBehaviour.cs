@@ -35,6 +35,7 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 
     private void InitUserData()
     {
+        Debug.Log($"HasSavedUserData: {HasSavedUserData()}");
         if (HasSavedUserData())
         {
             userData = JsonConvert.DeserializeObject<UserData>(PlayerPrefs.GetString(WarehouseHustle_Constants.SaveUserData));
@@ -99,6 +100,10 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 
     public int GetLastUnlockedLevel()
     {
+        Debug.Log($"userData: {userData}");
+        Debug.Log($"userData.userLevelData: {userData.userLevelData}");
+        Debug.Log($"userData.userLevelData.lastUnlockedLevel: {userData.userLevelData.lastUnlockedLevel}");
+
         return userData.userLevelData.lastUnlockedLevel;
     }
 
@@ -145,8 +150,11 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
 
     public void SetUserHealthData(UserHealthData userHealthData)
     {
-        userData.userHealthData = userHealthData;
-        SaveUserData();
+        if (userData != null)
+        {
+            userData.userHealthData = userHealthData;
+            SaveUserData();
+        }
     }
 
     public void SetLastProgressTime(string timeString, string elapsedSeconds)
@@ -167,6 +175,14 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     public void SaveUserData()
     {
         PlayerPrefs.SetString(WarehouseHustle_Constants.SaveUserData, JsonConvert.SerializeObject(userData));
+        PlayerPrefs.Save();
+    }
+
+    public void ClearUserData()
+    {
+        PlayerPrefs.SetString(WarehouseHustle_Constants.SaveUserData, "");
+        PlayerPrefs.DeleteKey(WarehouseHustle_Constants.SaveUserData);
+        PlayerPrefs.DeleteKey(WarehouseHustle_Constants.IsFirstUserSession);
         PlayerPrefs.Save();
     }
 

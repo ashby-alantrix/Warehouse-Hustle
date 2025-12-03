@@ -28,6 +28,7 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private ScreenManager screenManager;
     private GoodsManager goodsManager;
     private NodeManager nodeManager;
+    private HealthSystem healthSystem;
 
     private LevelConfigData levelConfigData;
     private Dictionary<int, LevelsInfo> levelDataDictionary = new Dictionary<int, LevelsInfo>();
@@ -60,12 +61,19 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
         goodsManager.InitGoodsInfos();
         OnLevelStateChange(LevelState.Progress);
+        SetInGameUIManager();
+        inGameUIManager.ShowTargetGoalScreen();
+    }
+
+    private void SetInGameUIManager()
+    {
+        inGameUIManager = inGameUIManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>() : inGameUIManager;
     }
 
     public void OnLevelStateChange(LevelState state)
     {
         LevelState = state;
-        inGameUIManager = inGameUIManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InGameUIManager>() : inGameUIManager;
+        SetInGameUIManager();
         inputManager = inputManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<InputManager>() : inputManager;
         nodeManager = nodeManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<NodeManager>() : nodeManager;
 
@@ -75,8 +83,6 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         {
             case LevelState.Progress:
                 CanPlayLevel = true;
-                inputManager.SetInputState(true);
-
             break;
             case LevelState.Won:
                 CanPlayLevel = false;
@@ -122,10 +128,13 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
         userDataBehaviour = InterfaceManager.Instance?.GetInterfaceInstance<UserDataBehaviour>();
         popupManager = InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>();
         screenManager = InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>();
+
+        Debug.Log($"Initializing user data behaviour: {userDataBehaviour}");
     }
 
     public void InitializeData()
     {
+        Debug.Log($"Initialized user data behaviour: {userDataBehaviour}");
         Debug.Log($"HasInitializedLevelsData: {HasInitializedLevelsData}");
         currentLevelNumber = userDataBehaviour.GetLastUnlockedLevel();
         if (!HasInitializedLevelsData) // is first time or new session
@@ -159,11 +168,26 @@ public class LevelManager : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void LoadLevelInGame()
     {
-        MainSingleton.Instance.LoadGameplayScene();
+        healthSystem = healthSystem == null ? InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>() : healthSystem;
+        if (healthSystem.HaveHealthLeft)
+        {
+            MainSingleton.Instance.LoadGameplayScene();
+            OnLevelStateChange(LevelState.Progress);
+        }
+        else
+        {
+            popupManager.ShowPopup(PopupType.GetMoreLivesPopup);
+        }
     }
 
     private void SetTrucksLoaderManager()
     {
         trucksLoaderManager = trucksLoaderManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<TrucksLoaderManager>() : trucksLoaderManager;
+    }
+
+    public void OnRestartWholeLevels()
+    {
+        userDataBehaviour.ClearUserData();
+        MainSingleton.Instance.LoadMenuLoadingScene();
     }
 }

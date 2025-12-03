@@ -127,7 +127,8 @@ public class LevelScreen : ScreenBase
 
         Debug.Log($"LEVELNUMBER: PrevLevelNumber: {levelManager.PrevLevelNumber}");
         Debug.Log($"LEVELNUMBER: CurrentLevelNumber: {levelManager.CurrentLevelNumber}");
-        if (!levelManager.CanPlayLevel && levelManager.PrevLevelNumber != levelManager.CurrentLevelNumber && levelManager.LevelState != LevelState.Lost)
+        if (!levelManager.CanPlayLevel && levelManager.PrevLevelNumber != levelManager.CurrentLevelNumber 
+            && levelManager.LevelState != LevelState.Lost && levelManager.CurrentLevelNumber != 1)
             TriggerScrollingAnim();
     }
 

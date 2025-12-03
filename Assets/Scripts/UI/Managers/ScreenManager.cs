@@ -13,6 +13,8 @@ public class ScreenManager : MonoBehaviour, IBase, IBootLoader
     private Dictionary<ScreenType, ScreenBase> screensDict = new Dictionary<ScreenType, ScreenBase>();
 
     private ScreenBase activeScreen = null;
+    private Stack<ScreenBase> screenBasesStack = new Stack<ScreenBase>();
+
     public ScreenBase GetActiveScreen() => activeScreen;
 
     public void Initialize()
@@ -39,22 +41,18 @@ public class ScreenManager : MonoBehaviour, IBase, IBootLoader
         activeScreen = screensDict[screenType];
         if (activeScreen != null)
         {
+            screenBasesStack.Push(activeScreen);
             activeScreen.Show();
         }
-    }
-
-    public void HideActiveScreen()
-    {
-        if (activeScreen != null)
-            activeScreen.Hide();
     }
 
     public void HideScreen(ScreenType screenType)
     {
         if (screensDict[screenType] != null)
         {
-            if (activeScreen.ScreenType == screenType) activeScreen = null;
-            
+            screenBasesStack.Pop();
+            Debug.Log($"ScreenManager check: screenBasesStack.Count: {screenBasesStack.Count}");
+            activeScreen = screenBasesStack.Count > 0 ? screenBasesStack.Peek() : null;
             screensDict[screenType].Hide();
         }
     }

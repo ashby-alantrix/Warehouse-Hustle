@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4b577e73f710c437a9068c58e7ad03e5
+guid: c8b3a2b33d3564645ab46d4dab54f837
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Group 118_0
+      name: timer-icon-Photoroom 1_0
       rect:
         serializedVersion: 2
-        x: 21
-        y: 77
-        width: 216
-        height: 76
+        x: 30
+        y: 108
+        width: 89
+        height: 110
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,8 +131,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 47f35300280134c11a99eedf3518e5b6
-      internalID: -1857871984
+      spriteID: 21783a12d0fb04afaaf5683301ebf78a
+      internalID: -78976307
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Group 118_0: -1857871984
+      timer-icon-Photoroom 1_0: -78976307
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

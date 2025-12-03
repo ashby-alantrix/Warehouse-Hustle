@@ -20,7 +20,7 @@ public class MainSingleton : MonoBehaviour
         DontDestroyOnLoad(Instance);
     }
 
-    public void LoadLevelsScene()
+    public void LoadMenuLoadingScene()
     {
         SceneManager.LoadScene(0);
     }

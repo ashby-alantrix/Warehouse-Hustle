@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7643ec2b0ed944bc8bffb583880c48ee
+guid: 5d363ed8319f34f539ddd149cdf13ff3
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loading-bar-transparent 1_4
+      name: loading-warehouse-text_1
       rect:
         serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
+        x: 192
+        y: 537
+        width: 717
+        height: 204
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e022e8d2458334a7c8d1fb6b3c64d767
-      internalID: 875177917
+      spriteID: f2b85506998ef44078ca45722d4d9b67
+      internalID: -793603997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: loading-warehouse-text_3
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 636
+        width: 4
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3626dbd131dfc44e7b9ff5ff97a2919f
+      internalID: 2029110126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: loading-warehouse-text_5
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 528
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08841c8b05b384ed6b05351a5c718207
+      internalID: 1306605099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: loading-warehouse-text_6
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 522
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b150c3b4f2a704086a1c5c11f8f2eba2
+      internalID: 294422033
       vertices: []
       indices: 
       edges: []
@@ -148,12 +211,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      loading-bar-transparent 1_0: 321713997
-      loading-bar-transparent 1_1: 1287478163
-      loading-bar-transparent 1_2: 1253560483
-      loading-bar-transparent 1_3: 2030067713
-      loading-bar-transparent 1_4: 875177917
-      loading-bar-transparent 1_5: 328924364
+      loading-warehouse-text_0: -478997520
+      loading-warehouse-text_1: -793603997
+      loading-warehouse-text_2: -2073425761
+      loading-warehouse-text_3: 2029110126
+      loading-warehouse-text_4: -1636750524
+      loading-warehouse-text_5: 1306605099
+      loading-warehouse-text_6: 294422033
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

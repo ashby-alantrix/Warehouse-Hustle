@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7643ec2b0ed944bc8bffb583880c48ee
+guid: 4f7a0f5967ed54da796d77312fb150fb
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loading-bar-transparent 1_4
+      name: warehouse-hustle-title 1_2
       rect:
         serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
+        x: 70
+        y: 1398
+        width: 929
+        height: 336
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e022e8d2458334a7c8d1fb6b3c64d767
-      internalID: 875177917
+      spriteID: 55aa9dd5a7db4413ba404ab801d15022
+      internalID: -1225371484
       vertices: []
       indices: 
       edges: []
@@ -148,12 +148,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      loading-bar-transparent 1_0: 321713997
-      loading-bar-transparent 1_1: 1287478163
-      loading-bar-transparent 1_2: 1253560483
-      loading-bar-transparent 1_3: 2030067713
-      loading-bar-transparent 1_4: 875177917
-      loading-bar-transparent 1_5: 328924364
+      warehouse-hustle-title 1_0: -101470116
+      warehouse-hustle-title 1_1: -579684033
+      warehouse-hustle-title 1_2: -1225371484
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

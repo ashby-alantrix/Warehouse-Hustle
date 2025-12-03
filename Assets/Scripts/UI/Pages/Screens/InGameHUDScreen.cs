@@ -67,7 +67,8 @@ public class InGameHUDScreen : ScreenBase
 
     private void OnClick_HomeButton()
     {
-        MainSingleton.Instance.LoadLevelsScene();
+        InterfaceManager.Instance?.GetInterfaceInstance<HealthSystem>().SetLastProgressTime();
+        MainSingleton.Instance.LoadMenuLoadingScene();
     }
 
     private void OnClick_SoundButton()
