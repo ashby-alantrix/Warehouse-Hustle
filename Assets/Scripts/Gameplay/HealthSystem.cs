@@ -186,12 +186,6 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     {
         SetUserHealthData();
         globalHUDScreen.UpdateLivesButtonContainer(IsFull);
-        // on Replay clicked in Restart popup
-        // if (availableLifes == 1 && Mathf.Sign(life) < 0)
-        // {
-
-        //     return;
-        // }
 
         Debug.Log($"Available lives: {availableLifes}, getMoreLivesPopup: {getMoreLivesPopup}");
 
@@ -204,6 +198,10 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
             {
                 getMoreLivesPopup.ResetContentScale();
             }       
+            
+            totalSecondsRem = gameHealthData.timeInSecondsForOneLife;
+            SetLastProgressTime();
+
             return;
         }
 
@@ -215,10 +213,13 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
         if (getMoreLivesPopup != null && getMoreLivesPopup.gameObject.activeInHierarchy)
             getMoreLivesPopup.UpdateAvailableLifes(availableLifes);
 
+        Debug.Log($"life totalTimeOffInSeconds: {totalTimeOffInSeconds}");
         if (totalTimeOffInSeconds > 0)
             UpdateBasedOnSavedTime();
         else 
         {
+            Debug.Log($"life hasTimerFilled: {hasTimerFilled}");
+            Debug.Log($"life totalSecondsRem: {totalSecondsRem}");
             totalSecondsRem = hasTimerFilled ? gameHealthData.timeInSecondsForOneLife : totalSecondsRem;
             hasTimerFilled = false;
             startHealthTimer = true;
@@ -227,12 +228,15 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
 
     public void SetLastProgressTime(string utcNow = "")
     {
-        if (gameHealthData != null && IsFull) return;
-        
-        if (userDataBehaviour)
+        if (gameHealthData != null && IsFull) 
         {
-            userDataBehaviour.SetLastProgressTime(utcNow, $"{totalSecondsRem}");
+            Debug.Log($"utcNow: {utcNow}, resetting elapsed seconds");
+            startHealthTimer = false;
+            userDataBehaviour?.SetLastProgressTime(utcNow, $"{0}");
+            return;
         }
+        
+        userDataBehaviour?.SetLastProgressTime(utcNow, $"{totalSecondsRem}");
     }
 
     private void SetUserHealthData()
@@ -253,6 +257,6 @@ public class HealthSystem : MonoBehaviour, IBootLoader, IBase, IDataLoader
     private void OnApplicationQuit()
     {
         Debug.Log($"ExitCallback OnApplicationQuit");
-        SetLastProgressTime($"{DateTime.UtcNow}");
+        SetLastProgressTime(!IsFull ? $"{DateTime.UtcNow}" : "");
     }
 }

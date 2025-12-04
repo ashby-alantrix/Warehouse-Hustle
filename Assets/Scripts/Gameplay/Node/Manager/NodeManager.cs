@@ -230,8 +230,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;
         screenManager = screenManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>() : screenManager;
 
-        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel 
-            || popupManager.GetActivePU() || screenManager.GetActiveScreen()) 
+        if (goodsPlacementManager && !goodsPlacementManager.CanPlaceGoods || !levelManager.CanPlayLevel || popupManager.GetActivePU()) 
         {
             return;
         }

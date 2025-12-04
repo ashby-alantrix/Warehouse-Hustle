@@ -11,16 +11,14 @@ public enum ScreenType
     LevelsScreen,
     InGameHUDScreen,
     MenuHUDScreen,
-    GlobalHUDScreen,
-    TargetGoalScreen
+    GlobalHUDScreen
 }
 
 public class ScreenBase : UIBase, IUIBase
 {
     [SerializeField] protected ScreenType screenType;
     [SerializeField] protected bool shouldFade = false;
-    [SerializeField] protected CanvasGroup canvasGroup;
-    [SerializeField] protected float fadeDuration;
+    
 
     public ScreenType ScreenType => screenType;
 
@@ -34,23 +32,11 @@ public class ScreenBase : UIBase, IUIBase
 
     public override void Show()
     {
-        if (shouldFade)
-        {
-            canvasGroup.alpha = 0;
-            base.Show();
-            canvasGroup.DOFade(1, fadeDuration);
-        }
-        else 
-            base.Show();
+        base.Show();
     }
 
     public override void Hide()
     {
-        if (shouldFade)
-        {
-            canvasGroup.DOFade(0, fadeDuration).OnComplete(() => base.Hide());
-        }
-        else 
-            base.Hide();
+        base.Hide();
     }
 }

@@ -13,16 +13,27 @@ public enum PopupType
     LevelFailPopup,
     GetMoreLivesPopup, //
     FreeRefillPopup,
-    FeedbackPopup
+    FeedbackPopup,
+    TargetGoalPopup
+}
+
+public enum PopupScalerType
+{
+    None,
+    Zoom,
+    Fade
 }
 
 public class PopupBase : UIBase, IUIBase
 {
     [Header("Popup Scaling")]
     [SerializeField] protected Transform popupScaleContent;
-    [SerializeField] protected bool shouldScale = true;
-    [SerializeField] protected float scaleDelay = 0.5f;
+    // [SerializeField] protected bool shouldScale = true;
+    [SerializeField] protected float zoomDuration = 0.5f;
     [SerializeField] protected PopupType popupType;
+    [SerializeField] protected PopupScalerType popupScalerType = PopupScalerType.Zoom;
+    [SerializeField] protected CanvasGroup canvasGroup;
+    [SerializeField] protected float fadeDuration;
 
     private Action<PopupResultEvent> onComplete;
     public PopupType PopupType => popupType;
@@ -31,23 +42,12 @@ public class PopupBase : UIBase, IUIBase
 
     public override void Show()
     {
-        if (shouldScale)
-        {
-            popupScaleContent.localScale = UnityEngine.Vector3.zero;
-            base.Show();
-
-            popupScaleContent.DOScale(UnityEngine.Vector3.one, scaleDelay);
-        }
-        else 
-            base.Show();
+        ApplyEffectOnShow();
     }
 
     public override void Hide()
     {
-        if (shouldScale)
-            popupScaleContent.DOScale(UnityEngine.Vector3.zero, scaleDelay).OnComplete(() => base.Hide());
-        else 
-            base.Hide();
+        ApplyEffectOnHide();
     }
 
     public void Initialize()
@@ -66,7 +66,43 @@ public class PopupBase : UIBase, IUIBase
         onComplete?.Invoke(popupResultEvent);
     }
 
-    void OnDestroy()
+    private void ApplyEffectOnShow()
+    {
+        switch (popupScalerType)
+        {
+            case PopupScalerType.None:
+                base.Show();
+            break;
+            case PopupScalerType.Zoom:
+                popupScaleContent.localScale = UnityEngine.Vector3.zero;
+                base.Show();
+                popupScaleContent.DOScale(UnityEngine.Vector3.one, zoomDuration);
+            break;
+            case PopupScalerType.Fade:
+                canvasGroup.alpha = 0;
+                base.Show();
+                canvasGroup.DOFade(1, fadeDuration);
+            break;
+        }
+    }
+
+    private void ApplyEffectOnHide()
+    {
+        switch (popupScalerType)
+        {
+            case PopupScalerType.None:
+                base.Hide();
+            break;
+            case PopupScalerType.Zoom:
+                popupScaleContent.DOScale(UnityEngine.Vector3.zero, zoomDuration).OnComplete(() => base.Hide());
+            break;
+            case PopupScalerType.Fade:
+                canvasGroup.DOFade(0, fadeDuration).OnComplete(() => base.Hide());
+            break;
+        }
+    }
+
+    private void OnDestroy()
     {
         onComplete = null;
     }

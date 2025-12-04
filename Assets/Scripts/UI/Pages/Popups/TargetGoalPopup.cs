@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class TargetGoalScreen : ScreenBase
+public class TargetGoalPopup : PopupBase
 {
     [SerializeField] private TextMeshProUGUI targetGoalText;
     [SerializeField] private float screenShowDelay = 1.5f;
-
-    private ScreenManager screenManager;
 
     public void SetTargetGoalText(string targetGoalText)
     {
@@ -18,7 +16,7 @@ public class TargetGoalScreen : ScreenBase
 
     private void CloseScreen()
     {
-        screenManager = screenManager == null ? InterfaceManager.Instance.GetInterfaceInstance<ScreenManager>() : screenManager;
-        screenManager.HideScreen(screenType);
+        popupManager = popupManager == null ? InterfaceManager.Instance.GetInterfaceInstance<PopupManager>() : popupManager;
+        popupManager.HidePopup(popupType);
     }
 }

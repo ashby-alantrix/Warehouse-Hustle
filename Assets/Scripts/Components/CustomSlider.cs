@@ -18,7 +18,7 @@ public class CustomSlider : MonoBehaviour
         slider.value += Time.deltaTime / 2;
         if (slider.value >= 1)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            MainSingleton.Instance.LoadMenuScene();
         }
     }
 }

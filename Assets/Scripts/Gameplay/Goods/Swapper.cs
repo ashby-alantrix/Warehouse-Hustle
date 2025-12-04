@@ -25,7 +25,7 @@ public class Swapper : MonoBehaviour
         screenManager = screenManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ScreenManager>() : screenManager;
 
         Debug.Log($"levelManager.CanPlayLevel: {levelManager.CanPlayLevel} || popupManager.GetActivePU(): {popupManager.GetActivePU()} || screenManager.GetActiveScreen(): {screenManager.GetActiveScreen()}");
-        if (!levelManager.CanPlayLevel || popupManager.GetActivePU() || screenManager.GetActiveScreen()) return;
+        if (!levelManager.CanPlayLevel || popupManager.GetActivePU()) return;
 
         goodsHandler.SwapInputPlatformsData();
     }
