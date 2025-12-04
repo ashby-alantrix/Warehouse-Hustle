@@ -1196,7 +1196,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9122351353156002904
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1242,9 +1242,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupScaleContent: {fileID: 9122351353227546778}
-  shouldScale: 1
-  scaleDelay: 0.5
+  zoomDuration: 0.5
   popupType: 6
+  popupScalerType: 1
+  canvasGroup: {fileID: 0}
+  fadeDuration: 0
   lifeFullContent: {fileID: 9122351352944758605}
   lifeToFillContent: {fileID: 9122351353227546779}
   headerText: {fileID: 9122351353316647355}

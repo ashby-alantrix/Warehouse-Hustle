@@ -7040,34 +7040,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 590547972}
     m_Modifications:
-    - target: {fileID: 4889945531576416684, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.91
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416684, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.88
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416684, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416684, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416687, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_fontSize
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416687, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 4889945531576416687, guid: 775f2acded4774341a040004d2344d56, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4889945532107404320, guid: 775f2acded4774341a040004d2344d56, type: 3}
       propertyPath: m_Name
       value: InGameHUDScreen

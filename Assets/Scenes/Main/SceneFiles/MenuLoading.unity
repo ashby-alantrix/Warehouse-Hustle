@@ -357,7 +357,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.02, y: 0.94}
   m_AnchorMax: {x: 0.02, y: 0.94}
-  m_AnchoredPosition: {x: 1.8999023, y: 52.19995}
+  m_AnchoredPosition: {x: 1.8999023, y: 36}
   m_SizeDelta: {x: 224, y: 76}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &162373410
@@ -1012,10 +1012,10 @@ RectTransform:
   m_Father: {fileID: 956829946}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.02, y: 0.83}
-  m_AnchorMax: {x: 0.22, y: 0.87}
-  m_AnchoredPosition: {x: 0, y: -2.4000244}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.02, y: 0.812}
+  m_AnchorMax: {x: 0.22, y: 0.855}
+  m_AnchoredPosition: {x: 0, y: -0.2000122}
+  m_SizeDelta: {x: 0, y: -4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &307459662
 MonoBehaviour:
@@ -2269,8 +2269,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenType: 4
   shouldFade: 0
-  canvasGroup: {fileID: 0}
-  fadeDuration: 0
   livesButton: {fileID: 307459664}
   coinsText: {fileID: 239808189}
   remLivesText: {fileID: 1281978631}
@@ -3406,10 +3404,6 @@ PrefabInstance:
     - target: {fileID: 9122351353156002905, guid: d128d07fd5f0249dc90e9a9cc228ac1e, type: 3}
       propertyPath: m_Name
       value: GetMoreLivesPopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 9122351353156002905, guid: d128d07fd5f0249dc90e9a9cc228ac1e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d128d07fd5f0249dc90e9a9cc228ac1e, type: 3}
