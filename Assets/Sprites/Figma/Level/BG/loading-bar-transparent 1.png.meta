@@ -120,13 +120,13 @@ TextureImporter:
       name: loading-bar-transparent 1_4
       rect:
         serializedVersion: 2
-        x: 96
-        y: 756
-        width: 888
-        height: 222
+        x: 94
+        y: 758
+        width: 883
+        height: 219
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 145, y: 49, z: 146, w: 84}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
