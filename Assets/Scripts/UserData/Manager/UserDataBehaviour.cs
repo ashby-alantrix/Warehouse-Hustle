@@ -22,6 +22,8 @@ public class UserDataBehaviour : MonoBehaviour, IBase, IBootLoader, IDataLoader
     {
         InitGameData();
         InitUserData();
+
+        Debug.unityLogger.logEnabled = false;
     }
 
     private void InitGameData()
