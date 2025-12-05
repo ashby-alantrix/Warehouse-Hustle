@@ -20,11 +20,19 @@ public class GoodsHandler : MonoBehaviour
     [SerializeField] private byte maxGoodsInSet = 3;
     [SerializeField] private byte totalGoodsAvail = 10;
 
+    private PopupManager popupManager;
+
     private ItemType[] goodsType;
     private List<GoodsSet> lastUpdatedGoodsSet = new List<GoodsSet>();
 
     public GoodsInputPlatform CurrentGoodsPlacer => currentGoodsPlacer;
     public GoodsInputPlatform NextGoodsPlacer => nextGoodsPlacer;
+
+    public bool CanClearGoodsUsingPowerup
+    {
+        get;
+        private set;
+    }
 
     public void InitGoodsInfo(int goodTypeCount)
     {
@@ -42,6 +50,13 @@ public class GoodsHandler : MonoBehaviour
             goodsType[index] = (ItemType)index;
     }
 
+    public void OnRefreshInputNodes()
+    {
+        currentGoodsPlacer.SendObjectsBackToPool();
+        nextGoodsPlacer.SendObjectsBackToPool();
+        InitCurrentAndNextGoods();
+    }
+
     public void InitCurrentAndNextGoods()
     {
         InitGoods();
@@ -51,6 +66,18 @@ public class GoodsHandler : MonoBehaviour
         InitGoods();
         nextGoodsPlacer.InitGoodsView(new List<GoodsSet>(lastUpdatedGoodsSet));
         nextGoodsPlacer.PlaceGoods();
+    }
+
+    public void SetClearPowerupState(bool state)
+    {
+        CanClearGoodsUsingPowerup = state;
+        popupManager = popupManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<PopupManager>() : popupManager;   
+        if (CanClearGoodsUsingPowerup)
+        {
+            // initialize the ftue text over here
+            popupManager.GetPopup<FeedbackPopup>(PopupType.FeedbackPopup).SetFeedbackText("SELECT ANY NODE TO CLEAR IT");
+            popupManager.ShowPopup(PopupType.FeedbackPopup);
+        }
     }
 
     private void InitGoods()

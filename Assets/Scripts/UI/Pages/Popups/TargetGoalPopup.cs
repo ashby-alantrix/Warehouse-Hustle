@@ -6,12 +6,12 @@ using UnityEngine;
 public class TargetGoalPopup : PopupBase
 {
     [SerializeField] private TextMeshProUGUI targetGoalText;
-    [SerializeField] private float screenShowDelay = 1.5f;
+    [SerializeField] private float showDelay = 1.5f;
 
     public void SetTargetGoalText(string targetGoalText)
     {
         this.targetGoalText.text = targetGoalText;
-        Invoke(nameof(CloseScreen), screenShowDelay);
+        Invoke(nameof(CloseScreen), showDelay);
     }
 
     private void CloseScreen()

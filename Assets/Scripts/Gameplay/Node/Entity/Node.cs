@@ -462,6 +462,10 @@ public class Node : MonoBehaviour
         {
             nodeManager.OnNodeClickedOrFound(this);
         }
+        else
+        {
+            nodeManager.OnNodeBeingOccupied(this);
+        }
     }
 
     public void SetNodeOccupiedState(bool state)

@@ -70,6 +70,9 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
             onComplete?.Invoke();
             selectedNode.UpdateOccupiedSlotsState();
             selectedNode.UpdateOccupiedNodes();
+            
+            Debug.Log($"IsSortingInProgress State: {goodsSortingManager.isSortingInProgress}, isSortingInProgress during RearrangeBasedOnSorting.OnComplete function");
+            
             KillTween();
         });
 
@@ -85,6 +88,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
         // or cache the item bases as well
 
         goodsSortingManager.isSortingInProgress = true;
+        Debug.Log($"IsSortingInProgress State: {goodsSortingManager.isSortingInProgress}, isSortingInProgress during RearrangeGoodsBetweenSelectedNodeAndNeighbor check");
         soundManager.PlayPrimaryGameSoundClip(SoundType.Swap);
 
         Tweener tweener = null;
@@ -129,6 +133,8 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
             source.CheckIfNodeIsFullOrCleared();
             target.CheckIfNodeIsFullOrCleared();
 
+            Debug.Log($"IsSortingInProgress before State: {goodsSortingManager.isSortingInProgress}, isSortingInProgress during RearrangeGoodsBetweenSelectedNodeAndNeighbor.OnComplete check");
+
             if (!source.IsNodeFullOrCleared() && !target.IsNodeFullOrCleared())
                 CheckGameOver();
 
@@ -151,11 +157,22 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
 
         if (nodeManager.AreAllNodesOccupied())
         {
+            Debug.Log($"nodeManager.IsAnyNodeFullWhileGridsFull(): {nodeManager.IsAnyNodeFullWhileGridsFull()}");
+            Debug.Break();
+        }
+        
+        if (nodeManager.AreAllNodesOccupied() && !nodeManager.IsAnyNodeFullWhileGridsFull())
+        {
             goodsSortingManager.isSortingInProgress = false;
-            Debug.Log($"GameOverCheck :: isSortingInProgress: {goodsSortingManager.isSortingInProgress} in GoodsPlacementManager");
+            Debug.Log($"IsSortingInProgress State: {goodsSortingManager.isSortingInProgress}, isSortingInProgress during RearrangeGoodsBetweenSelectedNodeAndNeighbor.OnComplete check");
             Debug.Log($"GameOverCheck :: CheckGameOverCondition GoodsPlacementManager");
             goodsSortingManager.CheckGameOverCondition($"Node: {name}");
         }
+    }
+
+    void Delay()
+    {
+        
     }
 
     public void RearrangeBasedOnSorting(Node currentNode)
@@ -163,6 +180,7 @@ public class GoodsPlacementManager : MonoBehaviour, IBase, IBootLoader, IDataLoa
         var itemBaseCount = currentNode.GetItemBaseCount();
         Debug.Log($"Sorting :: itemBaseCount: {itemBaseCount}");
 
+       Debug.Log($"IsSortingInProgress State: {goodsSortingManager.isSortingInProgress}, IsSortingInProgress during RearrangeBasedOnSorting fn");
         IterateAndMoveNodesUsingDictionary(currentNode, itemBaseCount, null);
     }
 }

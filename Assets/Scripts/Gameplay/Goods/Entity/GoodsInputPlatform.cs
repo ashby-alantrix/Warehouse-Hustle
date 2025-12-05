@@ -90,6 +90,16 @@ public class GoodsInputPlatform : MonoBehaviour
         }
     }
 
+    public void SendObjectsBackToPool()
+    {
+        objectPoolManager = objectPoolManager == null ? InterfaceManager.Instance?.GetInterfaceInstance<ObjectPoolManager>() : objectPoolManager;
+        foreach (var baseObj in baseObjects)
+        {
+            baseObj.gameObject.SetActive(false);
+            objectPoolManager.PassObjectToPool<ItemBase>($"{baseObj.ItemType}", PoolType.Item, baseObj);
+        }
+    }
+
     public ItemBase GetItemBasedOnIndex(int index)
     {
         return baseObjects[index];

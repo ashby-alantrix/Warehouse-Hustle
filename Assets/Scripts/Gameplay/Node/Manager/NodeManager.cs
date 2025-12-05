@@ -10,6 +10,7 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 {
     [SerializeField] private HexData[] m_HexDatas;
     [SerializeField] private GoodsPlacementManager goodsPlacementManager;
+    [SerializeField] private GoodsHandler goodsHandler;
 
     private GoodsManager m_GoodsManager;
     private LevelManager levelManager;
@@ -80,7 +81,8 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
             Debug.Log($"LastOccupiedNodes: occupiedCount: {occupiedNodes.Count}");
             Debug.Log($"LastOccupiedNodes: {JsonConvert.SerializeObject(lastOccupiedNodes)}");
 
-            Invoke(nameof(SearchLastOccupiedNodes), addDelay);
+            SearchLastOccupiedNodes();
+            // Invoke(nameof(SearchLastOccupiedNodes), addDelay);
             // StartCoroutine(SearchLastOccupiedNodes());
         }
     }
@@ -88,52 +90,40 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
 
     private void SearchLastOccupiedNodes()
     {
-        //bool hasBreak = false;
-        //while (occupiedNodes.Count() == totalNodesInGrid)
-        //{
-        //    foreach (var pos in lastOccupiedNodes)
-        //    {
-        //        if (nodesData[pos].GetItemBaseCount() == 0 || nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1)
-        //        {
-        //            hasBreak = true;
-        //            break;
-        //        }
-        //    }
-        //}
+        // return;
 
-        //yield return new WaitForEndOfFrame();
-        lastOccupiedNodes.ToList().Clear();
+        // Debug.Log($"NodeDatas1 :: lastOccupiedNodes.Count: {lastOccupiedNodes.Count}");
+        // foreach (var pos in lastOccupiedNodes)
+        // {
+        //     Debug.Log($"NodeDatas1 :: Node name: {nodesData[pos].name}");
+        //     Debug.Log($"NodeDatas1 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
+        //     Debug.Log($"NodeDatas1 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
+        //     Debug.Log($"NodeDatas1 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
+        // }
 
-        Debug.Log($"NodeDatas1 :: lastOccupiedNodes.Count: {lastOccupiedNodes.Count}");
-        foreach (var pos in lastOccupiedNodes)
-        {
-            Debug.Log($"NodeDatas1 :: Node name: {nodesData[pos].name}");
-            Debug.Log($"NodeDatas1 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
-            Debug.Log($"NodeDatas1 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
-            Debug.Log($"NodeDatas1 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
-        }
+        // if (lastOccupiedNodes.Any(pos => nodesData[pos].GetItemBaseCount() == 0 || 
+        //                                 nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1))
+        // {
+        //     lastOccupiedNodes.Clear();
+        //     return;
+        // }
 
-        if (lastOccupiedNodes.Any(pos => nodesData[pos].GetItemBaseCount() == 0 || 
-                                        nodesData[pos].GetItemBaseCount() == nodesData[pos].GetTotalSlotsInNode() && nodesData[pos].GetSetKeysCount() == 1))
-        {
-            lastOccupiedNodes.Clear();
-            return;
-        }
+        // Debug.Log($"LastOccupiedNodes: {lastOccupiedNodes.Count}");
 
-        Debug.Log($"LastOccupiedNodes: {lastOccupiedNodes.Count}");
-
-        foreach (var pos in lastOccupiedNodes)
-        {
-            Debug.Log($"NodeDatas2 :: Node name: {nodesData[pos].name}");
-            Debug.Log($"NodeDatas2 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
-            Debug.Log($"NodeDatas2 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
-            Debug.Log($"NodeDatas2 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
-        }
+        // foreach (var pos in lastOccupiedNodes)
+        // {
+        //     Debug.Log($"NodeDatas2 :: Node name: {nodesData[pos].name}");
+        //     Debug.Log($"NodeDatas2 :: nodesData[pos].GetItemBaseCount(): {nodesData[pos].GetItemBaseCount()}");
+        //     Debug.Log($"NodeDatas2 :: nodesData[pos].GetTotalSlotsInNode(): {nodesData[pos].GetTotalSlotsInNode()}");
+        //     Debug.Log($"NodeDatas2 :: nodesData[pos].GetSetKeysCount(): {nodesData[pos].GetSetKeysCount()}");
+        // }
 
         GoodsSortingManager goodsSortingManager = InterfaceManager.Instance.GetInterfaceInstance<GoodsSortingManager>();
+        goodsSortingManager.isSortingInProgress = IsAnyNodeFullWhileGridsFull();
+
         goodsSortingManager.CheckGameOverCondition("NodeManager");
 
-        lastOccupiedNodes.Clear();
+        // lastOccupiedNodes.Clear();
     }
     
 
@@ -245,6 +235,24 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
         m_GoodsManager.GoodsHandler.UpdateGoodsInputPlatform();
     }
 
+    public void OnNodeBeingOccupied(Node currentNode)
+    {
+        if (!levelManager.CanPlayLevel || popupManager.GetActivePU()) 
+            return;
+
+        Debug.Log($"goodsHandler.CanClearGoodsUsingPowerup: {goodsHandler.CanClearGoodsUsingPowerup}");
+        if (goodsHandler.CanClearGoodsUsingPowerup)
+        {
+            if (IsNodeAvailableInGrid(currentNode.GetNodePos(), out Node node))
+            {
+                goodsHandler.SetClearPowerupState(false);
+                node.ClearOrResetGoodsDataAndView();
+            }
+            
+            return;
+        }
+    }
+
     public void OnNodeFilled(Node filledNode, ItemType filledKey)
     {
         SetTrucksLoaderManager();
@@ -274,6 +282,20 @@ public class NodeManager : MonoBehaviour, IBase, IBootLoader
     }
 
     public bool AreAllNodesOccupied() => totalNodesInGrid == occupiedNodes.Count;
+
+    public bool IsAnyNodeFullWhileGridsFull()
+    {
+        foreach (var pair in nodesData)
+        {
+            if (IsNodeAvailableInGrid(pair.Key, out Node node))
+            {
+                if (node.GetItemBaseCount() == node.GetTotalSlotsInNode())
+                    return true;
+            }
+        }
+
+        return false;
+    }
 
     public void ShowGameOverEmojis()
     {
