@@ -1,0 +1,25 @@
+{
+  "nodeInfos": [
+    {
+      "gridValues": {
+        "row": 1,
+        "col": 4
+      },
+      "blockedGridValues": []
+    },
+    {
+      "gridValues": {
+        "row": 2,
+        "col": 3
+      },
+      "blockedGridValues": []
+    },
+    {
+      "gridValues": {
+        "row": 3,
+        "col": 4
+      },
+      "blockedGridValues": []
+    }
+  ]
+}
