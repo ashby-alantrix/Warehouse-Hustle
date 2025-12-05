@@ -63,8 +63,8 @@ public class LevelScreen : ScreenBase
         {
             Debug.Log($"### levelManager.CurrentLevelNumber: {levelManager.CurrentLevelNumber}, {levelManager.TotalLevelsCount - diff}");
             Level lvlObj = levelObjects[endIndex];
-            lvlObj.gameObject.SetActive(true);
             lvlObj.SetLevelEndBarricade();
+            lvlObj.gameObject.SetActive(true);
             levelsQueue.Enqueue(lvlObj);
         }
         
@@ -79,7 +79,7 @@ public class LevelScreen : ScreenBase
 
         for (int indexI = 0; indexI < levelObjects.Length; indexI++)
         {
-            if (levelObjects[indexI].HasBarricade) continue;
+            // if (levelObjects[indexI].HasBarricade) continue;
 
             levelObjects[indexI].ShowUnselectedLevelView();
         }
@@ -90,10 +90,15 @@ public class LevelScreen : ScreenBase
         }
 
         Debug.Log($"OnLevelComplete");
-        UpdateLevelPageInfo();    
 
+        CanTriggerScrolling = !levelManager.CanPlayLevel && levelManager.PrevLevelNumber != levelManager.CurrentLevelNumber 
+            && levelManager.LevelState != LevelState.Lost && levelManager.CurrentLevelNumber != 1;
+
+        UpdateLevelPageInfo();    
         StartCoroutine(StartLevelObjectAnims());
     }
+
+    private bool CanTriggerScrolling = false;
 
     private void AlignLevelObjectPositions()
     {
@@ -127,9 +132,13 @@ public class LevelScreen : ScreenBase
 
         Debug.Log($"LEVELNUMBER: PrevLevelNumber: {levelManager.PrevLevelNumber}");
         Debug.Log($"LEVELNUMBER: CurrentLevelNumber: {levelManager.CurrentLevelNumber}");
-        if (!levelManager.CanPlayLevel && levelManager.PrevLevelNumber != levelManager.CurrentLevelNumber 
-            && levelManager.LevelState != LevelState.Lost && levelManager.CurrentLevelNumber != 1)
+        if (CanTriggerScrolling)
             TriggerScrollingAnim();
+        else
+        {
+            foreach (var level in levelsQueue)
+                level.InitListenersLevelObject();
+        }
     }
 
     private void UpdateLevelPageInfo()
@@ -169,8 +178,12 @@ public class LevelScreen : ScreenBase
         else
         {
             newUnlockedLvl = levelsQueue.Last();
-            if (newUnlockedLvl.HasBarricade)
+            Debug.Log($"test1 :: newUnlockedLvl.HasBarricade: {newUnlockedLvl.HasBarricade}, && CanTriggerScrolling: {CanTriggerScrolling}");
+            newUnlockedLvl.ShowSelectedLevelView();
+            if (newUnlockedLvl.HasBarricade && !CanTriggerScrolling)
+            {
                 newUnlockedLvl.ShowRestartButton();
+            }
         }
     }
 
@@ -217,7 +230,12 @@ public class LevelScreen : ScreenBase
                         newUnlockedLvl.ScaleLevelButton();
                     }
                     else 
+                    {
                         newUnlockedLvl.ShowRestartButton();
+                    }
+
+                    foreach (var level in levelsQueue)
+                        level.InitListenersLevelObject();
                 });
             });
         });

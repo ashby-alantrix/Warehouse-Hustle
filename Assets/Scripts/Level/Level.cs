@@ -15,7 +15,6 @@ public class Level : MonoBehaviour
     [SerializeField] private float animScale = 1f;
     [SerializeField] private float btnScaleDelay = 0.5f;
     [SerializeField] private Transform levelContent;
-    [SerializeField] private Transform btnContent;
     
     [SerializeField] private int levelNum;
     [SerializeField] private GameObject playBtn;
@@ -24,7 +23,13 @@ public class Level : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selLevelText;
     [SerializeField] private TextMeshProUGUI unselLevelText;
 
-    private Button restartBtnRef, playBtnRef;
+    [Header("Buttons")]
+    [SerializeField] private Button levelImageBtn;
+    [SerializeField] private Button levelTextImageBtn;
+    [SerializeField] private Button restartBtnRef;
+    [SerializeField] private Button playBtnRef;
+
+    private Transform btnContent;
 
     public int LevelNum => levelNum;
 
@@ -36,20 +41,42 @@ public class Level : MonoBehaviour
     void Awake()
     {
         position = transform.position;
-        restartBtnRef = restartBtn.GetComponent<Button>();
-        playBtnRef = playBtn.GetComponent<Button>();
     }
 
     void OnEnable()
     {
         restartBtnRef.onClick.AddListener(OnClick_RestartButton);
         playBtnRef.onClick.AddListener(OnClick_PlayButton);
+
+        Debug.Log($"### HasBarricade: {HasBarricade}");
+        levelImageBtn.enabled = levelTextImageBtn.enabled = false;
     }
 
     void OnDisable()
     {
         playBtnRef.onClick.RemoveAllListeners();
+        levelImageBtn.onClick.RemoveAllListeners();
+        levelTextImageBtn.onClick.RemoveAllListeners();
         restartBtnRef.onClick.RemoveAllListeners();
+    }
+
+    public void InitListenersLevelObject()
+    {
+        levelImageBtn.onClick.RemoveAllListeners();
+        levelTextImageBtn.onClick.RemoveAllListeners();
+        
+        if (!HasBarricade)
+        {
+            levelImageBtn.onClick.AddListener(OnClick_PlayButton);
+            levelTextImageBtn.onClick.AddListener(OnClick_PlayButton);    
+        }
+        else
+        {
+            levelImageBtn.onClick.AddListener(OnClick_RestartButton);
+            levelTextImageBtn.onClick.AddListener(OnClick_RestartButton);
+        }
+
+        levelImageBtn.enabled = levelTextImageBtn.enabled = true;
     }
 
     public void ShowUnselectedLevelView()
@@ -64,12 +91,12 @@ public class Level : MonoBehaviour
     {
         isSelected = true;
         // change to level selected sprite and scale the level object
-        if (HasBarricade)
-        {
-            return;
-        }
-
         ToggleLevelObjectStates(true);
+        // if (HasBarricade)
+        // {
+        //     return;
+        // }
+
     }
 
     public void ToggleLevelObjectStates(bool state)
@@ -81,8 +108,16 @@ public class Level : MonoBehaviour
     public void PlayScaleInAnims()
     {
         ScaleLevelContent();
-        if (playBtn.activeInHierarchy || restartBtn.activeInHierarchy)
+        if (playBtn.activeInHierarchy)
+        {
+            btnContent = playBtn.transform;
             Invoke(nameof(ScaleLevelButton), btnScaleDelay);
+        }
+        else if (restartBtn.activeInHierarchy)
+        {
+            btnContent = restartBtn.transform;
+            Invoke(nameof(ScaleLevelButton), btnScaleDelay);
+        }
     }
 
     private void ScaleLevelContent()
@@ -90,7 +125,10 @@ public class Level : MonoBehaviour
         Debug.Log($"ScaleLevelContent");
         levelContent.localScale = Vector3.zero;
         Tween tween = levelContent.DOScale(Vector3.one, animScale);
-        tween.OnComplete(() => tween.Kill());
+        tween.OnComplete(() => 
+        {
+            tween.Kill();
+        });
     }
 
     public void ScaleLevelButton()
@@ -112,17 +150,34 @@ public class Level : MonoBehaviour
     {
         Debug.Log($"LevelNum :: {levelNum}, {state}");
         playBtn.SetActive(state);
+        if (playBtn.transform.localScale == Vector3.zero)
+        {
+            btnContent = playBtn.transform;
+            Invoke(nameof(ScaleLevelButton), btnScaleDelay);
+        }
     }
 
     public void SetLevelEndBarricade()
     {
         HasBarricade = true;
-        barricade.SetActive(true);
+        Debug.Log($"### HasBarricade :: SetLevelEndBarricade");
+        // barricade.SetActive(true);
+        selLevelText.text = $"Market closed";
+        unselLevelText.text = $"Market closed";
     }
 
     public void ShowRestartButton()
     {
         restartBtn.SetActive(true);
+
+        levelImageBtn.onClick.RemoveAllListeners();
+        levelTextImageBtn.onClick.RemoveAllListeners();
+
+        levelImageBtn.onClick.AddListener(OnClick_RestartButton);
+        levelTextImageBtn.onClick.AddListener(OnClick_RestartButton);
+
+        btnContent = restartBtn.transform;
+        Invoke(nameof(ScaleLevelButton), btnScaleDelay);
     }
 
     private void SetLevelManager()
